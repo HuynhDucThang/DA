@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --padding-main: 40px;
+  --padding-detail: 80px;
+  --padding-y: 40px;
+
+  --header-height: 96px;
+  --height-input: 48px;
+  --color-logo: #ff385c;
+  --text-color-primary: #222222;
+  --text-color-second: #717171;
+
+  --grey-blur: #f7f7f7;
+  --color-border: #dddddd;
+
+  --color-grey: #b0b0b0;
+}
+
+body {
+  font-size: 16px;
+}
+
+@layer base {
+  /* h1 {
+    @apply text-2xl;
+  }
+  h2 {
+    @apply text-xl;
+  } */
+  /* ... */
+}
+
+@layer components {
+  .text-primary {
+    color: var(--text-color-primary);
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .flex_center {
+    @apply flex justify-center items-center;
+  }
+
+  .text_filter_apartment {
+    @apply text-base font-medium text-primary;
+  }
+
+  .text_card_heading {
+    @apply text-lg font-medium text-primary;
+  }
+
+  .text_card_sub_heading {
+    @apply text-lg font-normal text-second;
+  }
+
+  .text_apartment_detail {
+    @apply text-lg font-medium text-primary;
+  }
+
+  .spacing_between_cpn_detail {
+    @apply py-pd-spacing-cpn border-b-2 border-c-border;
+  }
+
+  .sub_heading__detail_apartment {
+    @apply text-primary text-2xl mb-2;
+  }
+  /* ... */
+}
