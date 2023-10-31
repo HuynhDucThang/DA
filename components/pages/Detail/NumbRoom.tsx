@@ -4,7 +4,7 @@ export default function NumbRoom() {
   return (
     <div className="spacing_between_cpn_detail">
       <div className="flex justify-between items-center">
-        <h4 className="sub_heading__detail_apartment">Bố trí bên trong</h4>
+        <h4 className="heading__detail_apartment">Bố trí bên trong</h4>
         <div className="flex_center gap-3">
           <div className="p-2 rounded-full border transition-all hover:scale-[1.01] cursor-pointer shadow-md">
             <Image

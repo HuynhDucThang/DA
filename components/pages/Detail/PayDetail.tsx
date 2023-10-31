@@ -1,9 +1,11 @@
+import dynamic from "next/dynamic";
 import Image from "next/image";
+
 
 export default function PayDetail() {
   return (
     <div className="w-[30%] ">
-      <div className="w-full border rounded-lg shadow-[rgba(0,0,0,0.12)_0px_6px_16px]">
+      <div className="w-full border rounded-lg shadow-[rgba(0,0,0,0.12)_0px_6px_16px] sticky top-12">
         <div className="p-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center">

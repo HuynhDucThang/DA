@@ -64,8 +64,12 @@ body {
     @apply py-pd-spacing-cpn border-b-2 border-c-border;
   }
 
-  .sub_heading__detail_apartment {
+  .heading__detail_apartment {
     @apply text-primary text-2xl mb-2;
+  }
+
+  .sub_heading__detail_apartment {
+    @apply text-primary text-xl mb-2;
   }
   /* ... */
 }
