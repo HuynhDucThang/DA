@@ -1,9 +1,10 @@
+import { ViewMore } from "@/components/common";
 import Image from "next/image";
 
 export default function Desc() {
   return (
     <div className="spacing_between_cpn_detail">
-      <p className="sub_heading__detail_apartment">Mô tả</p>
+      <p className="heading__detail_apartment">Mô tả</p>
       <p className="line-clamp-5 text-xl">
         Một phòng ngủ lớn và hiện đại này nằm ở rìa của Downtown và Business
         Bay. Nó cung cấp quyền sử dụng độc quyền các tiện nghi theo phong cách
@@ -13,15 +14,7 @@ export default function Desc() {
         dân địa phương
       </p>
 
-      <div className="flex_center gap-2 w-fit cursor-pointer mt-4">
-        <h4 className="text-primary text-xl font-semibold underline">Hiển thị thêm</h4>
-        <Image
-          src="/arrow/arrow_bottom.svg"
-          alt="arrow_bottom"
-          width={20}
-          height={20}
-        />
-      </div>
+      <ViewMore />
     </div>
   );
 }

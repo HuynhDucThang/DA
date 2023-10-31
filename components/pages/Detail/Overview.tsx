@@ -49,7 +49,20 @@ export default function OverView() {
       </div>
 
       {/* imges */}
-      <div>images</div> 
+      <div className="spacing_between_cpn_detail">
+        <div className="grid grid-cols-4 w-full aspect-[3/1] gap-3">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <div
+              className={`relative ${
+                index === 0 ? "col-[1/3] row-[1/3] rounded-l-xl" : "odd:rounded-r-xl"
+              } object-cover cursor-pointer transition-all hover:opacity-90 overflow-hidden`}
+              key={index}
+            >
+              <Image src="/images/apartment.png" alt="" fill />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
