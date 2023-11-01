@@ -10,3 +10,8 @@ export { CheckBox };
 import ViewMore from "./button/ViewMore";
 
 export { ViewMore };
+
+import Login from "./user/Login";
+import Register from "./user/Register";
+
+export { Login, Register };
