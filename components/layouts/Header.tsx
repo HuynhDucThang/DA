@@ -1,7 +1,6 @@
 import Image from "next/image";
 import FilterHeader from "./Header/FilterHeader";
-
-const menuFilter = ["Địa điểm bất kỳ", "Tuần bất kỳ", "Thêm khách"];
+import HeaderUserInfor from "./Header/UserHeaderInfor";
 
 export default function Header() {
   return (
@@ -33,19 +32,7 @@ export default function Header() {
             </div>
           </div>
 
-          <div className="py-2 px-3 border border-solid rounded-3xl transition-shadow hover:shadow-[rgba(0,_0,_0,_0.24)_0px_3px_6px] cursor-pointer">
-            <div className="flex gap-4">
-              <Image src="/header/menu.svg" className="text-red-800" alt="menu" height={24} width={24} />
-              <div className="h-10 w-10 relative">
-                <Image
-                  src="/images/avatar.png"
-                  alt="menu"
-                  className="rounded-full object-contai"
-                  fill
-                />
-              </div>
-            </div>
-          </div>
+          <HeaderUserInfor />
         </div>
       </div>
     </div>

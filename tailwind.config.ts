@@ -26,7 +26,10 @@ const config: Config = {
       padding: {
         "pd-main": "var(--padding-main)",
         "pd-detail": "var(--padding-detail)",
-        "pd-spacing-cpn" : "var(--padding-y)"
+        "pd-spacing-cpn": "var(--padding-y)",
+      },
+      dropShadow: {
+        common: "shadow-[rgba(0,_0,_0,_0.24)_0px_3px_6px]",
       },
       keyframes: {
         shirk: {
