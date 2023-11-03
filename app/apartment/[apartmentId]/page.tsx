@@ -1,7 +1,6 @@
+import RangeCalendar from "@/components/common/calendar/rangeCalendar";
 import FooterDetail from "@/components/layouts/FooterDetail";
 import { Details, InforNeeded, OverView } from "@/components/pages/Detail";
-import dynamic from "next/dynamic";
-const CalendarCustom = dynamic(() => import('@/components/common/calendar'), { ssr: false })
 
 interface IProps {
   searchParams: {
@@ -18,7 +17,6 @@ export default function ApartmentDetail({}: IProps) {
       {/* body */}
       <Details />
       {/* infor */}
-      <CalendarCustom />
       <InforNeeded />
       {/* footer */}
       <FooterDetail />

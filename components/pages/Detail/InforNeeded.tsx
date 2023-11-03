@@ -2,7 +2,7 @@ import { ViewMore } from "@/components/common";
 
 export default function InforNeeded() {
   return (
-    <div className="py-8">
+    <div className="py-8 border-t">
       <h4 className="heading__detail_apartment">Những điều cần biết</h4>
       <div className="grid grid-cols-3 gap-10">
         {/* rule 2 */}
