@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react";
 
 export default function useModal<T>() {
@@ -5,14 +7,16 @@ export default function useModal<T>() {
   const [typePopup, setTypePopup] = useState<T | null>(null);
 
   const openPopup = (type?: T) => {
+    if (type) {
+      setTypePopup(type);
+    }
     setIsOpen(true);
-    if (type) setTypePopup(type);
   };
 
   const closePopup = () => {
     setIsOpen(false);
     setTypePopup(null);
   };
-
+  
   return { typePopup, isOpen, openPopup, closePopup };
 }

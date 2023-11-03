@@ -1,7 +1,4 @@
-type IPosition = "top" | "left" | "bottom" | "right";
-
 interface IProps {
-  position?: IPosition;
   isOpen?: boolean;
   children: React.ReactNode;
   parentStyles?: string;

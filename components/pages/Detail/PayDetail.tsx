@@ -1,10 +1,52 @@
-import dynamic from "next/dynamic";
-import Image from "next/image";
+"use client";
 
+import { BtnCommon } from "@/components/common";
+import RangeCalendar from "@/components/common/calendar/rangeCalendar";
+import ModalAbs from "@/components/common/modal/ModalAbs";
+import useModal from "@/utils/hook/useModal";
+
+import Image from "next/image";
+import { useState } from "react";
+
+const dataNumberEnteredHouse = [
+  {
+    title: "Người lớn",
+    desc: "Từ 13 tuổi trở lên",
+    key: "adult",
+  },
+  {
+    title: "Trẻ em",
+    desc: "Độ tuổi 2 - 12",
+    key: "young",
+  },
+  {
+    title: "Em bé",
+    desc: "Dưới 2 tuổi",
+    key: "baby",
+  },
+  {
+    title: "Thú cưng",
+    desc: "Cho phép mang theo",
+    key: "pet",
+  },
+];
+
+type TYPE_ENTERD_HOUSE = "adult" | "young" | "baby" | "pet";
 
 export default function PayDetail() {
+  const [numberEnteredHouse, setNumberEnteredHouse] = useState({
+    adult: 2,
+    young: 0,
+    baby: 1,
+    pet: 0,
+  });
+
+  const { isOpen, typePopup, closePopup, openPopup } = useModal<
+    "start-day" | "end-day" | "number-people"
+  >();
+
   return (
-    <div className="w-[30%] ">
+    <div className="w-[35%]">
       <div className="w-full border rounded-lg shadow-[rgba(0,0,0,0.12)_0px_6px_16px] sticky top-12">
         <div className="p-6">
           <div className="flex justify-between items-center">
@@ -26,11 +68,115 @@ export default function PayDetail() {
             </div>
           </div>
 
-          {/* buttun */}
-          <div className="bg-[#dc0e64] flex_center rounded-lg py-4 mt-4 cursor-pointer">
-            <div className="text-xl font-semibold text-white ">Đặt phòng</div>
+          {/* choose */}
+          <div className="border border-c-border my-4 rounded-lg">
+            {/* top */}
+            <div className="grid grid-cols-2 relative">
+              <div
+                className={`p-3 ${
+                  typePopup === "start-day" &&
+                  "border-[3px] border-primary rounded-lg"
+                }`}
+                onClick={() => openPopup("start-day")}
+              >
+                <p className="text_filter_apartment">Nhận phòng</p>
+                <div className="text-second text-lg font-medium">4/12/2023</div>
+              </div>
+              <div
+                className={`p-3 ${
+                  typePopup === "end-day"
+                    ? "border-[3px] border-primary rounded-lg"
+                    : "border-l border-c-border"
+                }`}
+                onClick={() => openPopup("end-day")}
+              >
+                <p className="text_filter_apartment">Trả phòng</p>
+                <div className="text-second text-lg font-medium">6/12/2023</div>
+              </div>
+
+              <ModalAbs
+                isOpen={isOpen && typePopup !== "number-people"}
+                parentStyles="top-[50%] right-0"
+                subParentStyles="w-auto p-4"
+              >
+                <RangeCalendar />
+                <div className="mt-4 flex gap-5 justify-end items-center">
+                  <div className="text-primary underline cursor-pointer">
+                    Xoá ngày
+                  </div>
+                  <div
+                    className="text-white bg-black p-3 cursor-pointer rounded-md"
+                    onClick={closePopup}
+                  >
+                    Đóng
+                  </div>
+                </div>
+              </ModalAbs>
+            </div>
+            {/* bottom number people */}
+            <div
+              className={`relative p-3 flex items-center justify-between  ${
+                typePopup === "number-people"
+                  ? "border-[3px] border-primary rounded-lg"
+                  : "border-t border-c-border"
+              }`}
+              onClick={() =>
+                isOpen && typePopup === "number-people"
+                  ? closePopup()
+                  : openPopup("number-people")
+              }
+            >
+              <div className="">
+                <p className="text_filter_apartment">Số khách</p>
+                <div className="text-second text-lg font-medium">2 Khách</div>
+              </div>
+              <Image
+                src="/arrow/arrow_bottom.svg"
+                alt="arrow_bottom"
+                width={24}
+                height={24}
+              />
+
+              <ModalAbs
+                isOpen={isOpen && typePopup === "number-people"}
+                parentStyles="w-full top-[105%] right-0 rounded-sm"
+                subParentStyles="w-full p-4"
+              >
+                {dataNumberEnteredHouse.map((data) => (
+                  <div
+                    key={data.key}
+                    className="flex items-center justify-between p-2"
+                  >
+                    <div>
+                      <h2 className="text-xl font-semibold text-primary">
+                        {data.title}
+                      </h2>
+                      <p className="text_card_heading">{data.desc}</p>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="text-center p-3 rounded-full border border-c-border">
+                        -
+                      </div>
+                      <div className="text-center p-3 rounded-full border border-c-border">
+                        {numberEnteredHouse[data.key as TYPE_ENTERD_HOUSE]}
+                      </div>
+                      <div className="text-center p-3 rounded-full border border-c-border">
+                        +
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                <p className="text-second text-base font-medium leading-5 mt-5">
+                  Chỗ ở này cho phép tối đa 5 khách, không tính em bé. Nếu bạn
+                  mang theo nhiều hơn 2 thú cưng, vui lòng báo cho Chủ nhà biết.
+                </p>
+              </ModalAbs>
+            </div>
           </div>
 
+          {/* buttun */}
+          <BtnCommon title="Đặt phòng" />
           {/* fee */}
           <div className="py-6">
             <div className="flex justify-between mt-2">
@@ -38,12 +184,18 @@ export default function PayDetail() {
               <p className="text-primary text-xl">Tổng</p>
             </div>
             <div className="flex justify-between mt-2">
-              <p className="text-second text-xl underline">$178 x 2 đêm</p>
-              <p className="text-second text-xl">$365</p>
+              <p className="text-primary text-lg underline">$178 x 2 đêm</p>
+              <p className="text-primary text-lg">$365</p>
             </div>
             <div className="flex justify-between mt-2">
-              <p className="text-second text-xl underline">Phí vệ sinh</p>
-              <p className="text-second text-xl">$68</p>
+              <p className="text-primary text-lg underline">Phí vệ sinh</p>
+              <p className="text-primary text-lg">$45</p>
+            </div>
+            <div className="flex justify-between mt-2">
+              <p className="text-primary text-lg underline">
+                Phí dịch vụ Airbnb
+              </p>
+              <p className="text-primary text-lg">$30</p>
             </div>
           </div>
 

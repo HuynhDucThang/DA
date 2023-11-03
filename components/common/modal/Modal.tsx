@@ -1,3 +1,5 @@
+"use client"
+
 import Image from "next/image";
 
 interface IProps {
@@ -17,12 +19,12 @@ export default function Modal({
 }: IProps) {
   return (
     <div
-      className={`fixed top-0 left-0 w-[100vw] h-[100vh] flex_center z-[1000] shadow-[rgba(0,_0,_0,_0.24)_0px_3px_6px] ${
+      className={`fixed top-0 left-0 w-[100vw] h-[100vh] flex_center z-[1000] ${
         !isOpen && "invisible opacity-0 hidden"
       }`}
     >
       <div
-        className={`w-full rounded-xl bg-white ${commonStyles}`}
+        className={`w-full rounded-xl shadow-[rgba(0,_0,_0,_0.24)_0px_3px_6px] bg-white ${commonStyles}`}
       >
         {title ? (
           <div className="relative py-4 border-b-2 text-center">
