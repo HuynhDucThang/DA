@@ -1,15 +1,21 @@
+"use client";
+
+import { baseURL } from "@/utils/api";
+import { IApartmentRead } from "@/utils/interface";
 import Image from "next/image";
 import Link from "next/link";
 
-interface IProps {}
+interface IProps {
+  apartment: IApartmentRead;
+}
 
-export default function CardApartment({}: IProps) {
+export default function CardApartment({ apartment }: IProps) {
   return (
-    <Link href={"/apartment/123"} className="flex-[1_1_300px]">
+    <Link href={`/apartment/${apartment.id}`} className="flex-[1_1_300px]">
       <div>
         <div className="w-full aspect-[1/1] relative rounded-2xl overflow-hidden mb-3">
           <Image
-            src="/images/apartment.png"
+            src={`http://127.0.0.1:8000/api/apartments/${apartment.room}/banner`}
             alt="banner apartment"
             fill
             className="object-cover"
@@ -21,12 +27,10 @@ export default function CardApartment({}: IProps) {
         <div>
           {/* heading */}
           <div className="flex justify-between items-center gap-2">
-            <h4 className="text_card_heading line-clamp-1">
-              Dubai, Các Tiểu Vương quốc A-rập Thống nhất
-            </h4>
+            <h4 className="text_card_heading line-clamp-1">{apartment.name}</h4>
             <div className="flex_center gap-1">
               <Image src="/star.svg" alt="star icon" width={20} height={20} />
-              <span>5.0</span>
+              <span>{apartment.rate}</span>
             </div>
           </div>
 
@@ -35,7 +39,8 @@ export default function CardApartment({}: IProps) {
           {/* price */}
           <div className="flex items-center gap-1">
             <Image src="/dolar.svg" alt="star icon" width={20} height={20} />
-            <span className="text_card_heading">295</span>/<span>đêm</span>
+            <span className="text_card_heading">{apartment.price_per_day}</span>
+            /<span>đêm</span>
           </div>
         </div>
       </div>

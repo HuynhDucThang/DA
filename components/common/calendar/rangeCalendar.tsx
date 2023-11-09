@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { IApartmentContract } from "@/utils/interface";
+import { useEffect, useMemo, useState } from "react";
 import { DateRangePicker, DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
@@ -10,57 +11,38 @@ interface IDay {
   end_day: string;
 }
 
-export default function RangeCalendar() {
+interface IProps {
+  apartmentContract: IApartmentContract[];
+}
+
+export default function RangeCalendar({ apartmentContract }: IProps) {
   const [rangeDate, setRangeDate] = useState({
     startDate: new Date(),
     endDate: new Date(),
     key: "selection123",
   });
 
-  const [dates, setDates] = useState<Date[]>([]);
+  const handleDisableBookingDay = useMemo(() => {
+    const datesDiable: Date[] = [];
+    const now = new Date();
 
-  let times: IDay[] = [
-    {
-      start_day: "2023-10-31T20:10:08.908000+07:00",
-      end_day: "2023-10-31T20:10:08.908000+07:00",
-    },
-    {
-      start_day: "2023-11-03T00:00:00+07:00",
-      end_day: "2023-11-06T00:00:00+07:00",
-    },
-    {
-      start_day: "2023-11-10T00:00:00+07:00",
-      end_day: "2023-11-12T00:00:00+07:00",
-    },
-    {
-      start_day: "2023-11-28T00:00:00+07:00",
-      end_day: "2023-11-30T00:00:00+07:00",
-    },
-  ];
+    apartmentContract?.forEach((contract) => {
+      const startDate = new Date(contract.start_date);
+      const endDate = new Date(contract.end_date);
 
-  useEffect(() => {
-    function getDatesFromTimes() {
-      const dates: any[] = [];
+      if (endDate < now) return;
 
-      times.forEach((time) => {
-        const startDate = new Date(time.start_day);
-        const endDate = new Date(time.end_day);
+      for (
+        let date = startDate;
+        date <= endDate;
+        date.setDate(date.getDate() + 1)
+      ) {
+        datesDiable.push(new Date(date));
+      }
+    });
 
-        // Iterate through the range of dates
-        for (
-          let date = startDate;
-          date <= endDate;
-          date.setDate(date.getDate() + 1)
-        ) {
-          dates.push(new Date(date));
-        }
-      });
-
-      setDates(dates);
-    }
-
-    getDatesFromTimes();
-  }, []);
+    return datesDiable.length ? datesDiable : [];
+  }, [apartmentContract]);
 
   const handleSelect = (date: any) => {
     setRangeDate((pre) => ({
@@ -80,7 +62,7 @@ export default function RangeCalendar() {
         showSelectionPreview={true}
         moveRangeOnFirstSelection={false}
         direction="horizontal"
-        disabledDates={dates ?? []}
+        disabledDates={handleDisableBookingDay}
         onChange={handleSelect}
         // editableDateInputs={false}
         // showPreview={false}

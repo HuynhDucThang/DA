@@ -20,6 +20,10 @@
   --max-w: 1200px;
 }
 
+html{
+  scroll-behavior: smooth;
+}
+
 body {
   font-size: 16px;
 }

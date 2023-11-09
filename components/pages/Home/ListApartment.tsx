@@ -1,17 +1,20 @@
+import { IApartmentRead } from "@/utils/interface";
 import CardApartment from "./CardApartment";
 
+//IApartmentRead[]
 interface IProps {
-  promise: Promise<Response>;
+  promise: Promise<Record<string, IApartmentRead[]>>;
 }
 
-export default async function ListApartment() {
-  // const data = (await promise) as any;
+export default async function ListApartment({ promise }: IProps) {
+  const promiseApartment = await promise;
+  const apartments = (promiseApartment?.data) ?? [];
 
   return (
     <div>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8 spacing_between_cpn_detail">
-        {Array.from({ length: 8 }).map((_, index) => (
-          <CardApartment key={index} />
+        {apartments.map((apartment, index) => (
+          <CardApartment key={index} apartment={apartment} />
         ))}
       </div>
     </div>

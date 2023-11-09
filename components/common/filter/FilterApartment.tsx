@@ -1,16 +1,32 @@
 "use client";
 
-import { dataFilterApartment } from "@/utils/data";
+import { useState, useEffect } from "react";
+import { ITagCreate, ITagRead } from "@/utils/interface";
 import FilterItem from "./FilterItem";
-import { useState } from "react";
 import Image from "next/image";
 import CheckBox from "../checkbox/CheckBox";
+import { getTagsFilter } from "@/utils/proxy";
+import { useSearchParams } from "next/navigation";
 
-export default function FilterApartment() {
-  const [chooseTypeApartment, setChooseTypeApartment] =
-    useState<string>("Biệt thự");
+interface IProps {}
 
+export default function FilterApartment({}: IProps) {
+  const [tags, setTags] = useState<ITagRead[]>([]);
   const [isChecked, setIsChecked] = useState(false);
+  
+  const searchParams = useSearchParams();
+  const tagId = searchParams.get("tagId") ?? tags[0]?.id ?? "";
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await getTagsFilter();
+        setTags(data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
 
   const toggleSwitch = () => {
     setIsChecked((pre) => !pre);
@@ -20,13 +36,8 @@ export default function FilterApartment() {
     <div className="flex">
       <div className="flex-1 overflow-x-hidden">
         <div className="flex flex-nowrap gap-10">
-          {dataFilterApartment.map((typeApartment, index) => (
-            <FilterItem
-              key={index}
-              chooseTypeApartment={chooseTypeApartment}
-              setChooseTypeApartment={setChooseTypeApartment}
-              typeApartment={typeApartment}
-            />
+          {tags.map((tag, index) => (
+            <FilterItem key={index} chooseTag={tagId} tag={tag} />
           ))}
         </div>
       </div>

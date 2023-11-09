@@ -99,7 +99,7 @@ export default function PayDetail() {
                 parentStyles="top-[50%] right-0"
                 subParentStyles="w-auto p-4"
               >
-                <RangeCalendar />
+                <RangeCalendar apartmentContract={[]} />
                 <div className="mt-4 flex gap-5 justify-end items-center">
                   <div className="text-primary underline cursor-pointer">
                     Xoá ngày

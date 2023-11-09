@@ -1,4 +1,11 @@
+"use client";
+
+import { useAppDispatch } from "@/redux/hooks";
+import { userLogout } from "@/redux/slices/authSlice";
+
 export default function DropdownUser() {
+  const dispatch = useAppDispatch();
+
   return (
     <>
       <div>
@@ -32,7 +39,7 @@ export default function DropdownUser() {
         </div>
         <div
           className="text-primary text-base p-3 font-medium hover:bg-slate-300"
-          onClick={() => alert("on click")}
+          onClick={() => dispatch(userLogout())}
         >
           Đăng xuất
         </div>
