@@ -1,36 +1,29 @@
 "use client";
 
-import { IApartmentContract } from "@/utils/interface";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setDateBooking } from "@/redux/slices/booking";
 import { useEffect, useMemo, useState } from "react";
 import { DateRangePicker, DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 
-interface IDay {
-  start_day: string;
-  end_day: string;
-}
+interface IProps {}
 
-interface IProps {
-  apartmentContract: IApartmentContract[];
-}
+export default function RangeCalendar({}: IProps) {
+  const { dates, start_date, end_date } = useAppSelector(
+    (state) => state.booking
+  );
 
-export default function RangeCalendar({ apartmentContract }: IProps) {
-  const [rangeDate, setRangeDate] = useState({
-    startDate: new Date(),
-    endDate: new Date(),
-    key: "selection123",
-  });
+  const dispatch = useAppDispatch();
 
   const handleDisableBookingDay = useMemo(() => {
     const datesDiable: Date[] = [];
-    const now = new Date();
 
-    apartmentContract?.forEach((contract) => {
+    dates?.forEach((contract) => {
       const startDate = new Date(contract.start_date);
       const endDate = new Date(contract.end_date);
 
-      if (endDate < now) return;
+      // if (endDate < now) return;
 
       for (
         let date = startDate;
@@ -42,20 +35,36 @@ export default function RangeCalendar({ apartmentContract }: IProps) {
     });
 
     return datesDiable.length ? datesDiable : [];
-  }, [apartmentContract]);
+  }, [dates]);
 
   const handleSelect = (date: any) => {
-    setRangeDate((pre) => ({
-      ...pre,
-      startDate: date.selection123.startDate,
-      endDate: date.selection123.endDate,
-    }));
+    const startDate = new Date(date.selection123.startDate);
+    const endDate = new Date(date.selection123.endDate);
+
+    const threeDaysLater = new Date(startDate);
+    threeDaysLater.setDate(startDate.getDate() + 2);
+    
+    const start_date = startDate > endDate ? endDate : startDate;
+    const end_date = endDate < startDate ? startDate : endDate;
+
+    dispatch(
+      setDateBooking({
+        start_date,
+        end_date,
+      })
+    );
   };
 
   return (
-    <div>
+    <div className="my-6">
       <DateRange
-        ranges={[rangeDate]}
+        ranges={[
+          {
+            startDate: start_date,
+            endDate: end_date,
+            key: "selection123",
+          },
+        ]}
         months={2}
         minDate={new Date()}
         rangeColors={["#FD5B61"]}

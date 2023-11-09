@@ -3,9 +3,14 @@
 import { BtnCommon } from "@/components/common";
 import RangeCalendar from "@/components/common/calendar/rangeCalendar";
 import ModalAbs from "@/components/common/modal/ModalAbs";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { removeDate } from "@/redux/slices/booking";
+import { handleConvertDate } from "@/utils/helpers/common";
 import useModal from "@/utils/hook/useModal";
+import { createContract } from "@/utils/proxy";
 
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 
 const dataNumberEnteredHouse = [
@@ -45,6 +50,24 @@ export default function PayDetail() {
     "start-day" | "end-day" | "number-people"
   >();
 
+  const { start_date, end_date } = useAppSelector((state) => state.booking);
+  const dispatch = useAppDispatch();
+  const params = useParams();
+
+  const handleBooking = async () => {
+    await createContract({
+      apartment_id: params.apartmentId as string,
+      user_id: "12d49e77-e8fc-4fce-814c-ccb130933cd0",
+      content: `12d49e77-e8fc-4fce-814c-ccb130933cd0 đặt phòng lúc ${handleConvertDate(
+        start_date
+      )} - ${handleConvertDate(end_date)}`,
+      end_date: end_date,
+      start_date: start_date,
+    });
+
+    alert("Thành công")
+  };
+
   return (
     <div className="w-[35%]">
       <div className="w-full border rounded-lg shadow-[rgba(0,0,0,0.12)_0px_6px_16px] sticky top-12">
@@ -80,7 +103,11 @@ export default function PayDetail() {
                 onClick={() => openPopup("start-day")}
               >
                 <p className="text_filter_apartment">Nhận phòng</p>
-                <div className="text-second text-lg font-medium">4/12/2023</div>
+                <div className="text-second text-lg font-medium">
+                  {new Date() !== new Date(start_date)
+                    ? handleConvertDate(start_date)
+                    : "Chọn Ngày"}
+                </div>
               </div>
               <div
                 className={`p-3 ${
@@ -91,7 +118,11 @@ export default function PayDetail() {
                 onClick={() => openPopup("end-day")}
               >
                 <p className="text_filter_apartment">Trả phòng</p>
-                <div className="text-second text-lg font-medium">6/12/2023</div>
+                <div className="text-second text-lg font-medium">
+                  {new Date() !== new Date(end_date)
+                    ? handleConvertDate(end_date)
+                    : "Chọn Ngày"}
+                </div>
               </div>
 
               <ModalAbs
@@ -99,9 +130,12 @@ export default function PayDetail() {
                 parentStyles="top-[50%] right-0"
                 subParentStyles="w-auto p-4"
               >
-                <RangeCalendar apartmentContract={[]} />
+                <RangeCalendar />
                 <div className="mt-4 flex gap-5 justify-end items-center">
-                  <div className="text-primary underline cursor-pointer">
+                  <div
+                    className="text-primary underline cursor-pointer"
+                    onClick={() => dispatch(removeDate())}
+                  >
                     Xoá ngày
                   </div>
                   <div
@@ -176,7 +210,7 @@ export default function PayDetail() {
           </div>
 
           {/* buttun */}
-          <BtnCommon title="Đặt phòng" />
+          <BtnCommon title="Đặt phòng" handleClick={handleBooking} />
           {/* fee */}
           <div className="py-6">
             <div className="flex justify-between mt-2">

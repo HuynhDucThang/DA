@@ -37,14 +37,14 @@ export interface IApartmentRead {
 }
 
 export interface IApartmentDetail extends IApartmentRead {
-  amenities: IAmenityRead;
+  amenities: IAmenityRead[];
   apartment_contract: IApartmentContract[];
   apartment_tags: {
     tag_id: string;
     id: string;
     apartment_id: string;
     tag: ITagRead;
-  };
+  }[];
 }
 
 export interface IApartmentContract {
@@ -71,12 +71,11 @@ export interface ITagRead {
 // contract
 
 export interface IContractCreate {
-  name: string;
-  desc: string;
-  userId: string;
-  apartmentId: string;
-  start_date: string;
-  end_date: string;
+  content: string;
+  user_id: string;
+  apartment_id: string;
+  start_date: Date;
+  end_date: Date;
 }
 
 // amenity

@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import Cookies from "js-cookie";
 
 export function setCookie(key: string, value: string, options?: object) {
@@ -55,4 +56,15 @@ export const clearSearchParams = (paramsToDelete: string[]) => {
   const newPathname = `${window.location.pathname}?${searchParams.toString()}`;
 
   return newPathname;
+};
+
+export const handleConvertDate = (
+  date: Date,
+  formatDate: string = "dd/MM/yyyy"
+) => {
+  const startDate = new Date(date);
+  const startFormatted = format(startDate, formatDate);
+
+  const result = `${startFormatted}`;
+  return result;
 };

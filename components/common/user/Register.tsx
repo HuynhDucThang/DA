@@ -49,7 +49,7 @@ export default function Register() {
         />
         <InputField
           name="phonenumber"
-          title="Địa chỉ Email"
+          title="Số điện thoại"
           error=""
           type="text"
           placeholder="Nhập số điện thoại của bạn"
