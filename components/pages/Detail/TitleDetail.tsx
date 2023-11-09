@@ -1,19 +1,30 @@
+import { IApartmentRead } from "@/utils/interface";
 import Image from "next/image";
 
-export default function TitleDetail() {
+interface IProps {
+  apartmentDetail: IApartmentRead;
+}
+
+export default function TitleDetail({ apartmentDetail }: IProps) {
   return (
     <div className="spacing_between_cpn_detail">
       <h3 className="text-3xl font-semibold text-primary">
-        Toàn bộ căn hộ cho thuê ABC
+        Toàn bộ căn hộ cho thuê {apartmentDetail.name}
       </h3>
       <div className="flex gap-2">
-        <p className="text_apartment_detail font-normal">2 khách</p>
+        <p className="text_apartment_detail font-normal">4 khách</p>
         <Image src="/dot.svg" alt="dot icon" width={10} height={10} />
-        <p className="text_apartment_detail font-normal">1 phòng ngủ</p>
+        <p className="text_apartment_detail font-normal">
+          {apartmentDetail.num_bedrooms} phòng ngủ
+        </p>
         <Image src="/dot.svg" alt="dot icon" width={10} height={10} />
-        <p className="text_apartment_detail font-normal">1 phòng giường</p>
+        <p className="text_apartment_detail font-normal">
+          {apartmentDetail.num_living_rooms} phòng khách
+        </p>
         <Image src="/dot.svg" alt="dot icon" width={10} height={10} />
-        <p className="text_apartment_detail font-normal">1 phòng tắm</p>
+        <p className="text_apartment_detail font-normal">
+          {apartmentDetail.num_bathrooms} phòng tắm
+        </p>
       </div>
     </div>
   );

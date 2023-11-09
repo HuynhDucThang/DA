@@ -1,8 +1,22 @@
+"use client";
+
+import { useEffect } from "react";
 import Image from "next/image";
 import FilterHeader from "./Header/FilterHeader";
 import HeaderUserInfor from "./Header/UserHeaderInfor";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { getCurrentUserPending } from "@/redux/slices/userSlice";
 
 export default function Header() {
+  const { currentUser } = useAppSelector((state) => state.user);
+  const { access_token } = useAppSelector((state) => state.auth);
+
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (currentUser.id || !access_token) return;
+    dispatch(getCurrentUserPending());
+  }, []);
+
   return (
     <div className="px-[var(--padding-main)] border-b-2 flex items-center justify-between">
       <div className="flex items-center h-[var(--header-height)] flex-1">
