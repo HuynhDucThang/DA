@@ -1,4 +1,4 @@
-import { axiosAuth, axiosNonAuth } from "./api";
+import { axiosAuth, axiosNonAuth, axiosServer } from "./api";
 import {
   IAmenityCreate,
   IApartmentCreate,
@@ -12,8 +12,11 @@ export const getUser = async () => await axiosAuth.get("/users/");
 
 export const getUsers = async () => await axiosAuth.get("/users/all");
 
-export const userLogin = async (email: string, password: string) =>
-  await axiosNonAuth.post("/users/login", {
+export const userLogin = async (
+  email: FormDataEntryValue,
+  password: FormDataEntryValue
+) =>
+  await axiosServer.post("/users/login", {
     email,
     password,
   });
