@@ -6,6 +6,7 @@ import { getCookie, setCookie } from "./helpers/common";
 import { userRefreshToken } from "./proxy";
 
 export const baseURL = "http://localhost:8000/api";
+export const URL = "http://127.0.0.1:8000/api";
 
 let isRefreshing: boolean = false;
 let refreshSubscribers: any[] = [];
@@ -17,12 +18,20 @@ interface ApiResponse<T> {
   };
 }
 
+export const axiosServer = axios.create({
+  baseURL: URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 export const axiosAuth = axios.create({
   baseURL,
   headers: {
     "Content-Type": "application/json",
   },
 });
+
 export const axiosNonAuth = axios.create({
   baseURL,
   headers: {

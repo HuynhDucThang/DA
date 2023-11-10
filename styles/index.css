@@ -18,6 +18,13 @@
 
   --color-grey: #b0b0b0;
   --max-w: 1200px;
+
+
+  /* admin */
+  --bg: #151c2c;
+  --bgSoft: #182237;
+  --text: white;
+  --textSoft: #b7bac1;
 }
 
 html{
