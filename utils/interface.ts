@@ -7,10 +7,14 @@ export interface IUser {
   id: string;
   avatar: string;
   username: string;
-  phone: string;
+  phonenumber: string;
   password: string;
   email: string;
   system_role: string;
+  isVerify: boolean;
+  created_at: string;
+  updated_at: string;
+  verification_code: string;
 }
 
 // apartmetn

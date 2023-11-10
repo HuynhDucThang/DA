@@ -8,10 +8,6 @@ import {
 
 // ----------------------------- users ---------------------------------
 
-export const getUser = async () => await axiosAuth.get("/users/");
-
-export const getUsers = async () => await axiosAuth.get("/users/all");
-
 export const userLogin = async (
   email: FormDataEntryValue,
   password: FormDataEntryValue
@@ -20,6 +16,10 @@ export const userLogin = async (
     email,
     password,
   });
+
+export const getUser = async () => await axiosAuth.get("/users/");
+
+export const getUsers = async () => await axiosAuth.get("/users/all");
 
 export const userSignUp = async (
   email: string,
@@ -44,9 +44,6 @@ export const userRefreshToken = async (refresh_token: string) =>
       },
     }
   );
-
-export const deleteUser = async (email: string) =>
-  await axiosNonAuth.delete("/users/sign_up", {});
 
 // ------------------------------ apartment ---------------------------------
 

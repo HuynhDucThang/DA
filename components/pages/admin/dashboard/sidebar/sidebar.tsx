@@ -22,22 +22,22 @@ const menuItems = [
     list: [
       {
         title: "Dashboard",
-        path: "/dashboard",
+        path: "/admin/dashboard",
         icon: <MdDashboard />,
       },
       {
         title: "Users",
-        path: "/dashboard/users",
+        path: "/admin/dashboard/users",
         icon: <MdSupervisedUserCircle />,
       },
       {
         title: "Products",
-        path: "/dashboard/products",
+        path: "/admin/dashboard/products",
         icon: <MdShoppingBag />,
       },
       {
         title: "Transactions",
-        path: "/dashboard/transactions",
+        path: "/admin/dashboard/transactions",
         icon: <MdAttachMoney />,
       },
     ],
@@ -47,17 +47,17 @@ const menuItems = [
     list: [
       {
         title: "Revenue",
-        path: "/dashboard/revenue",
+        path: "/admin/dashboard/revenue",
         icon: <MdWork />,
       },
       {
         title: "Reports",
-        path: "/dashboard/reports",
+        path: "/admin/dashboard/reports",
         icon: <MdAnalytics />,
       },
       {
         title: "Teams",
-        path: "/dashboard/teams",
+        path: "/admin/dashboard/teams",
         icon: <MdPeople />,
       },
     ],
@@ -67,12 +67,12 @@ const menuItems = [
     list: [
       {
         title: "Settings",
-        path: "/dashboard/settings",
+        path: "/admin/dashboard/settings",
         icon: <MdOutlineSettings />,
       },
       {
         title: "Help",
-        path: "/dashboard/help",
+        path: "/admin/dashboard/help",
         icon: <MdHelpCenter />,
       },
     ],
@@ -111,6 +111,8 @@ const Sidebar = async () => {
         action={async () => {
           "use server";
           //   await signOut();
+
+          alert("log out");
         }}
       >
         <button className={styles.logout}>
