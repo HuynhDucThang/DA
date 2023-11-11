@@ -59,3 +59,23 @@ export const userSignUp = async (
     email,
     password,
   });
+
+export const getApartmentDetailServer = async (apartmentId: string) => {
+  const access_token = cookies().get("access_token_admin")?.value;
+
+  return await axiosServer.get(`/apartments/${apartmentId}/apartment`, {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+};
+
+export const getApartments = async (query: string, page: string) =>
+  await axiosServer.get(`/apartments/all`);
+
+export const deleteApartmentServer = async (apartmentId: FormDataEntryValue) =>
+  await axiosServer.delete(`/apartments/${apartmentId}`);
+
+// contract
+export const getContractsServer = async (query: string, page: number) =>
+  await axiosServer.get(`/contracts/all`);

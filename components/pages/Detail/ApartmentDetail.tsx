@@ -37,7 +37,7 @@ export default function Details({ apartment }: IProps) {
         <Comment />
       </div>
 
-      <PayDetail />
+      <PayDetail  apartmentDetail={apartmentDetail} />
     </div>
   );
 }

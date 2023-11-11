@@ -1,4 +1,4 @@
-import { axiosAuth, axiosNonAuth, axiosServer } from "./api";
+import { axiosAuth, axiosAuthCookieMultiData, axiosNonAuth, axiosServer } from "./api";
 import {
   IAmenityCreate,
   IApartmentCreate,
@@ -53,13 +53,28 @@ export const getApartmentByTagId = async (tagId: string) =>
 export const getApartmentDetail = async (apartmentId: string) =>
   await axiosAuth.get(`/apartments/${apartmentId}/apartment`);
 
-export const createApartment = async (apartment: IApartmentCreate) =>
-  await axiosAuth.post("/apartments", apartment);
+export const createApartment = async (
+  apartment: IApartmentCreate,
+  formData: FormData
+) => {
+  const params = new URLSearchParams();
+  params.set("name", `${apartment.name}`);
+  params.set("desc", `${apartment.desc}`);
+  params.set("room", `${apartment.name}`);
+  params.set("price_per_day", `${apartment.price_per_day}`);
+  params.set("num_bedrooms", `${apartment.num_bedrooms}`);
+  params.set("num_living_rooms", `${apartment.num_living_rooms}`);
+  params.set("num_bathrooms", `${apartment.num_bathrooms}`);
+  params.set("num_toilets", `${apartment.num_toilets}`);
+  params.set("rate", `0`);
+
+  return await axiosAuthCookieMultiData.post(`/apartments?${params.toString()}`, formData);
+};
 
 export const updateApartment = async (
   apartmentId: string,
   apartment: IApartmentCreate
-) => await axiosAuth.patch(`/apartments/${apartmentId}`, apartment);
+) => await axiosServer.patch(`/apartments/${apartmentId}`, apartment);
 
 export const deleteApartment = async (apartmentId: string) =>
   await axiosAuth.delete(`/apartments/${apartmentId}`);
@@ -79,7 +94,8 @@ export const deleteTag = async (tagId: string) =>
 
 // ------------------------------- contracts -------------------------------
 
-export const getContracts = async () => await axiosAuth.get(`/contracts/all`);
+export const getContracts = async (query: string, page: number) =>
+  await axiosAuth.get(`/contracts/all`);
 
 export const getContractByUserId = async (userId: string) =>
   await axiosAuth.get(`/contracts/${userId}`);

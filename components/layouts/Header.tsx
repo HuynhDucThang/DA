@@ -8,14 +8,14 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { getCurrentUserPending } from "@/redux/slices/userSlice";
 
 export default function Header() {
-  const { currentUser } = useAppSelector((state) => state.user);
   const { access_token } = useAppSelector((state) => state.auth);
 
   const dispatch = useAppDispatch();
+
   useEffect(() => {
-    if (currentUser.id || !access_token) return;
+    if (!access_token) return;
     dispatch(getCurrentUserPending());
-  }, []);
+  }, [access_token]);
 
   return (
     <div className="px-[var(--padding-main)] border-b-2 flex items-center justify-between">
