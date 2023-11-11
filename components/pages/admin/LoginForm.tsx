@@ -1,9 +1,9 @@
 "use client";
 
 import { loginAdmin } from "@/utils/actions";
-import styles from "./loginForm.module.css";
 import { useFormState } from "react-dom";
 import { useRouter } from "next/navigation";
+import styles from "./loginForm.module.css";
 
 const LoginForm = () => {
   const [state, formAction] = useFormState(loginAdmin, undefined);

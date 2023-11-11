@@ -4,11 +4,14 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import {
+  deleteApartmentServer,
   deleteUserServer,
   updateUserById,
   userLoginServer,
   userSignUp,
 } from "../proxyServer";
+import { updateApartment } from "../proxy";
+import { IApartmentCreate } from "../interface";
 
 export const loginAdmin = async (prevState: any, formData: FormData) => {
   const { email, password } = Object.fromEntries(formData);
@@ -87,4 +90,96 @@ export const addUser = async (formData: FormData) => {
 
   // revalidatePath("/admin/dashboard/users");
   redirect("/admin/dashboard/users");
+};
+
+//
+
+export const addApartmentAction = async (formData: FormData) => {
+  const {
+    id,
+    banner,
+    desc,
+    name,
+    num_bathrooms,
+    num_bedrooms,
+    num_living_rooms,
+    num_toilets,
+    price_per_day,
+    room,
+  } = Object.fromEntries(formData);
+
+  const apartmentId = id as string;
+
+  try {
+    const updateFields: any = {
+      banner,
+      desc,
+      name,
+      num_bathrooms,
+      num_bedrooms,
+      num_living_rooms,
+      num_toilets,
+      price_per_day,
+      room,
+    };
+    await updateApartment(apartmentId, updateFields);
+  } catch (err: any) {
+    console.log(err);
+    throw new Error("Failed to update user!");
+  }
+};
+
+export const updateApartmentAction = async (formData: FormData) => {
+  const {
+    id,
+    banner,
+    desc,
+    name,
+    num_bathrooms,
+    num_bedrooms,
+    num_living_rooms,
+    num_toilets,
+    price_per_day,
+    room,
+  } = Object.fromEntries(formData);
+
+  const apartmentId = id as string;
+
+  const updateFields: any = {
+    // banner,
+    desc,
+    name,
+    num_bathrooms,
+    num_bedrooms,
+    num_living_rooms,
+    num_toilets,
+    price_per_day,
+  };
+
+  Object.keys(updateFields).forEach(
+    (key) => (updateFields[key] === "" || undefined) && delete updateFields[key]
+  );
+
+  try {
+    await updateApartment(apartmentId, updateFields);
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to create user!");
+  }
+
+  revalidatePath(`/admin/dashboard/apartments/[apartmentId]`);
+  // redirect("/admin/dashboard/apartments");
+};
+
+export const deleteApartment = async (formData: FormData) => {
+  const { apartmentId } = Object.fromEntries(formData);
+
+  try {
+    await deleteApartmentServer(apartmentId);
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to delete apartment!");
+  }
+
+  revalidatePath("/admin/dashboard/apartments");
 };

@@ -4,9 +4,10 @@ import { BtnCommon } from "@/components/common";
 import RangeCalendar from "@/components/common/calendar/rangeCalendar";
 import ModalAbs from "@/components/common/modal/ModalAbs";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { removeDate } from "@/redux/slices/booking";
+import { removeDate, setDates } from "@/redux/slices/booking";
 import { handleConvertDate } from "@/utils/helpers/common";
 import useModal from "@/utils/hook/useModal";
+import { IApartmentRead } from "@/utils/interface";
 import { createContract } from "@/utils/proxy";
 
 import Image from "next/image";
@@ -38,7 +39,11 @@ const dataNumberEnteredHouse = [
 
 type TYPE_ENTERD_HOUSE = "adult" | "young" | "baby" | "pet";
 
-export default function PayDetail() {
+interface IProps {
+  apartmentDetail: IApartmentRead;
+}
+
+export default function PayDetail({ apartmentDetail }: IProps) {
   const [numberEnteredHouse, setNumberEnteredHouse] = useState({
     adult: 2,
     young: 0,
@@ -50,22 +55,34 @@ export default function PayDetail() {
     "start-day" | "end-day" | "number-people"
   >();
 
+  const { currentUser } = useAppSelector((state) => state.user);
   const { start_date, end_date } = useAppSelector((state) => state.booking);
   const dispatch = useAppDispatch();
   const params = useParams();
 
   const handleBooking = async () => {
-    await createContract({
-      apartment_id: params.apartmentId as string,
-      user_id: "12d49e77-e8fc-4fce-814c-ccb130933cd0",
-      content: `12d49e77-e8fc-4fce-814c-ccb130933cd0 đặt phòng lúc ${handleConvertDate(
-        start_date
-      )} - ${handleConvertDate(end_date)}`,
-      end_date: end_date,
-      start_date: start_date,
-    });
+    if (!currentUser.id) {
+      alert("Hãy đăng nhập trước nhé");
+      return;
+    }
 
-    alert("Thành công")
+    try {
+      const { data } = await createContract({
+        apartment_id: params.apartmentId as string,
+        user_id: currentUser.id,
+        content: `${currentUser.id} đặt phòng lúc ${handleConvertDate(
+          start_date
+        )} - ${handleConvertDate(end_date)}`,
+        end_date: end_date,
+        start_date: start_date,
+      });
+
+      dispatch(setDates(data.data));
+
+      alert("Thành công");
+    } catch (error) {
+      alert("Thất bại rồi");
+    }
   };
 
   return (
@@ -74,7 +91,9 @@ export default function PayDetail() {
         <div className="p-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center">
-              <h4 className="text-3xl font-semibold text-primary">$147</h4>
+              <h4 className="text-3xl font-semibold text-primary">
+                ${apartmentDetail.price_per_day}
+              </h4>
               <span className="text-second text-xl">/đêm</span>
             </div>
 
@@ -85,7 +104,7 @@ export default function PayDetail() {
                 width={20}
                 height={20}
               />
-              <span>5,0</span>
+              <span>{apartmentDetail.rate}</span>
               <Image src="/dot.svg" alt="arrow_bottom" width={10} height={10} />
               <span className="text-second text-base">6 đánh giá</span>
             </div>

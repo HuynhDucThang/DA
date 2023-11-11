@@ -21,7 +21,14 @@ export interface IUser {
 export interface IApartmentCreate {
   name: string;
   desc: string;
-  banner: string;
+  room: string;
+  price_per_day: number;
+  num_bedrooms: number;
+  num_living_rooms: number;
+  num_bathrooms: number;
+  num_toilets: number;
+  rate: number;
+
 }
 
 export interface IApartmentRead {
@@ -31,12 +38,13 @@ export interface IApartmentRead {
   price_per_day: number;
   num_bedrooms: number;
   num_bathrooms: number;
+  num_living_rooms: number;
+  num_toilets: number;
   name: string;
   room: string;
   created_at: string;
   updated_at: string;
-  num_living_rooms: number;
-  num_toilets: number;
+  
   rate: number;
 }
 

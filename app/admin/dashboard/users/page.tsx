@@ -23,7 +23,7 @@ const UsersPage = async ({ searchParams }: any) => {
           <button className={styles.addButton}>Add New</button>
         </Link>
       </div>
-      <table className={styles.table}>
+      <table className={styles.table} style={{ marginTop: "1rem" }}>
         <thead>
           <tr>
             <td>Name</td>

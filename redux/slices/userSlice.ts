@@ -8,7 +8,11 @@ const initUser: IUser | null = {
   username: "",
   avatar: "",
   password: "",
-  phone: "",
+  phonenumber: "",
+  created_at: "",
+  isVerify: false,
+  updated_at: "",
+  verification_code: "",
 };
 
 const initialState = {
