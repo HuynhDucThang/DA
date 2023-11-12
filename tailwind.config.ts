@@ -19,6 +19,7 @@ const config: Config = {
         "c-border": "var(--color-border)",
         "c-grey": "var(--color-grey)",
         "c-grey-blur": "var(--grey-blur)",
+        "c-logo": "var(--color-logo)",
       },
       height: {
         "height-input": "var(--height-input)",

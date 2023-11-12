@@ -1,5 +1,6 @@
 import FooterDetail from "@/components/layouts/FooterDetail";
 import { Details, InforNeeded, OverView } from "@/components/pages/Detail";
+import Comment from "@/components/pages/Detail/Comment";
 import { IApartmentDetail } from "@/utils/interface";
 
 interface IProps {
@@ -30,6 +31,7 @@ export default async function ApartmentDetail({ params }: IProps) {
   const { data }: { data: IApartmentDetail } = await getApartmentById(
     params.apartmentId
   );
+  console.log("data : ", data);
 
   const { amenities, apartment_contract, apartment_tags, ...apartmentDetail } =
     data;
@@ -40,6 +42,9 @@ export default async function ApartmentDetail({ params }: IProps) {
       <OverView apartmentDetail={apartmentDetail} />
       {/* body */}
       <Details apartment={data} />
+
+      <Comment />
+
       {/* infor */}
       <InforNeeded />
       {/* footer */}

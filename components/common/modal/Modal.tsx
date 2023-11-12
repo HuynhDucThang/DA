@@ -36,7 +36,7 @@ export default function Modal({
               className="absolute top-3 left-3 hover:bg-c-border transition-colors rounded-full p-1 box-content"
               onClick={handleCloseModal}
             />
-            <p className="text-xl text-primary font-medium">{title}</p>
+            <p className="text-2xl text-primary font-semibold">{title}</p>
           </div>
         ) : null}
         <div className="p-4">{children}</div>
