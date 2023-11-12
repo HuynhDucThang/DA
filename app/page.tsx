@@ -13,7 +13,10 @@ interface IProps {
 
 async function getApartments(tagId: string) {
   const res = await fetch(
-    `http://127.0.0.1:8000/api/apartments/tag${tagId ? `?tag_id=${tagId}` : ""}`
+    `http://127.0.0.1:8000/api/apartments/tag${
+      tagId ? `?tag_id=${tagId}` : ""
+    }`,
+    { cache: "no-store" }
   );
   const data = await res.json();
 

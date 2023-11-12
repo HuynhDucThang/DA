@@ -34,7 +34,6 @@ export default function Details({ apartment }: IProps) {
         <NumbRoom />
         <Amenities amenities={amenities} />
         <TimeBooking />
-        <Comment />
       </div>
 
       <PayDetail  apartmentDetail={apartmentDetail} />
