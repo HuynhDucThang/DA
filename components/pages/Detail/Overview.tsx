@@ -6,7 +6,6 @@ interface IProps {
 }
 
 export default function OverView({ apartmentDetail }: IProps) {
-  
   return (
     <div className="mb-10">
       <div className="mb-2 flex gap-3">
@@ -57,16 +56,20 @@ export default function OverView({ apartmentDetail }: IProps) {
       {/* imges */}
       <div className="spacing_between_cpn_detail">
         <div className="grid grid-cols-4 w-full aspect-[3/1] gap-3">
-          {Array.from({ length: 5 }).map((_, index) => (
+          {apartmentDetail.images.map((imageApartment, index) => (
             <div
               className={`relative ${
                 index === 0
                   ? "col-[1/3] row-[1/3] rounded-l-xl"
                   : "odd:rounded-r-xl"
-              } object-cover cursor-pointer transition-all hover:opacity-90 overflow-hidden`}
+              } object-cover cursor-pointer transition-all hover:opacity-90 overflow-hidden shadow-md`}
               key={index}
             >
-              <Image src="/images/apartment.png" alt="" fill />
+              <Image
+                src={`http://127.0.0.1:8000/api/${imageApartment?.image_url}`}
+                alt={imageApartment.id}
+                fill
+              />
             </div>
           ))}
         </div>

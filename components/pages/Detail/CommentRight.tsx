@@ -1,5 +1,31 @@
+import { ratings } from "@/utils/constant";
+import { IStatisticalComment } from "@/utils/interface";
 import Image from "next/image";
-export default function CommentRight() {
+
+interface IProps {
+  statisticalComments: IStatisticalComment;
+  totalCommens: number;
+}
+
+export default function CommentRight({
+  statisticalComments,
+  totalCommens,
+}: IProps) {
+  const {
+    total_rate_amenities,
+    total_rate_location,
+    total_rate_price,
+    total_rate_interior,
+  } = statisticalComments;
+
+  const totalRating = Math.floor(
+    (total_rate_amenities +
+      total_rate_location +
+      total_rate_interior +
+      total_rate_price) /
+      4
+  );
+
   return (
     <div className="w-[35%] bg-white">
       <div className="sticky top-12">
@@ -11,9 +37,14 @@ export default function CommentRight() {
                 4.8
               </div>
               <div>
-                <h2 className="heading__detail_apartment">Tuyệt vời</h2>
+                <h2 className="heading__detail_apartment">
+                  {ratings[totalRating]}
+                </h2>
                 <div>
-                  <span>/5</span> <span>(3 đánh giá)</span>
+                  <span className="text-xl">/5</span>{" "}
+                  <span>
+                    ({totalCommens > 0 ? totalCommens : "Chưa có"} đánh giá)
+                  </span>
                 </div>
               </div>
             </div>
@@ -21,10 +52,10 @@ export default function CommentRight() {
             {/* rate */}
 
             <div className="mt-6">
-              <RateItem title="Vị trí" point={"4.0"} />
-              <RateItem title="Không gian" point={"3.0"} />
-              <RateItem title="Nội thất" point={"4.0"} />
-              <RateItem title="Giá cả" point={"2.0"} />
+              <RateItem title="Vị trí" point={total_rate_location} />
+              <RateItem title="Tiện Nghi" point={total_rate_amenities} />
+              <RateItem title="Nội thất" point={total_rate_interior} />
+              <RateItem title="Giá cả" point={total_rate_price} />
             </div>
           </div>
         </div>
@@ -41,7 +72,7 @@ export default function CommentRight() {
 
 interface IRateItem {
   title: string;
-  point: string;
+  point: number;
 }
 
 function RateItem({ title, point }: IRateItem) {

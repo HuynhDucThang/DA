@@ -79,3 +79,6 @@ export const deleteApartmentServer = async (apartmentId: FormDataEntryValue) =>
 // contract
 export const getContractsServer = async (query: string, page: number) =>
   await axiosServer.get(`/contracts/all`);
+
+export const getApartmentComments = async (apartmentId: string) =>
+  await axiosServer.get(`/apartmentComment/${apartmentId}`);
