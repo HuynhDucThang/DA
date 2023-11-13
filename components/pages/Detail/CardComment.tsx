@@ -1,13 +1,24 @@
+import { URL } from "@/utils/api";
+import { handleConvertDate } from "@/utils/helpers/common";
+import { IComment } from "@/utils/interface";
 import Image from "next/image";
 
-export default function CardComment() {
+interface IProps {
+  comment: IComment;
+}
+
+export default function CardComment({ comment }: IProps) {
   return (
     <div className="card flex gap-6">
       {/* avatar */}
       <div className="">
         <div className="w-20 h-20 relative">
           <Image
-            src="/avatar.png"
+            src={
+              comment.user?.avatar
+                ? `${URL}/${comment.user?.avatar}`
+                : "/avatar.png"
+            }
             alt="avatar"
             fill
             className="rounded-full shadow-md"
@@ -29,7 +40,7 @@ export default function CardComment() {
         <div className="flex items-center justify-between border-b border-c-border">
           <div className="pb-2">
             <h3 className="flex items-center text-primary text-xl gap-2">
-              Quỳnh Anh{" "}
+              {comment.user.username}
               <Image
                 src="/tick_blue.svg"
                 alt="tick icon"
@@ -37,10 +48,13 @@ export default function CardComment() {
                 height={16}
               />
             </h3>
-            <p className="text-second text-base">Đã đánh giá 2 năm trước</p>
+            <p className="text-second text-base">
+              Đánh giá vào khoảng{" "}
+              {handleConvertDate(new Date(comment.created_at))} trước
+            </p>
           </div>
           <div className="flex_center relative group text-white font-medium text-base w-10 h-10 rounded-full bg-c-logo">
-            5.0
+            {comment.total_rate}
             <div className="shadow_common z-10 absolute w-[230px] -top-[400%] left-0 p-6 transition-all hidden group-hover:block text-black bg-white rounded-md">
               <div>Vị trí</div>
               <div>Không gian</div>
@@ -53,6 +67,7 @@ export default function CardComment() {
         {/* body */}
         <div className="pt-4">
           <p className="text-lg">
+            {comment.text}
             🌸Xách ba lô lên và đi Đà Lạt, nhưng mà là Đà Lạt giữa lòng thủ đô
             ^^ ☕️Mình tình cờ biết về quán qua post của 1 bạn reviewer, thấy
             quán cũng xinh và hợp với đứa nghiện sống ảo như mình, nhưng đến tận

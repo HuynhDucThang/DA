@@ -28,7 +28,6 @@ export interface IApartmentCreate {
   num_bathrooms: number;
   num_toilets: number;
   rate: number;
-
 }
 
 export interface IApartmentRead {
@@ -44,8 +43,8 @@ export interface IApartmentRead {
   room: string;
   created_at: string;
   updated_at: string;
-  
   rate: number;
+  images: IImagesApartment[];
 }
 
 export interface IApartmentDetail extends IApartmentRead {
@@ -57,6 +56,13 @@ export interface IApartmentDetail extends IApartmentRead {
     apartment_id: string;
     tag: ITagRead;
   }[];
+}
+
+export interface IImagesApartment {
+  id: string;
+  apartment_id: string;
+  created_at: string;
+  image_url: string;
 }
 
 export interface IApartmentContract {
@@ -88,6 +94,8 @@ export interface IContractCreate {
   apartment_id: string;
   start_date: Date;
   end_date: Date;
+  total_amount: number;
+  num_of_people: number;
 }
 
 // amenity
@@ -101,4 +109,29 @@ export interface IAmenityRead {
   id: string;
   name: string;
   desc: string;
+}
+
+export interface IComment {
+  id: string;
+  created_at: string;
+  rate_location: number;
+  rate_interior: number;
+  user_id: string;
+  apartment_id: string;
+  text: string;
+  rate_amenities: number;
+  rate_price: number;
+  total_rate: number;
+  user: IUser;
+}
+
+export interface IStatisticalComment {
+  total_rate_location: number;
+  total_rate_price: number;
+  total_rate_amenities: number;
+  total_rate_interior: number;
+}
+
+export interface IApartmentComment extends IStatisticalComment {
+  comments: IComment[];
 }

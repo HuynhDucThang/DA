@@ -4,8 +4,13 @@ import Image from "next/image";
 import CardComment from "./CardComment";
 import Modal from "@/components/common/modal/Modal";
 import useModal from "@/utils/hook/useModal";
+import { IComment } from "@/utils/interface";
 
-export default function CommentLeft() {
+interface IProps {
+  comments: IComment[];
+}
+
+export default function CommentLeft({ comments }: IProps) {
   const { isOpen, closePopup, openPopup } = useModal();
 
   return (
@@ -46,9 +51,9 @@ export default function CommentLeft() {
         {/* comments */}
         <div className="p-4">
           <div className="border-t border-c-border grid grid-cols-1 gap-4 pt-4">
-            <CardComment />
-            <CardComment />
-            <CardComment />
+            {comments.length
+              ? comments.map((comment) => <CardComment key={comment.id} comment={comment} />)
+              : null}
           </div>
         </div>
       </div>

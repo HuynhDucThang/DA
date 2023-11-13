@@ -12,7 +12,7 @@ import { createContract } from "@/utils/proxy";
 
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 const dataNumberEnteredHouse = [
   {
@@ -44,10 +44,12 @@ interface IProps {
 }
 
 export default function PayDetail({ apartmentDetail }: IProps) {
-  const [numberEnteredHouse, setNumberEnteredHouse] = useState({
+  const [numberEnteredHouse, setNumberEnteredHouse] = useState<
+    Record<TYPE_ENTERD_HOUSE, number>
+  >({
     adult: 2,
     young: 0,
-    baby: 1,
+    baby: 0,
     pet: 0,
   });
 
@@ -59,6 +61,20 @@ export default function PayDetail({ apartmentDetail }: IProps) {
   const { start_date, end_date } = useAppSelector((state) => state.booking);
   const dispatch = useAppDispatch();
   const params = useParams();
+
+  const totalDay =
+    new Date(end_date).getDate() - new Date(start_date).getDate() ?? null;
+
+  const totalAmount = 45 + 30 + totalDay * apartmentDetail.price_per_day;
+
+  const totalPeople = useMemo(() => {
+    let total = 0;
+    for (const key in numberEnteredHouse) {
+      total += numberEnteredHouse[key as TYPE_ENTERD_HOUSE];
+    }
+
+    return total;
+  }, [numberEnteredHouse]);
 
   const handleBooking = async () => {
     if (!currentUser.id) {
@@ -75,20 +91,37 @@ export default function PayDetail({ apartmentDetail }: IProps) {
         )} - ${handleConvertDate(end_date)}`,
         end_date: end_date,
         start_date: start_date,
+        total_amount: totalAmount,
+        num_of_people: totalPeople,
       });
 
-      dispatch(setDates(data.data));
+      setNumberEnteredHouse({
+        adult: 2,
+        young: 0,
+        baby: 0,
+        pet: 0,
+      });
+      dispatch(setDates(data));
 
       alert("Thành công");
     } catch (error) {
+      console.log("error : ", error);
       alert("Thất bại rồi");
     }
   };
 
+  const handleAddPeople = (key: keyof typeof numberEnteredHouse) => {
+    setNumberEnteredHouse((pre) => ({ ...pre, [key]: pre[key] + 1 }));
+  };
+
+  const handleSubtractPeople = (key: keyof typeof numberEnteredHouse) => {
+    setNumberEnteredHouse((pre) => ({ ...pre, [key]: pre[key] - 1 }));
+  };
+
   return (
     <div className="w-[35%]">
-      <div className="w-full border rounded-lg shadow-[rgba(0,0,0,0.12)_0px_6px_16px] sticky top-12">
-        <div className="p-6">
+      <div className="w-full sticky top-12">
+        <div className="p-6 border rounded-lg shadow_common">
           <div className="flex justify-between items-center">
             <div className="flex items-center">
               <h4 className="text-3xl font-semibold text-primary">
@@ -168,27 +201,33 @@ export default function PayDetail({ apartmentDetail }: IProps) {
             </div>
             {/* bottom number people */}
             <div
-              className={`relative p-3 flex items-center justify-between  ${
+              className={`relative p-3  ${
                 typePopup === "number-people"
                   ? "border-[3px] border-primary rounded-lg"
                   : "border-t border-c-border"
               }`}
-              onClick={() =>
-                isOpen && typePopup === "number-people"
-                  ? closePopup()
-                  : openPopup("number-people")
-              }
             >
-              <div className="">
-                <p className="text_filter_apartment">Số khách</p>
-                <div className="text-second text-lg font-medium">2 Khách</div>
+              <div
+                className="flex items-center justify-between "
+                onClick={() =>
+                  isOpen && typePopup === "number-people"
+                    ? closePopup()
+                    : openPopup("number-people")
+                }
+              >
+                <div className="">
+                  <p className="text_filter_apartment">Số khách</p>
+                  <div className="text-second text-lg font-medium">
+                    {totalPeople} Khách
+                  </div>
+                </div>
+                <Image
+                  src="/arrow/arrow_bottom.svg"
+                  alt="arrow_bottom"
+                  width={24}
+                  height={24}
+                />
               </div>
-              <Image
-                src="/arrow/arrow_bottom.svg"
-                alt="arrow_bottom"
-                width={24}
-                height={24}
-              />
 
               <ModalAbs
                 isOpen={isOpen && typePopup === "number-people"}
@@ -207,13 +246,26 @@ export default function PayDetail({ apartmentDetail }: IProps) {
                       <p className="text_card_heading">{data.desc}</p>
                     </div>
                     <div className="flex gap-3">
-                      <div className="text-center p-3 rounded-full border border-c-border">
+                      <div
+                        className={`text-center p-3 rounded-full border border-c-border cursor-pointer ${
+                          numberEnteredHouse[data.key as TYPE_ENTERD_HOUSE] ===
+                            0 && "pointer-events-none opacity-40"
+                        }`}
+                        onClick={() =>
+                          handleSubtractPeople(data.key as TYPE_ENTERD_HOUSE)
+                        }
+                      >
                         -
                       </div>
                       <div className="text-center p-3 rounded-full border border-c-border">
                         {numberEnteredHouse[data.key as TYPE_ENTERD_HOUSE]}
                       </div>
-                      <div className="text-center p-3 rounded-full border border-c-border">
+                      <div
+                        className="text-center p-3 rounded-full border border-c-border cursor-pointer"
+                        onClick={() =>
+                          handleAddPeople(data.key as TYPE_ENTERD_HOUSE)
+                        }
+                      >
                         +
                       </div>
                     </div>
@@ -231,33 +283,52 @@ export default function PayDetail({ apartmentDetail }: IProps) {
           {/* buttun */}
           <BtnCommon title="Đặt phòng" handleClick={handleBooking} />
           {/* fee */}
-          <div className="py-6">
-            <div className="flex justify-between mt-2">
-              <p className="text-primary text-xl">Phí</p>
-              <p className="text-primary text-xl">Tổng</p>
-            </div>
-            <div className="flex justify-between mt-2">
-              <p className="text-primary text-lg underline">$178 x 2 đêm</p>
-              <p className="text-primary text-lg">$365</p>
-            </div>
-            <div className="flex justify-between mt-2">
-              <p className="text-primary text-lg underline">Phí vệ sinh</p>
-              <p className="text-primary text-lg">$45</p>
-            </div>
-            <div className="flex justify-between mt-2">
-              <p className="text-primary text-lg underline">
-                Phí dịch vụ Airbnb
-              </p>
-              <p className="text-primary text-lg">$30</p>
+          {!isNaN(totalDay) && totalDay > 0 ? (
+            <>
+              <div className="py-6">
+                <div className="flex justify-between mt-2">
+                  <p className="text-primary text-xl">Phí</p>
+                  <p className="text-primary text-xl">Tổng</p>
+                </div>
+                <div className="flex justify-between mt-2">
+                  <p className="text-primary text-lg underline">
+                    ${apartmentDetail.price_per_day} x {totalDay} đêm
+                  </p>
+                  <p className="text-primary text-lg">
+                    ${totalDay * apartmentDetail.price_per_day}
+                  </p>
+                </div>
+                <div className="flex justify-between mt-2">
+                  <p className="text-primary text-lg underline">Phí vệ sinh</p>
+                  <p className="text-primary text-lg">$30</p>
+                </div>
+                <div className="flex justify-between mt-2">
+                  <p className="text-primary text-lg underline">
+                    Phí dịch vụ Airbnb
+                  </p>
+                  <p className="text-primary text-lg">$45</p>
+                </div>
+              </div>
+
+              <div className="flex justify-between mt-2 pt-3 border-t-2 border-c-border">
+                <p className="text-primary text-xl">Tổng trước thuế</p>
+                <p className="text-primary text-xl">${totalAmount}</p>
+              </div>
+            </>
+          ) : null}
+        </div>
+
+        <div className="p-6 border rounded-lg shadow_common mt-8">
+          <div className="flex gap-6">
+            <p className="text-lg">
+              <span className="text-xl text-primary font-semibold">{`Giá tốt  `}</span>
+              . Những ngày bạn chọn có giá thấp hơn $56 so với mức giá trung
+              bình theo đêm trong 3 tháng qua.
+            </p>
+            <div className="relative w-[150px] aspect-[1/1]">
+              <Image src="/tag.svg" alt="tag icon" fill />
             </div>
           </div>
-
-          <div className="flex justify-between mt-2 pt-3 border-t-2 border-c-border">
-            <p className="text-primary text-xl">Tổng trước thuế</p>
-            <p className="text-primary text-xl">$424</p>
-          </div>
-
-          {/*  */}
         </div>
       </div>
     </div>

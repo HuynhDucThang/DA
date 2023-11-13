@@ -10,12 +10,13 @@ interface IProps {
 }
 
 export default function CardApartment({ apartment }: IProps) {
+  
   return (
     <Link href={`/apartment/${apartment.id}`} className="flex-[1_1_300px]">
       <div>
         <div className="w-full aspect-[1/1] relative rounded-2xl overflow-hidden mb-3">
           <Image
-            src={`http://127.0.0.1:8000/api/apartments/${apartment.room}/banner`}
+            src={`http://127.0.0.1:8000/api/${apartment.images?.[0]?.image_url}`}
             alt="banner apartment"
             fill
             className="object-cover"

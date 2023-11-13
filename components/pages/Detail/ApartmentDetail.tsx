@@ -36,7 +36,7 @@ export default function Details({ apartment }: IProps) {
         <TimeBooking />
       </div>
 
-      <PayDetail  apartmentDetail={apartmentDetail} />
+      <PayDetail apartmentDetail={apartmentDetail} />
     </div>
   );
 }

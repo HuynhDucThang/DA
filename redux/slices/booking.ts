@@ -24,10 +24,12 @@ const bookingSlice = createSlice({
       state,
       action: {
         type: string;
-        payload: IApartmentContract[];
+        payload: IApartmentContract;
       }
     ) => {
-      state.dates = [...state.dates, ...action.payload];
+      state.dates = [...state.dates, {...action.payload}];
+      state.end_date = new Date();
+      state.start_date = new Date();
     },
 
     setDateBooking: (
