@@ -7,6 +7,7 @@ import { getUsersServer } from "@/utils/proxyServer";
 import Image from "next/image";
 import Link from "next/link";
 import { handleConvertDate } from "@/utils/helpers/common";
+import { URL } from "@/utils/api";
 
 const UsersPage = async ({ searchParams }: any) => {
   const q = searchParams?.q || "";
@@ -28,9 +29,10 @@ const UsersPage = async ({ searchParams }: any) => {
           <tr>
             <td>Name</td>
             <td>Email</td>
+            <td>Phone number</td>
             <td>Created At</td>
+            <td>System role</td>
             <td>Role</td>
-            <td>Status</td>
             <td>Action</td>
           </tr>
         </thead>
@@ -40,7 +42,7 @@ const UsersPage = async ({ searchParams }: any) => {
               <td>
                 <div className={styles.user}>
                   <Image
-                    src={user.avatar || "/avatar.png"}
+                    src={`${URL}/${user.avatar}` || "/avatar.png"}
                     alt="avatar"
                     width={40}
                     height={40}
@@ -50,11 +52,10 @@ const UsersPage = async ({ searchParams }: any) => {
                 </div>
               </td>
               <td>{user.email}</td>
+              <td>{user.phonenumber}</td>
               <td>{handleConvertDate(new Date(user?.created_at))}</td>
-              {/*               <td>{user.isAdmin ? "Admin" : "Client"}</td> */}
+              <td>{user.system_role}</td>
               <td>{user.isVerify ? "Admin" : "Client"}</td>
-              {/*               <td>{user.isActive ? "active" : "passive"}</td> */}
-              <td>{user.isVerify ? "active" : "passive"}</td>
               <td>
                 <div className={styles.buttons}>
                   <Link

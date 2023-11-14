@@ -4,7 +4,7 @@ import BtnSubmit from "@/components/common/button/btnSubmit";
 import PhotoPreview from "@/components/pages/admin/dashboard/apartments/photoPreview";
 import styles from "@/components/pages/admin/dashboard/apartments/singleApartment.module.css";
 import { IApartmentCreate } from "@/utils/interface";
-import { createApartment } from "@/utils/proxy";
+import { createApartment, updateImagesApartment } from "@/utils/proxy";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -20,6 +20,7 @@ const SingleApartmentPage = () => {
     num_living_rooms: 0,
     num_toilets: 0,
     rate: 0,
+    total_people: 0,
   });
 
   const tag_ids = [
@@ -67,29 +68,32 @@ const SingleApartmentPage = () => {
   ) => {
     event.preventDefault();
 
-    if (images.length < 1) {
-      alert("Không có ảnh nào");
+    if (images.length < 3) {
+      alert(" phải nhiều hơn 3 ảnh");
       return;
     }
+
     const formData = new FormData();
 
     images.forEach((img) => {
-      formData.append("image", img);
-    });
-
-    amenities_ids.forEach((amenity) => {
-      formData.append("amenities", amenity);
-    });
-
-    tag_ids.forEach((tag) => {
-      formData.append("tag_ids", tag);
+      formData.append("images", img);
     });
 
     try {
-      await createApartment(apartmentCreate, formData);
+      const { data } = await createApartment(apartmentCreate, {
+        tag_ids,
+        amenities: amenities_ids,
+      });
+      console.log(data);
+
+      const res = await updateImagesApartment(data?.id, formData);
+
       alert("Thành công ");
       router.push("/admin/dashboard/apartments");
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+      alert("Lỗi không thể tạo căn hộ");
+    }
   };
 
   return (
@@ -109,7 +113,12 @@ const SingleApartmentPage = () => {
               />
             ))}
         </div>
-        <input type="file" multiple onChange={handleUploadFiles} />
+        <input
+          type="file"
+          accept=".png, .jpg"
+          multiple
+          onChange={handleUploadFiles}
+        />
       </div>
 
       {/* right */}
@@ -120,6 +129,7 @@ const SingleApartmentPage = () => {
             type="text"
             name="name"
             placeholder={"Entered Name"}
+            value={apartmentCreate.name}
             onChange={handleOnchange}
           />
           <label>Price per day</label>
@@ -127,6 +137,7 @@ const SingleApartmentPage = () => {
             type="number"
             name="price_per_day"
             placeholder={"Entered Name"}
+            value={apartmentCreate.price_per_day}
             onChange={handleOnchange}
           />
           {/* num_bedrooms */}
@@ -135,6 +146,7 @@ const SingleApartmentPage = () => {
             type="number"
             name="num_bedrooms"
             placeholder={"Entered num_bedrooms"}
+            value={apartmentCreate.num_bedrooms}
             onChange={handleOnchange}
           />
           {/* num_bathrooms */}
@@ -143,6 +155,7 @@ const SingleApartmentPage = () => {
             type="number"
             name="num_bathrooms"
             placeholder={"Entered num_bathrooms"}
+            value={apartmentCreate.num_bathrooms}
             onChange={handleOnchange}
           />
           {/* num_living_rooms */}
@@ -151,6 +164,15 @@ const SingleApartmentPage = () => {
             type="number"
             name="num_living_rooms"
             placeholder={"Entered num_living_rooms"}
+            value={apartmentCreate.num_living_rooms}
+            onChange={handleOnchange}
+          />
+          <label>total_people</label>
+          <input
+            type="number"
+            name="total_people"
+            placeholder={"Entered total_people"}
+            value={apartmentCreate.total_people}
             onChange={handleOnchange}
           />
           {/* desc */}
@@ -160,6 +182,7 @@ const SingleApartmentPage = () => {
             id="desc"
             rows={10}
             placeholder={"Entered description"}
+            value={apartmentCreate.desc}
             onChange={handleOnchange}
           ></textarea>
           <BtnSubmit value="Submit" />

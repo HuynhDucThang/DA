@@ -10,7 +10,6 @@ import { setDates } from "@/redux/slices/booking";
 import { useEffect } from "react";
 import TimeBooking from "./TimeBooking";
 import Amenities from "./Amenities";
-import Comment from "./Comment";
 
 interface IProps {
   apartment: IApartmentDetail;

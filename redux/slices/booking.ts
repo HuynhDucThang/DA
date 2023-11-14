@@ -20,16 +20,26 @@ const bookingSlice = createSlice({
   name: "booking",
   initialState: initialState,
   reducers: {
-    setDates: (
+    setDate: (
       state,
       action: {
         type: string;
         payload: IApartmentContract;
       }
     ) => {
-      state.dates = [...state.dates, {...action.payload}];
+      state.dates = [...state.dates, { ...action.payload }];
       state.end_date = new Date();
       state.start_date = new Date();
+    },
+
+    setDates: (
+      state,
+      action: {
+        type: string;
+        payload: IApartmentContract[];
+      }
+    ) => {
+      state.dates = action.payload;
     },
 
     setDateBooking: (
@@ -50,5 +60,6 @@ const bookingSlice = createSlice({
   },
 });
 
-export const { setDateBooking, removeDate, setDates } = bookingSlice.actions;
+export const { setDateBooking, removeDate, setDates, setDate } =
+  bookingSlice.actions;
 export default bookingSlice.reducer;

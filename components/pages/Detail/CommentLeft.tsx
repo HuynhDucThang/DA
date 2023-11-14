@@ -5,13 +5,61 @@ import CardComment from "./CardComment";
 import Modal from "@/components/common/modal/Modal";
 import useModal from "@/utils/hook/useModal";
 import { IComment } from "@/utils/interface";
+import Stars from "./comment/stars";
+import { useState } from "react";
+import { ratings as ratingsDefined } from "@/utils/constant";
+import { createApartmentComment } from "@/utils/proxy";
+import { useAppSelector } from "@/redux/hooks";
+import { useRouter } from "next/navigation";
+import { createApartmentCommentServer } from "@/utils/actions";
 
 interface IProps {
   comments: IComment[];
+  apartmentId: string;
 }
 
-export default function CommentLeft({ comments }: IProps) {
+export default function CommentLeft({ comments, apartmentId }: IProps) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { isOpen, closePopup, openPopup } = useModal();
+  const [ratings, setRatings] = useState({
+    rate_location: 5,
+    rate_amenities: 5,
+    rate_interior: 5,
+    rate_price: 5,
+  });
+  const [commentContent, setCommentContent] = useState({
+    title: "",
+    content: "",
+  });
+
+  const { currentUser } = useAppSelector((state) => state.user);
+
+  const handleUpdateRatings = (key: keyof typeof ratings, point: number) => {
+    setRatings((pre) => ({ ...pre, [key]: point }));
+  };
+
+  const handleOnRating = async () => {
+    if (!currentUser.id) {
+      alert("Bạn chưa đăng nhập");
+      return;
+    }
+    setIsLoading(true);
+
+    const res = await createApartmentCommentServer({
+      ...ratings,
+      text: `${commentContent.title} - ${commentContent.content}`,
+      apartment_id: apartmentId,
+      user_id: currentUser.id,
+    });
+
+    console.log("res: ", res);
+
+    setIsLoading(true);
+
+    if (res?.errMsg) {
+      alert(res?.errMsg);
+    }
+  };
 
   return (
     <>
@@ -52,7 +100,9 @@ export default function CommentLeft({ comments }: IProps) {
         <div className="p-4">
           <div className="border-t border-c-border grid grid-cols-1 gap-4 pt-4">
             {comments.length
-              ? comments.map((comment) => <CardComment key={comment.id} comment={comment} />)
+              ? comments.map((comment) => (
+                  <CardComment key={comment.id} comment={comment} />
+                ))
               : null}
           </div>
         </div>
@@ -65,29 +115,115 @@ export default function CommentLeft({ comments }: IProps) {
         title="Đánh giá Treeland - Coffee, Tea and More."
       >
         <div>
-          <h2>Xếp hạng của bạn</h2>
-          rate
+          <h2 className="sub_heading__detail_apartment">Xếp hạng của bạn</h2>
+          <div>
+            <div className="flex items-center justify-between px-6 mt-4">
+              <span className="block min-w-[100px] text-left text-lg text-primary">
+                Vị trí
+              </span>
+              <Stars
+                isEdit={true}
+                rating={ratings.rate_location}
+                handleOnChangeRating={(point: number) => {
+                  handleUpdateRatings("rate_location", point);
+                }}
+              />
+              <div className="max-w-[150px] w-full text-center px-3 py-2 bg-c-logo">
+                <span className="text-white font-medium text-lg">
+                  {ratingsDefined[Math.floor(ratings.rate_location)]}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between px-6 mt-4">
+              <span className="block min-w-[100px] text-left text-lg text-primary">
+                Nội Thất
+              </span>
+              <Stars
+                isEdit={true}
+                rating={ratings.rate_interior}
+                handleOnChangeRating={(point: number) => {
+                  handleUpdateRatings("rate_interior", point);
+                }}
+              />
+              <div className="max-w-[150px] w-full text-center px-3 py-2 bg-c-logo">
+                <span className="text-white font-medium text-lg">
+                  {ratingsDefined[Math.floor(ratings.rate_interior)]}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between px-6 mt-4">
+              <span className="block min-w-[100px] text-left text-lg text-primary">
+                Tiện nghi
+              </span>
+              <Stars
+                isEdit={true}
+                rating={ratings.rate_amenities}
+                handleOnChangeRating={(point: number) => {
+                  handleUpdateRatings("rate_amenities", point);
+                }}
+              />
+              <div className="max-w-[150px] w-full text-center px-3 py-2 bg-c-logo">
+                <span className="text-white font-medium text-lg">
+                  {ratingsDefined[Math.floor(ratings.rate_amenities)]}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between px-6 mt-4">
+              <span className="block min-w-[100px] text-left text-lg text-primary">
+                Giá cả
+              </span>
+              <Stars
+                isEdit={true}
+                rating={ratings.rate_price}
+                handleOnChangeRating={(point: number) => {
+                  handleUpdateRatings("rate_price", point);
+                }}
+              />
+              <div className="max-w-[150px] w-full text-center px-3 py-2 bg-c-logo">
+                <span className="text-white font-medium text-lg">
+                  {ratingsDefined[Math.floor(ratings.rate_price)]}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <form>
+        <form className="mt-6">
           <div className="flex flex-col gap-2 pb-4">
-            <h2>Đánh giá của bạn</h2>
+            <h2 className="sub_heading__detail_apartment">Đánh giá của bạn</h2>
             <input
               type="text"
               placeholder="Nhập tiêu đề đánh giá"
-              className="border border-c-border"
+              className="border border-c-grey hover:border-c-logo transition shadow-md p-3 rounded-lg outline-none"
+              value={commentContent.title}
+              onChange={(e) =>
+                setCommentContent((pre) => ({ ...pre, title: e.target.value }))
+              }
             />
             <textarea
               name=""
               id=""
               rows={5}
-              className="border border-c-border"
+              className="border border-c-grey hover:border-c-logo transition shadow-md p-3 rounded-lg mt-2 outline-none resize-none min-h-[120px] max-h[220px] overflow-y-hidden"
               placeholder="Nội dung đánh giá"
+              value={commentContent.content}
+              onChange={(e) =>
+                setCommentContent((pre) => ({
+                  ...pre,
+                  content: e.target.value,
+                }))
+              }
             ></textarea>
           </div>
 
-          <div className="border-t border-c-border pt-4 text-right">
-            <button className="text-white bg-c-logo py-2 px-3 rounded-lg text-lg font-semibold">
+          <div className="border-t border-c-grey pt-4 text-right">
+            <button
+              className="text-white bg-c-logo py-2 px-3 rounded-lg text-lg font-semibold"
+              onClick={handleOnRating}
+            >
               Viết đánh giá
             </button>
           </div>

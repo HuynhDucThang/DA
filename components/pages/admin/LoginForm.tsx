@@ -9,7 +9,7 @@ const LoginForm = () => {
   const [state, formAction] = useFormState(loginAdmin, undefined);
   const router = useRouter();
 
-  if (state === "Success") router.push("/admin/dashboard/users");
+  if (state === "Success") router.push("/admin/dashboard");
 
   return (
     <form action={formAction} className={styles.form}>

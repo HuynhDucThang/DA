@@ -2,6 +2,7 @@ import { URL } from "@/utils/api";
 import { handleConvertDate } from "@/utils/helpers/common";
 import { IComment } from "@/utils/interface";
 import Image from "next/image";
+import Stars from "./comment/stars";
 
 interface IProps {
   comment: IComment;
@@ -55,11 +56,39 @@ export default function CardComment({ comment }: IProps) {
           </div>
           <div className="flex_center relative group text-white font-medium text-base w-10 h-10 rounded-full bg-c-logo">
             {comment.total_rate}
-            <div className="shadow_common z-10 absolute w-[230px] -top-[400%] left-0 p-6 transition-all hidden group-hover:block text-black bg-white rounded-md">
-              <div>Vị trí</div>
-              <div>Không gian</div>
-              <div>Nội thất</div>
-              <div>Giá cả</div>
+            <div className="shadow_common z-10 absolute w-[300px] -top-[400%] left-0 p-6 transition-all hidden group-hover:block text-black bg-white rounded-md">
+              <div className="flex items-center gap-4">
+                <span className="flex-[0_1_100px]">Vị trí</span>
+                <Stars
+                  rating={comment.rate_location}
+                  commonStyles="gap-1"
+                  stylesStar="w-6 h-6"
+                />
+              </div>
+              <div className="flex items-center gap-4 mt-2">
+                <span className="flex-[0_1_100px]">Tiện nghi</span>
+                <Stars
+                  rating={comment.rate_amenities}
+                  commonStyles="gap-1"
+                  stylesStar="w-6 h-6"
+                />
+              </div>
+              <div className="flex items-center gap-4 mt-2">
+                <span className="flex-[0_1_100px]">Nội thất</span>
+                <Stars
+                  rating={comment.rate_interior}
+                  commonStyles="gap-1"
+                  stylesStar="w-6 h-6"
+                />
+              </div>
+              <div className="flex items-center gap-4 mt-2">
+                <span className="flex-[0_1_100px]">Giá cả</span>
+                <Stars
+                  rating={comment.rate_price}
+                  commonStyles="gap-1"
+                  stylesStar="w-6 h-6"
+                />
+              </div>
             </div>
           </div>
         </div>
