@@ -10,6 +10,14 @@ export const userLoginServer = async (
     password,
   });
 
+export const uploadAvatarUser = async (userId: string, formData: FormData) => {
+  return await axiosServer.patch(`/users/update_avatar/${userId}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
 export const getUserServer = async () => {
   const access_token = cookies().get("access_token")?.value;
 
@@ -42,22 +50,21 @@ export const getUserByIdServer = async (userId: string) => {
 export const updateUserById = async (
   userId: FormDataEntryValue,
   body: FormDataEntryValue
-) =>
-  await axiosServer.patch(`/users/${userId}`, {
-    body,
-  });
+) => await axiosServer.patch(`/users/update_user/${userId}`, body);
 
 export const userSignUp = async (
   email: FormDataEntryValue,
   password: FormDataEntryValue,
   username: FormDataEntryValue,
-  phonenumber: FormDataEntryValue
+  phonenumber: FormDataEntryValue,
+  system_role: FormDataEntryValue
 ) =>
   await axiosServer.post("/users/sign_up", {
     username,
     phonenumber,
     email,
     password,
+    system_role,
   });
 
 export const getApartmentDetailServer = async (apartmentId: string) => {

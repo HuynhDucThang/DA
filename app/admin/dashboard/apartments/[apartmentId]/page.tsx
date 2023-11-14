@@ -1,3 +1,4 @@
+import PhotoPreview from "@/components/pages/admin/dashboard/apartments/photoPreview";
 import styles from "@/components/pages/admin/dashboard/apartments/singleApartment.module.css";
 import { updateApartmentAction } from "@/utils/actions";
 import { URL } from "@/utils/api";
@@ -15,7 +16,19 @@ const SingleApartmentPage = async ({ params }: any) => {
     <div className={styles.container}>
       <div className={styles.infoContainer}>
         <div className={styles.imgContainer}>
-          <Image src={`${URL}${apartment.img_room}`} alt="" fill />
+          <Image
+            src={`${URL}/${apartment?.images?.[0]?.image_url}`}
+            alt=""
+            fill
+          />
+        </div>
+        <div className="flex">
+          {apartment.images.length &&
+            apartment.images
+              .slice(1, 6)
+              .map((img, index) => (
+                <PhotoPreview key={index} url={`${URL}/${img?.image_url}`} />
+              ))}
         </div>
       </div>
       <div className={styles.formContainer}>
@@ -55,6 +68,12 @@ const SingleApartmentPage = async ({ params }: any) => {
             type="number"
             name="num_toilets"
             placeholder={`${apartment.num_toilets}`}
+          />
+          <label>total_people</label>
+          <input
+            type="number"
+            name="total_people"
+            placeholder={`${apartment.total_people}`}
           />
           {/* desc */}
           <label>Description</label>

@@ -4,7 +4,7 @@ import { BtnCommon } from "@/components/common";
 import RangeCalendar from "@/components/common/calendar/rangeCalendar";
 import ModalAbs from "@/components/common/modal/ModalAbs";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { removeDate, setDates } from "@/redux/slices/booking";
+import { removeDate, setDate } from "@/redux/slices/booking";
 import { handleConvertDate } from "@/utils/helpers/common";
 import useModal from "@/utils/hook/useModal";
 import { IApartmentRead } from "@/utils/interface";
@@ -101,7 +101,7 @@ export default function PayDetail({ apartmentDetail }: IProps) {
         baby: 0,
         pet: 0,
       });
-      dispatch(setDates(data));
+      dispatch(setDate(data));
 
       alert("Thành công");
     } catch (error) {

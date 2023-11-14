@@ -1,6 +1,13 @@
-import { axiosAuth, axiosAuthCookieMultiData, axiosNonAuth, axiosServer } from "./api";
+import axios from "axios";
+import {
+  axiosAuth,
+  axiosAuthCookieMultiData,
+  axiosNonAuth,
+  axiosServer,
+} from "./api";
 import {
   IAmenityCreate,
+  IApartCommentCreate,
   IApartmentCreate,
   IContractCreate,
   ITagCreate,
@@ -55,7 +62,7 @@ export const getApartmentDetail = async (apartmentId: string) =>
 
 export const createApartment = async (
   apartment: IApartmentCreate,
-  formData: FormData
+  formData: any
 ) => {
   const params = new URLSearchParams();
   params.set("name", `${apartment.name}`);
@@ -66,15 +73,25 @@ export const createApartment = async (
   params.set("num_living_rooms", `${apartment.num_living_rooms}`);
   params.set("num_bathrooms", `${apartment.num_bathrooms}`);
   params.set("num_toilets", `${apartment.num_toilets}`);
+  params.set("total_people", `${apartment.total_people}`);
   params.set("rate", `0`);
 
-  return await axiosAuthCookieMultiData.post(`/apartments?${params.toString()}`, formData);
+  return await axiosAuth.post(
+    `/apartments?${params.toString()}`,
+    formData
+  );
 };
 
 export const updateApartment = async (
   apartmentId: string,
   apartment: IApartmentCreate
 ) => await axiosServer.patch(`/apartments/${apartmentId}`, apartment);
+
+export const updateImagesApartment = async (
+  apartmentId: string,
+  formData: FormData
+) => await axiosAuthCookieMultiData.patch(`/apartments/upload/${apartmentId}`, formData);
+
 
 export const deleteApartment = async (apartmentId: string) =>
   await axiosAuth.delete(`/apartments/${apartmentId}`);
@@ -125,3 +142,8 @@ export const updateAmenity = async (
 
 export const deleteAmenity = async (AmenityId: string) =>
   await axiosAuth.delete(`/amenities/${AmenityId}`);
+
+// comment
+
+export const createApartmentComment = async (comment: IApartCommentCreate) =>
+  await axiosServer.post("/apartmentComment", comment);

@@ -27,6 +27,7 @@ export interface IApartmentCreate {
   num_living_rooms: number;
   num_bathrooms: number;
   num_toilets: number;
+  total_people: number;
   rate: number;
 }
 
@@ -44,6 +45,7 @@ export interface IApartmentRead {
   created_at: string;
   updated_at: string;
   rate: number;
+  total_people: number;
   images: IImagesApartment[];
 }
 
@@ -109,6 +111,17 @@ export interface IAmenityRead {
   id: string;
   name: string;
   desc: string;
+}
+
+//
+export interface IApartCommentCreate {
+  user_id: string;
+  apartment_id: string;
+  text: string;
+  rate_location: number;
+  rate_interior: number;
+  rate_amenities: number;
+  rate_price: number;
 }
 
 export interface IComment {

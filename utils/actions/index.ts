@@ -7,11 +7,12 @@ import {
   deleteApartmentServer,
   deleteUserServer,
   updateUserById,
+  uploadAvatarUser,
   userLoginServer,
   userSignUp,
 } from "../proxyServer";
-import { updateApartment } from "../proxy";
-import { IApartmentCreate } from "../interface";
+import { createApartmentComment, updateApartment } from "../proxy";
+import { IApartCommentCreate, IApartmentCreate } from "../interface";
 
 export const loginAdmin = async (prevState: any, formData: FormData) => {
   const { email, password } = Object.fromEntries(formData);
@@ -48,18 +49,16 @@ export const deleteUser = async (formData: FormData) => {
 };
 
 export const updateUser = async (formData: FormData) => {
-  const { id, username, email, password, phone, address, isAdmin, isActive } =
+  const { id, username, email, password, phone, system_role } =
     Object.fromEntries(formData);
 
   try {
     const updateFields: any = {
       username,
       email,
-      password,
+      // password,
       phone,
-      address,
-      isAdmin,
-      isActive,
+      system_role,
     };
 
     Object.keys(updateFields).forEach(
@@ -68,24 +67,24 @@ export const updateUser = async (formData: FormData) => {
     );
 
     await updateUserById(id, updateFields);
+    revalidatePath(`/admin/dashboard/users/[userId]`, "page");
   } catch (err: any) {
     console.log(err);
     throw new Error("Failed to update user!");
   }
 
-  revalidatePath(`/admin/dashboard/users/${id}`);
   // redirect("/admin/dashboard/users");
 };
 
-export const addUser = async (formData: FormData) => {
-  const { username, email, password, phone, address, isAdmin, isActive } =
+export const addUser = async (prevState: any, formData: FormData) => {
+  const { username, email, password, phonenumber, system_role } =
     Object.fromEntries(formData);
 
   try {
-    await userSignUp(email, password, username, phone);
+    await userSignUp(email, password, username, phonenumber, system_role);
   } catch (err) {
     console.log(err);
-    throw new Error("Failed to create user!");
+    return "Không thể tạo người dùng";
   }
 
   // revalidatePath("/admin/dashboard/users");
@@ -140,7 +139,7 @@ export const updateApartmentAction = async (formData: FormData) => {
     num_living_rooms,
     num_toilets,
     price_per_day,
-    room,
+    total_people,
   } = Object.fromEntries(formData);
 
   const apartmentId = id as string;
@@ -154,6 +153,7 @@ export const updateApartmentAction = async (formData: FormData) => {
     num_living_rooms,
     num_toilets,
     price_per_day,
+    total_people,
   };
 
   Object.keys(updateFields).forEach(
@@ -167,8 +167,8 @@ export const updateApartmentAction = async (formData: FormData) => {
     throw new Error("Failed to create user!");
   }
 
-  revalidatePath(`/admin/dashboard/apartments/[apartmentId]`);
-  // redirect("/admin/dashboard/apartments");
+  revalidatePath(`/admin/dashboard/apartments/[apartmentId]`, "page");
+  redirect("/admin/dashboard/apartments");
 };
 
 export const deleteApartment = async (formData: FormData) => {
@@ -182,4 +182,32 @@ export const deleteApartment = async (formData: FormData) => {
   }
 
   revalidatePath("/admin/dashboard/apartments");
+};
+
+export const updateAvatarUserAction = async (
+  userId: string,
+  formData: FormData
+) => {
+  try {
+    await uploadAvatarUser(userId, formData);
+    revalidatePath(`/admin/dashboard/users`);
+    redirect(`/admin/dashboard/users`);
+  } catch (error: any) {
+    return { errMsg: error.message };
+  }
+};
+
+export const createApartmentCommentServer = async (
+  apartmentComment: IApartCommentCreate
+) => {
+  try {
+    /*
+        const user = await getUserServer()
+        throw new Error("Unauthorization")
+      */
+    await createApartmentComment(apartmentComment);
+    revalidatePath(`/apartment/[apartmentId]`, "page");
+  } catch (error: any) {
+    return { errMsg: error.message };
+  }
 };

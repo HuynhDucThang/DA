@@ -2,7 +2,7 @@ import Image from "next/image";
 
 interface IProps {
   url: string;
-  onDelete: () => void;
+  onDelete?: () => void;
 }
 
 export default function PhotoPreview({ url, onDelete }: IProps) {
