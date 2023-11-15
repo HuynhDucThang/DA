@@ -5,6 +5,7 @@ import RangeCalendar from "@/components/common/calendar/rangeCalendar";
 import ModalAbs from "@/components/common/modal/ModalAbs";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { removeDate, setDate } from "@/redux/slices/booking";
+import { setModalType } from "@/redux/slices/modalSlice";
 import { handleConvertDate } from "@/utils/helpers/common";
 import useModal from "@/utils/hook/useModal";
 import { IApartmentRead } from "@/utils/interface";
@@ -63,7 +64,9 @@ export default function PayDetail({ apartmentDetail }: IProps) {
   const params = useParams();
 
   const totalDay =
-    new Date(end_date).getDate() - new Date(start_date).getDate() ?? null;
+    end_date && start_date
+      ? new Date(end_date).getDate() - new Date(start_date).getDate() ?? null
+      : 0;
 
   const totalAmount = 45 + 30 + totalDay * apartmentDetail.price_per_day;
 
@@ -79,6 +82,12 @@ export default function PayDetail({ apartmentDetail }: IProps) {
   const handleBooking = async () => {
     if (!currentUser.id) {
       alert("Hãy đăng nhập trước nhé");
+      dispatch(setModalType("LOGIN"));
+      return;
+    }
+
+    if (!start_date || !end_date) {
+      alert("Hãy chọn ngày đặt lịch");
       return;
     }
 
@@ -120,7 +129,7 @@ export default function PayDetail({ apartmentDetail }: IProps) {
 
   return (
     <div className="w-[35%]">
-      <div className="w-full sticky top-12">
+      <div className="w-full sticky top-[15%]">
         <div className="p-6 border rounded-lg shadow_common">
           <div className="flex justify-between items-center">
             <div className="flex items-center">
@@ -156,9 +165,7 @@ export default function PayDetail({ apartmentDetail }: IProps) {
               >
                 <p className="text_filter_apartment">Nhận phòng</p>
                 <div className="text-second text-lg font-medium">
-                  {new Date() !== new Date(start_date)
-                    ? handleConvertDate(start_date)
-                    : "Chọn Ngày"}
+                  {start_date ? handleConvertDate(start_date) : "Chọn Ngày"}
                 </div>
               </div>
               <div
@@ -171,9 +178,7 @@ export default function PayDetail({ apartmentDetail }: IProps) {
               >
                 <p className="text_filter_apartment">Trả phòng</p>
                 <div className="text-second text-lg font-medium">
-                  {new Date() !== new Date(end_date)
-                    ? handleConvertDate(end_date)
-                    : "Chọn Ngày"}
+                  {end_date ? handleConvertDate(end_date) : "Chọn Ngày"}
                 </div>
               </div>
 

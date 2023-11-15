@@ -9,6 +9,7 @@
 
   --header-height: 96px;
   --height-input: 48px;
+  --color-red: #e03;
   --color-logo: #ff385c;
   --text-color-primary: #222222;
   --text-color-second: #717171;
@@ -83,7 +84,7 @@ body {
   }
 
   .spacing_between_cpn_detail {
-    @apply py-pd-spacing-cpn border-b-2 border-c-border;
+    @apply py-pd-spacing-cpn border-b-2 border-c-grey;
   }
 
   .heading__detail_apartment {
@@ -93,5 +94,4 @@ body {
   .sub_heading__detail_apartment {
     @apply text-primary text-xl mb-2;
   }
-  /* ... */
 }

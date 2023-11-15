@@ -2,8 +2,8 @@ import { IApartmentContract } from "@/utils/interface";
 import { createSlice } from "@reduxjs/toolkit";
 
 interface ISetBooking {
-  start_date: Date;
-  end_date: Date;
+  start_date: Date | null;
+  end_date: Date | null;
 }
 
 interface IInitstates extends ISetBooking {
@@ -11,8 +11,8 @@ interface IInitstates extends ISetBooking {
 }
 
 const initialState: IInitstates = {
-  start_date: new Date(),
-  end_date: new Date(),
+  start_date: null,
+  end_date: null,
   dates: [],
 };
 

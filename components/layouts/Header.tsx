@@ -6,6 +6,7 @@ import FilterHeader from "./Header/FilterHeader";
 import HeaderUserInfor from "./Header/UserHeaderInfor";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { getCurrentUserPending } from "@/redux/slices/userSlice";
+import Link from "next/link";
 
 export default function Header() {
   const { access_token } = useAppSelector((state) => state.auth);
@@ -18,12 +19,16 @@ export default function Header() {
   }, [access_token]);
 
   return (
-    <div className="px-[var(--padding-main)] border-b-2 flex items-center justify-between">
+    <div className="sticky top-0 z-[10000] bg-white shadow px-[var(--padding-main)] border-b-2 flex items-center justify-between">
       <div className="flex items-center h-[var(--header-height)] flex-1">
         {/* logo */}
-        <div className="relative w-[102px] h-[32px]">
+        <Link
+          href={"/"}
+          prefetch={false}
+          className="relative w-[102px] h-[32px]"
+        >
           <Image src="/images/logo.png" alt="logo" fill />
-        </div>
+        </Link>
       </div>
 
       {/* search */}

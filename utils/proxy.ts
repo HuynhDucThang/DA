@@ -39,6 +39,7 @@ export const userSignUp = async (
     phonenumber,
     email,
     password,
+    system_role: "RENTER",
   });
 
 export const userRefreshToken = async (refresh_token: string) =>
@@ -76,10 +77,7 @@ export const createApartment = async (
   params.set("total_people", `${apartment.total_people}`);
   params.set("rate", `0`);
 
-  return await axiosAuth.post(
-    `/apartments?${params.toString()}`,
-    formData
-  );
+  return await axiosAuth.post(`/apartments?${params.toString()}`, formData);
 };
 
 export const updateApartment = async (
@@ -90,8 +88,11 @@ export const updateApartment = async (
 export const updateImagesApartment = async (
   apartmentId: string,
   formData: FormData
-) => await axiosAuthCookieMultiData.patch(`/apartments/upload/${apartmentId}`, formData);
-
+) =>
+  await axiosAuthCookieMultiData.patch(
+    `/apartments/upload/${apartmentId}`,
+    formData
+  );
 
 export const deleteApartment = async (apartmentId: string) =>
   await axiosAuth.delete(`/apartments/${apartmentId}`);

@@ -2,6 +2,7 @@ import FooterDetail from "@/components/layouts/FooterDetail";
 import { Details, InforNeeded, OverView } from "@/components/pages/Detail";
 import Comment from "@/components/pages/Detail/Comment";
 import { IApartmentDetail } from "@/utils/interface";
+import { getApartmentComments } from "@/utils/proxyServer";
 
 interface IProps {
   searchParams: {
@@ -28,22 +29,28 @@ async function getApartmentById(apartmentId: string) {
 }
 
 export default async function ApartmentDetail({ params }: IProps) {
-  const { data }: { data: IApartmentDetail } = await getApartmentById(
-    params.apartmentId
-  );
+  const getApartment = getApartmentById(params.apartmentId);
+  const getComment = getApartmentComments(params.apartmentId);
+
+  const [apartmentData, commentData] = await Promise.all([
+    getApartment,
+    getComment,
+  ]);
 
   const { amenities, apartment_contract, apartment_tags, ...apartmentDetail } =
-    data;
-
+    apartmentData.data as IApartmentDetail;
 
   return (
     <div className="px-pd-detail pt-10">
       {/* heading */}
-      <OverView apartmentDetail={apartmentDetail} />
+      <OverView apartmentDetail={apartmentDetail} totalComment={commentData.data.data.comments.length} />
       {/* body */}
-      <Details apartment={data} />
+      <Details apartment={apartmentData.data} />
 
-      <Comment apartmentId ={params.apartmentId} />
+      <Comment
+        apartmentId={params.apartmentId}
+        commentApartment={commentData.data.data}
+      />
 
       {/* infor */}
       <InforNeeded />

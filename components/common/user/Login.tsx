@@ -3,16 +3,21 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { BtnCommon, InputField } from "..";
-import { RootState } from "@/redux/store";
 import { userLoginPending } from "@/redux/slices/authSlice";
+import { removeModalType } from "@/redux/slices/modalSlice";
 
 export default function Login() {
+  const { access_token } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
+
+  if (access_token) {
+    dispatch(removeModalType());
+  }
 
   const handleSubmit = async () => {
     dispatch(userLoginPending(user));
