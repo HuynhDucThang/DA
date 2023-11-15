@@ -9,9 +9,10 @@ import Stars from "./comment/stars";
 import { useState } from "react";
 import { ratings as ratingsDefined } from "@/utils/constant";
 import { createApartmentComment } from "@/utils/proxy";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useRouter } from "next/navigation";
 import { createApartmentCommentServer } from "@/utils/actions";
+import { setModalType } from "@/redux/slices/modalSlice";
 
 interface IProps {
   comments: IComment[];
@@ -31,7 +32,7 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
     title: "",
     content: "",
   });
-
+  const dispatch = useAppDispatch();
   const { currentUser } = useAppSelector((state) => state.user);
 
   const handleUpdateRatings = (key: keyof typeof ratings, point: number) => {
@@ -40,9 +41,11 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
 
   const handleOnRating = async () => {
     if (!currentUser.id) {
-      alert("Bạn chưa đăng nhập");
+      alert("Hãy đăng nhập trước nhé");
+      dispatch(setModalType("LOGIN"));
       return;
     }
+    
     setIsLoading(true);
 
     const res = await createApartmentCommentServer({
@@ -99,11 +102,15 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
         {/* comments */}
         <div className="p-4">
           <div className="border-t border-c-border grid grid-cols-1 gap-4 pt-4">
-            {comments.length
-              ? comments.map((comment) => (
-                  <CardComment key={comment.id} comment={comment} />
-                ))
-              : null}
+            {comments.length ? (
+              comments.map((comment) => (
+                <CardComment key={comment.id} comment={comment} />
+              ))
+            ) : (
+              <div className="text-primary text-2xl font-medium text-center p-8">
+                Hãy là người viết bài review đầu tiên.
+              </div>
+            )}
           </div>
         </div>
       </div>

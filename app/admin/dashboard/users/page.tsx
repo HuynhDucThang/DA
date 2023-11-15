@@ -42,7 +42,11 @@ const UsersPage = async ({ searchParams }: any) => {
               <td>
                 <div className={styles.user}>
                   <Image
-                    src={`${URL}/${user.avatar}` || "/avatar.png"}
+                    src={
+                      user.avatar
+                        ? `${URL}/${user.avatar}`
+                        : "/avatar_none_user.svg"
+                    }
                     alt="avatar"
                     width={40}
                     height={40}

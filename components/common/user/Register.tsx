@@ -3,9 +3,10 @@
 import { BtnCommon, InputField } from "..";
 import { useState } from "react";
 import { userSignUp } from "@/utils/proxy";
+import { useAppDispatch } from "@/redux/hooks";
+import { removeModalType, setModalType } from "@/redux/slices/modalSlice";
 
 export default function Register() {
-
   const [user, setUser] = useState({
     email: "",
     username: "",
@@ -14,15 +15,23 @@ export default function Register() {
     confirm_password: "",
   });
 
+  const dispatch = useAppDispatch();
+
   const handleSubmit = async () => {
     try {
       const { confirm_password, email, password, username, phonenumber } = user;
-      if(password !== confirm_password) {
-        alert("Xác nhận lại mật khẩu không chính xác")
+      if (password !== confirm_password) {
+        alert("Xác nhận lại mật khẩu không chính xác");
         return;
       }
       await userSignUp(email, password, username, phonenumber);
-    } catch (error: any) {}
+      alert("Đăng ký thành công");
+
+      dispatch(removeModalType());
+      dispatch(setModalType("LOGIN"));
+    } catch (error: any) {
+      alert("Đăng ký không thành công");
+    }
   };
 
   const handleOnChange = (value: string, name: string) => {

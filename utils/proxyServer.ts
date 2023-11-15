@@ -89,3 +89,6 @@ export const getContractsServer = async (query: string, page: number) =>
 
 export const getApartmentComments = async (apartmentId: string) =>
   await axiosServer.get(`/apartmentComment/${apartmentId}`);
+
+export const getTagsFilterServer = async () =>
+  await axiosServer.get(`/tags/all`);

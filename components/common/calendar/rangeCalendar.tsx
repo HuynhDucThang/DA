@@ -43,7 +43,7 @@ export default function RangeCalendar({}: IProps) {
 
     const threeDaysLater = new Date(startDate);
     threeDaysLater.setDate(startDate.getDate() + 2);
-    
+
     const start_date = startDate > endDate ? endDate : startDate;
     const end_date = endDate < startDate ? startDate : endDate;
 
@@ -60,8 +60,8 @@ export default function RangeCalendar({}: IProps) {
       <DateRange
         ranges={[
           {
-            startDate: start_date,
-            endDate: end_date,
+            startDate: start_date ?? new Date(),
+            endDate: end_date ?? new Date(),
             key: "selection123",
           },
         ]}

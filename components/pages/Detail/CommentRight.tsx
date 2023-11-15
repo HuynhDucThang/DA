@@ -28,13 +28,13 @@ export default function CommentRight({
 
   return (
     <div className="w-[35%] bg-white">
-      <div className="sticky top-12">
+      <div className="sticky top-[15%]">
         <div className="w-full border shadow_common rounded-xl">
           <div className="p-4 ">
             {/* title */}
             <div className="flex_center gap-2">
               <div className="bg-c-logo p-2 rounded-xl text-4xl font-semibold text-white">
-                4.8
+                {totalRating}
               </div>
               <div>
                 <h2 className="heading__detail_apartment">
@@ -61,7 +61,7 @@ export default function CommentRight({
         </div>
 
         <div className="mt-4 p-4 shadow_common">
-          <div className="relative w-full aspect-[1/1]">
+          <div className="relative w-full aspect-[2/1]">
             <Image src="/vutru.png" alt="vu tru image" fill />
           </div>
         </div>

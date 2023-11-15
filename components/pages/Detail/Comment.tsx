@@ -4,12 +4,15 @@ import CommentRight from "./CommentRight";
 import { IApartmentComment } from "@/utils/interface";
 
 interface IProps {
+  commentApartment: IApartmentComment;
   apartmentId: string;
 }
 
-export default async function Comment({ apartmentId }: IProps) {
-  const { data } = await getApartmentComments(apartmentId);
-  const { comments, ...statisticalComments } = data.data as IApartmentComment;
+export default async function Comment({
+  commentApartment,
+  apartmentId,
+}: IProps) {
+  const { comments, ...statisticalComments } = commentApartment;
 
   return (
     <div className="spacing_between_cpn_detail">

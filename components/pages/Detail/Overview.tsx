@@ -3,9 +3,10 @@ import Image from "next/image";
 
 interface IProps {
   apartmentDetail: IApartmentRead;
+  totalComment:number;
 }
 
-export default function OverView({ apartmentDetail }: IProps) {
+export default function OverView({ apartmentDetail, totalComment }: IProps) {
   return (
     <div className="mb-10">
       <div className="mb-2 flex gap-3">
@@ -28,11 +29,12 @@ export default function OverView({ apartmentDetail }: IProps) {
 
           <Image src="/dot.svg" alt="dot icon" width={10} height={10} />
           <p className="text_apartment_detail underline cursor-pointer">
-            62 đánh giá
+            {totalComment ?? 0} đánh giá
           </p>
           <Image src="/dot.svg" alt="dot icon" width={10} height={10} />
           <p className="text_apartment_detail underline cursor-pointer">
-            {apartmentDetail?.desc}
+            {/* {apartmentDetail?.desc} */}
+            Thành phố Hội An, Quảng Nam, Việt Nam
           </p>
         </div>
 
@@ -56,7 +58,7 @@ export default function OverView({ apartmentDetail }: IProps) {
       {/* imges */}
       <div className="spacing_between_cpn_detail">
         <div className="grid grid-cols-4 w-full aspect-[3/1] gap-3">
-          {apartmentDetail.images.map((imageApartment, index) => (
+          {apartmentDetail?.images.slice(0,5).map((imageApartment, index) => (
             <div
               className={`relative ${
                 index === 0

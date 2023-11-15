@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../styles/index.css";
-import { Footer, Header } from "@/components/layouts";
 import ReduxProvider from "@/components/layouts/ReduxProvider";
 import LayoutMain from "@/components/layouts/LayoutMain";
+import ModalProvider from "@/components/layouts/modal/ModalProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ReduxProvider>
+          <ModalProvider />
           <LayoutMain>{children}</LayoutMain>
         </ReduxProvider>
       </body>

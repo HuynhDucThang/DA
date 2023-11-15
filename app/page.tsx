@@ -1,5 +1,6 @@
 import { FilterApartment } from "@/components/common";
 import { ListApartment } from "@/components/pages/Home";
+import BannerMain from "@/components/pages/Home/bannerMain";
 import { baseURL } from "@/utils/api";
 import { Suspense } from "react";
 
@@ -31,13 +32,16 @@ export default async function Home({ searchParams }: IProps) {
   const promiseApartment = getApartments(searchParams.tagId);
 
   return (
-    <div className="px-pd-main pt-8">
-      <FilterApartment />
-      {/* layout carrd */}
+    <>
+      <BannerMain />
+      <div className="px-pd-main pt-8">
+        <FilterApartment />
+        {/* layout carrd */}
 
-      <Suspense fallback={<div>...loading....</div>}>
-        <ListApartment promise={promiseApartment} />
-      </Suspense>
-    </div>
+        <Suspense fallback={<div>...loading....</div>}>
+          <ListApartment promise={promiseApartment} />
+        </Suspense>
+      </div>
+    </>
   );
 }

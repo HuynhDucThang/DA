@@ -13,7 +13,7 @@ interface IProps {
 
 export default function FilterItem({ tag, chooseTag }: IProps) {
   const router = useRouter();
-  
+
   return (
     <div
       className={`my-3 py-1 flex-[0_1_auto] cursor-pointer flex_center flex-col transition-all border-b-[3px] border-transparent ${
@@ -21,7 +21,9 @@ export default function FilterItem({ tag, chooseTag }: IProps) {
           ? "opacity-100 animate-shirk-grow border-b-primary"
           : "opacity-60"
       }`}
-      onClick={() => router.replace(updateSearchParams("tagId", tag.id))}
+      onClick={() =>
+        router.replace(updateSearchParams("tagId", tag.id), { scroll: false })
+      }
     >
       <Image
         src={iconsFilterApartment[tag.name]}
