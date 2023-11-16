@@ -92,3 +92,11 @@ export const getApartmentComments = async (apartmentId: string) =>
 
 export const getTagsFilterServer = async () =>
   await axiosServer.get(`/tags/all`);
+
+// statisticals
+
+export const getAdminStaticticalsCommon = async () =>
+  await axiosServer.get(`/statisticals/common/admin`);
+
+export const getAdminStaticticalsChart = async () =>
+  await axiosServer.get(`/statisticals/chart/admin`);

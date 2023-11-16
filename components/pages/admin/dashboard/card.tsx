@@ -7,7 +7,7 @@ const Card = ({ item }: any) => {
       <MdSupervisedUserCircle size={24} />
       <div className={styles.texts}>
         <span className={styles.title}>{item.title}</span>
-        <span className={styles.number}>{item.number}</span>
+        <span className={styles.number}>{item.value}</span>
         <span className={styles.detail}>
           <span className={item.change > 0 ? styles.positive : styles.negative}>
             {item.change}%
