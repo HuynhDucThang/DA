@@ -1,31 +1,60 @@
 "use client";
 
-import { baseURL } from "@/utils/api";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { addToWhiteList, deleteWhiteListItem } from "@/redux/slices/userStore";
 import { IApartmentRead } from "@/utils/interface";
 import Image from "next/image";
 import Link from "next/link";
+import { MouseEvent } from "react";
 
 interface IProps {
   apartment: IApartmentRead;
 }
 
 export default function CardApartment({ apartment }: IProps) {
-  
+  const { whiteList } = useAppSelector((state) => state.userStore);
+  const dispatch = useAppDispatch();
+
+  const checkApartmentInWhiteList = whiteList.findIndex(
+    (list) => list.id === apartment.id
+  );
+
+  const handleAddOrRemoveWhiteListItem = (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+
+    if (checkApartmentInWhiteList === -1) {
+      dispatch(addToWhiteList(apartment));
+    } else {
+      dispatch(deleteWhiteListItem(apartment.id));
+    }
+  };
+
   return (
-    <Link href={`/apartment/${apartment.id}`} className="flex-[1_1_300px]">
-      <div>
+    <Link href={`/apartment/${apartment.id}`} className="flex-[1_1_300px] group">
+      <div className="shadow-sm rounded-xl">
         <div className="w-full aspect-[1/1] relative rounded-2xl overflow-hidden mb-3">
           <Image
             src={`http://127.0.0.1:8000/api/${apartment.images?.[0]?.image_url}`}
             alt="banner apartment"
             fill
-            className="object-cover"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
-          <div className="w-8 h-8 absolute top-4 right-4 cursor-pointer">
-            <Image src="/heart/heart_red.svg" alt="heart icon" fill />
+          <div
+            className="w-8 h-8 absolute top-4 right-4 cursor-pointer hover:shadow-md transition-shadow rounded-full"
+            onClick={handleAddOrRemoveWhiteListItem}
+          >
+            <Image
+              src={
+                checkApartmentInWhiteList !== -1
+                  ? "/heart/heart_red.svg"
+                  : "/heart/heart_grey.svg"
+              }
+              alt="heart icon"
+              fill
+            />
           </div>
         </div>
-        <div>
+        <div className="py-4 px-1">
           {/* heading */}
           <div className="flex justify-between items-center gap-2">
             <h4 className="text_card_heading line-clamp-1">{apartment.name}</h4>

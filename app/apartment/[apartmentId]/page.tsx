@@ -1,5 +1,5 @@
 import FooterDetail from "@/components/layouts/FooterDetail";
-import { Details, InforNeeded, OverView } from "@/components/pages/Detail";
+import { Details, InforNeeded, Map, OverView } from "@/components/pages/Detail";
 import Comment from "@/components/pages/Detail/Comment";
 import { IApartmentDetail } from "@/utils/interface";
 import { getApartmentComments } from "@/utils/proxyServer";
@@ -43,7 +43,10 @@ export default async function ApartmentDetail({ params }: IProps) {
   return (
     <div className="px-pd-detail pt-10">
       {/* heading */}
-      <OverView apartmentDetail={apartmentDetail} totalComment={commentData.data.data.comments.length} />
+      <OverView
+        apartmentDetail={apartmentDetail}
+        totalComment={commentData.data.data.comments.length}
+      />
       {/* body */}
       <Details apartment={apartmentData.data} />
 
@@ -51,9 +54,11 @@ export default async function ApartmentDetail({ params }: IProps) {
         apartmentId={params.apartmentId}
         commentApartment={commentData.data.data}
       />
-
+      {/* Map */}
+      <Map />
       {/* infor */}
       <InforNeeded />
+
       {/* footer */}
       <FooterDetail />
     </div>

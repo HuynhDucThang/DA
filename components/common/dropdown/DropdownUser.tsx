@@ -1,10 +1,12 @@
 "use client";
 
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { userLogout } from "@/redux/slices/authSlice";
 import { currentUserLogout } from "@/redux/slices/userSlice";
+import Link from "next/link";
 
 export default function DropdownUser() {
+  const { currentUser } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
   return (
@@ -19,18 +21,26 @@ export default function DropdownUser() {
         <div className="text-primary text-base p-3 font-medium hover:bg-slate-300">
           Chuyển đi
         </div>
-        <div className="text-primary text-base p-3 font-medium hover:bg-slate-300">
+        <Link
+          href={`/users/${currentUser.id}/white-list`}
+          prefetch={false}
+          className="block text-primary text-base p-3 font-medium hover:bg-slate-300"
+        >
           Danh sách yêu thích
-        </div>
+        </Link>
       </div>
       {/*  */}
       <div className="border-t">
         <div className="text-primary text-base p-3 font-medium hover:bg-slate-300">
           Cho thuê chỗ ở qua Airbnb
         </div>
-        <div className="text-primary text-base p-3 font-medium hover:bg-slate-300">
+        <Link
+          href={`/users/${currentUser.id}`}
+          prefetch={false}
+          className="block text-primary text-base p-3 font-medium hover:bg-slate-300"
+        >
           Tài khoản
-        </div>
+        </Link>
       </div>
 
       {/*  */}

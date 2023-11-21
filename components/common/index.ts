@@ -21,10 +21,6 @@ import InputField from "./InputField";
 
 export { InputField };
 
-import CardApartment from "./CardApartment";
-
-export { CardApartment };
-
 import DropdownNoUser  from "./dropdown/DropdownNoUser";
 
 export {DropdownNoUser}
