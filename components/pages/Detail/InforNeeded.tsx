@@ -1,6 +1,12 @@
+"use client"
+
 import { ViewMore } from "@/components/common";
+import { useAppDispatch } from "@/redux/hooks";
+import { setModalType } from "@/redux/slices/modalSlice";
 
 export default function InforNeeded() {
+  const dispatch = useAppDispatch();
+
   return (
     <div className="py-8 border-t">
       <h4 className="heading__detail_apartment">Những điều cần biết</h4>
@@ -11,9 +17,9 @@ export default function InforNeeded() {
           <p className="text-xl">Nhận phòng sau 15:00</p>
           <p className="text-xl">Trả phòng trước 11:00</p>
           <p className="text-xl">Tối đa 6 khách</p>
-          <ViewMore />
+          <ViewMore handleClick={() => dispatch(setModalType("HOUSE_ROLE"))} />
         </div>
-        
+
         {/* rule 1*/}
         <div className="">
           <h4 className="sub_heading__detail_apartment">An toàn và chỗ ở</h4>
@@ -22,7 +28,11 @@ export default function InforNeeded() {
           </p>
           <p className="text-xl">Chưa có thông tin về việc có máy báo khói</p>
           <p className="text-xl">Camera an ninh/thiết bị ghi</p>
-          <ViewMore />
+          <ViewMore
+            handleClick={() =>
+              dispatch(setModalType("SAFETY_AND_ACCOMMONDATION"))
+            }
+          />
         </div>
 
         {/* rule 3 */}
@@ -34,7 +44,9 @@ export default function InforNeeded() {
             dụng ngay cả khi bạn hủy vì ốm bệnh hoặc gián đoạn do dịch COVID-19.
           </p>
           <p className="text-xl">Camera an ninh/thiết bị ghi</p>
-          <ViewMore />
+          <ViewMore
+            handleClick={() => dispatch(setModalType("CANCEL_POLICY"))}
+          />
         </div>
       </div>
     </div>

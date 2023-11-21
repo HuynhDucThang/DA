@@ -19,13 +19,13 @@ export default function Header() {
   }, [access_token]);
 
   return (
-    <div className="sticky top-0 z-[10000] bg-white shadow px-[var(--padding-main)] border-b-2 flex items-center justify-between">
+    <div className="sticky top-0 z-[10000] bg-white shadow px-pd-main border-b-2 flex items-center justify-between">
       <div className="flex items-center h-[var(--header-height)] flex-1">
         {/* logo */}
         <Link
           href={"/"}
           prefetch={false}
-          className="relative w-[102px] h-[32px]"
+          className="relative w-[130px] h-[40px]"
         >
           <Image src="/images/logo.png" alt="logo" fill />
         </Link>

@@ -34,7 +34,7 @@ export default function Modal({
               alt="close_black icon"
               width={30}
               height={30}
-              className="absolute top-3 left-3 hover:bg-c-border transition-colors rounded-full p-1 box-content"
+              className="absolute cursor-pointer top-3 left-3 hover:bg-c-border transition-colors rounded-full p-1 box-content"
               onClick={handleCloseModal}
             />
             <p className="text-2xl text-primary font-semibold">{title}</p>

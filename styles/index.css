@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --padding-main: 40px;
+  --padding-main: 80px;
   --padding-detail: 80px;
   --padding-y: 40px;
 

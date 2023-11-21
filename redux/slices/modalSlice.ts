@@ -1,6 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export type TYPE_MODAL = "LOGIN" | "SIGN_UP";
+export type TYPE_MODAL =
+  | "LOGIN"
+  | "SIGN_UP"
+  | "HOUSE_ROLE"
+  | "SAFETY_AND_ACCOMMONDATION"
+  | "CANCEL_POLICY";
 
 interface IInitstates {
   typeModal: TYPE_MODAL | null;
