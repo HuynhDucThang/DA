@@ -15,6 +15,7 @@ export interface IUser {
   created_at: string;
   updated_at: string;
   verification_code: string;
+  address: string;
 }
 
 // apartmetn

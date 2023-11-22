@@ -5,7 +5,8 @@ export type TYPE_MODAL =
   | "SIGN_UP"
   | "HOUSE_ROLE"
   | "SAFETY_AND_ACCOMMONDATION"
-  | "CANCEL_POLICY";
+  | "CANCEL_POLICY"
+  | "UPDATE_AVATAR";
 
 interface IInitstates {
   typeModal: TYPE_MODAL | null;
@@ -25,7 +26,7 @@ const modalSlice = createSlice({
       state,
       action: {
         type: string;
-        payload: TYPE_MODAL;
+        payload: TYPE_MODAL | null;
       }
     ) => {
       //

@@ -3,6 +3,7 @@ import { handleConvertDate } from "@/utils/helpers/common";
 import { IComment } from "@/utils/interface";
 import Image from "next/image";
 import Stars from "./comment/stars";
+import Link from "next/link";
 
 interface IProps {
   comment: IComment;
@@ -13,7 +14,7 @@ export default function CardComment({ comment }: IProps) {
     <div className="card flex gap-6">
       {/* avatar */}
       <div className="">
-        <div className="w-20 h-20 relative">
+        <Link href={`/users/${comment.user_id}`} className="block w-20 h-20 relative">
           <Image
             src={
               comment.user?.avatar
@@ -24,7 +25,7 @@ export default function CardComment({ comment }: IProps) {
             fill
             className="rounded-full shadow-md"
           />
-        </div>
+        </Link>
         <div className="mt-2 flex_center gap-2 p-1 border border-c-border rounded-lg cursor-pointer">
           <Image
             src="/edit_second.svg"
@@ -51,7 +52,7 @@ export default function CardComment({ comment }: IProps) {
             </h3>
             <p className="text-second text-base">
               Đánh giá vào khoảng{" "}
-              {handleConvertDate(new Date(comment.created_at))} trước
+              {handleConvertDate(new Date(comment.created_at))}
             </p>
           </div>
           <div className="flex_center relative group text-white font-medium text-base w-10 h-10 rounded-full bg-c-logo">
