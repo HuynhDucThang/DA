@@ -21,6 +21,7 @@ import InputField from "./InputField";
 
 export { InputField };
 
-import DropdownNoUser  from "./dropdown/DropdownNoUser";
+import DropdownNoUser from "./dropdown/DropdownNoUser";
+import Loading from "./loading";
 
-export {DropdownNoUser}
+export { DropdownNoUser, Loading };

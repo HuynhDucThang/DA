@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useRouter } from "next/navigation";
 import { createApartmentCommentServer } from "@/utils/actions";
 import { setModalType } from "@/redux/slices/modalSlice";
+import { Loading } from "@/components/common";
 
 interface IProps {
   comments: IComment[];
@@ -45,7 +46,7 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
       dispatch(setModalType("LOGIN"));
       return;
     }
-    
+
     setIsLoading(true);
 
     const res = await createApartmentCommentServer({
@@ -66,6 +67,7 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
 
   return (
     <>
+      {isLoading ? <Loading /> : null}
       <div className="w-[65%] shadow-[rgba(0,0,0,0.12)_0px_6px_16px] rounded-2xl">
         <div className="p-4">
           <div className="flex items-center justify-between py-4">

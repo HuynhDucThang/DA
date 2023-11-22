@@ -11,6 +11,7 @@ const initUser: IUser | null = {
   phonenumber: "",
   created_at: "",
   isVerify: false,
+  address: "",
   updated_at: "",
   verification_code: "",
 };
@@ -19,7 +20,6 @@ const initialState = {
   currentUser: initUser,
   isLoading: false,
   error: null,
-  otherUser: initUser,
 };
 
 const userSlice = createSlice({
@@ -43,16 +43,8 @@ const userSlice = createSlice({
     currentUserLogout: (state) => {
       state.currentUser = initUser;
     },
-
-    setOtherUser: (
-      state,
-      action: { type: string; payload: { otherUser: IUser } }
-    ) => {
-      state.otherUser = action.payload.otherUser;
-    },
-
-    removeOtherUser: (state) => {
-      state.otherUser = initialState.otherUser;
+    setUserMe: (state, action) => {
+      state.currentUser = action.payload;
     },
   },
 });
@@ -64,8 +56,7 @@ export const {
   getCurrentUserFulfill,
   getCurrentUserReject,
   currentUserLogout,
-  setOtherUser,
-  removeOtherUser,
+  setUserMe,
 } = actions;
 
 export default reducer;

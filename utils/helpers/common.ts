@@ -60,7 +60,7 @@ export const clearSearchParams = (paramsToDelete: string[]) => {
 
 export const handleConvertDate = (
   date: Date,
-  formatDate: string = "dd/MM/yyyy"
+  formatDate: string = "dd/MM/yyyy 'lúc' HH:mm"
 ) => {
   const startDate = new Date(date);
   const startFormatted = format(startDate, formatDate);

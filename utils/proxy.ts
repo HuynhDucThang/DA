@@ -28,6 +28,9 @@ export const getUser = async () => await axiosAuth.get("/users/");
 
 export const getUsers = async () => await axiosAuth.get("/users/all");
 
+export const getUserById = async (userId: string) =>
+  await axiosAuth.get(`/users/${userId}`);
+
 export const userSignUp = async (
   email: string,
   password: string,
@@ -52,6 +55,12 @@ export const userRefreshToken = async (refresh_token: string) =>
       },
     }
   );
+
+export const updateUser = async (userId: string, body: any) =>
+  await axiosAuth.patch(`/users/update_user/${userId}`, body);
+
+export const uploadAvatar = async (userId: string, formData: FormData) =>
+  await axiosAuthCookieMultiData.patch(`/users/update_avatar/${userId}`, formData);
 
 // ------------------------------ apartment ---------------------------------
 

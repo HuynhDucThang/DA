@@ -1,38 +1,133 @@
 "use client";
 
-import { useAppSelector } from "@/redux/hooks";
-import useModal from "@/utils/hook/useModal";
+import { Loading } from "@/components/common";
+import InputProfile from "@/components/pages/user/inputProfile";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setModalType } from "@/redux/slices/modalSlice";
+import { setUserMe } from "@/redux/slices/userSlice";
+import { URL } from "@/utils/api";
+import { IUser } from "@/utils/interface";
+import { getUserById, updateUser } from "@/utils/proxy";
 import Image from "next/image";
-import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState, ChangeEvent } from "react";
+
+const initUserUpdate = {
+  phonenumber: "",
+  username: "",
+  address: "",
+  password: "",
+  re_password: "",
+};
 
 export default function ProfileUser() {
-  const { isOpen, openPopup, closePopup } = useModal();
+  const [user, setUser] = useState<IUser>();
+  const [fieldEdit, setFieldEdit] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const [userUpdate, setUserUpdate] = useState(initUserUpdate);
+
+  const dispatch = useAppDispatch();
+  const { typeModal } = useAppSelector((state) => state.modal);
+  const { currentUser } = useAppSelector((state) => state.user);
+
   const [indexSilder, setIndexSilder] = useState<number>(0);
-  const length = 6
+  const length = 6;
+  const params = useParams();
+  const userId = params.userId as string;
+  const router = useRouter();
 
-  const { currentUser } = useAppSelector(state => state.user)
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const { data } = await getUserById(userId);
+        setUser(data.data);
+        console.log("data.data : ", data.data);
+      } catch (error) {
+        console.log("errror ");
+        router.push("/");
+      }
+    };
+    getUser();
+  }, []);
 
+  const handleSetFieldEdit = (fieldName: string | null) => {
+    setFieldEdit(fieldName);
+  };
+
+  const handleSubmit = async () => {
+    if (!currentUser?.id) {
+      alert("Bạn chưa đăng nhập");
+      dispatch(setModalType("LOGIN"));
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      Object.keys(userUpdate).forEach((key) => {
+        if (
+          !userUpdate[key as keyof typeof userUpdate] ||
+          key === "re_password"
+        ) {
+          delete userUpdate[key as keyof typeof userUpdate];
+        }
+      });
+
+      const { data } = await updateUser(userId, userUpdate);
+      setUser(data.data);
+      data?.data?.id === currentUser?.id && dispatch(setUserMe(data.data));
+      setFieldEdit(null);
+      setUserUpdate(initUserUpdate);
+      alert("Tạo thành công");
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUpdateAvatar = () => {
+    dispatch(setModalType("UPDATE_AVATAR"));
+  };
+
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setUserUpdate({
+      ...userUpdate,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   return (
     <>
+      {isLoading ? <Loading /> : null}
       <div className="container_px max-w-[1500px]">
         <div className="flex gap-16">
           {/* left */}
           <div className="w-[30%] ">
-            <div className="flex items-center gap-12 p-12 border shadow-xl rounded-3xl">
+            <div className="flex items-center gap-8 p-12 border shadow-xl rounded-3xl">
               <div className="flex flex-col items-center ">
-                <div className="w-[120px] h-[120px] relative">
+                <div
+                  className="w-[120px] h-[120px] relative hover:shadow-xl transition-shadow rounded-full cursor-pointer"
+                  onClick={handleUpdateAvatar}
+                >
                   <Image
-                    src="/avatar.png"
+                    src={
+                      user?.avatar
+                        ? `${URL}/${user?.avatar}`
+                        : "/avatar_none_user.svg"
+                    }
                     alt="avater"
                     fill
                     className="rounded-full"
                   />
                 </div>
                 <h2 className="text-primary text-4xl mt-4 font-semibold">
-                  {currentUser.username}
+                  {user?.username}
                 </h2>
-                <span className="text-lg font-medium">Khách</span>
+                {/* <span className="text-lg font-medium">Khách</span> */}
               </div>
 
               <div>
@@ -54,7 +149,7 @@ export default function ProfileUser() {
             {/* bottom */}
             <div className="mt-10 p-8 border shadow-md rounded-3xl">
               <h2 className="heading__detail_apartment">
-                Thông tin đã được xác nhận của Michelle{" "}
+                Thông tin đã được xác nhận của {user?.username}
               </h2>
               <div className="mt-4">
                 <div className="flex gap-4">
@@ -86,8 +181,142 @@ export default function ProfileUser() {
           <div className="w-[70%]">
             <div>
               <h2 className="text-primary text-4xl mt-4 font-bold">
-                Thông tin về Michelle
+                Thông tin về {user?.username}
               </h2>
+            </div>
+
+            {/* userName */}
+            <div className="my-3 py-4">
+              <HeadingField
+                title="Tên pháp lý"
+                desc={
+                  fieldEdit === "username"
+                    ? "Đây là tên trên giấy tờ thông hành của bạn, có thể là giấy phép hoặc hộ chiếu."
+                    : user?.username ?? "Tên người dùng"
+                }
+                btnName={fieldEdit === "username" ? "Xoá" : "Chỉnh sửa"}
+                fieldName="username"
+                handleClick={(fieldName) => {
+                  if (fieldEdit === "username") {
+                    handleSetFieldEdit(null);
+                  } else {
+                    handleSetFieldEdit(fieldName);
+                  }
+                }}
+              />
+              {fieldEdit === "username" ? (
+                <InputProfile
+                  handleOnChange={handleInputChange}
+                  name="username"
+                  title="Họ và tên"
+                  value={userUpdate.username}
+                />
+              ) : null}{" "}
+              {fieldEdit === "username" ? (
+                <BtnUpdate onClick={handleSubmit} />
+              ) : null}
+            </div>
+
+            {/* phone */}
+            <div className="my-3 py-4 border-t">
+              <HeadingField
+                title="Số điện thoại"
+                desc={
+                  fieldEdit === "phonenumber"
+                    ? "Thêm số điện thoại để khách đã xác nhận và Airbnb có thể liên hệ với bạn. Bạn có thể thêm các số điện thoại khác và chọn mục đích sử dụng tương ứng."
+                    : user?.phonenumber ?? "Số điện thoại người dùng"
+                }
+                btnName={fieldEdit === "phonenumber" ? "Huỷ" : "Chỉnh sửa"}
+                fieldName="phonenumber"
+                handleClick={(fieldName) => {
+                  if (fieldEdit === "phonenumber") {
+                    handleSetFieldEdit(null);
+                  } else {
+                    handleSetFieldEdit(fieldName);
+                  }
+                }}
+              />
+              {fieldEdit === "phonenumber" ? (
+                <InputProfile
+                  handleOnChange={handleInputChange}
+                  name="phonenumber"
+                  title="Số điện thoại"
+                  value={userUpdate.phonenumber}
+                />
+              ) : null}
+              {fieldEdit === "phonenumber" ? (
+                <BtnUpdate onClick={handleSubmit} />
+              ) : null}
+            </div>
+
+            {/* address */}
+            <div className="my-3 py-4 border-t">
+              <HeadingField
+                title="Địa chỉ người dùng"
+                desc={
+                  fieldEdit === "address"
+                    ? "Đây là tên trên giấy tờ thông hành của bạn, có thể là giấy phép hoặc hộ chiếu."
+                    : user?.address ?? "Địa chỉ người dùng"
+                }
+                btnName={fieldEdit === "address" ? "Xoá" : "Chỉnh sửa"}
+                fieldName="address"
+                handleClick={(fieldName) => {
+                  if (fieldEdit === "address") {
+                    handleSetFieldEdit(null);
+                  } else {
+                    handleSetFieldEdit(fieldName);
+                  }
+                }}
+              />
+              {fieldEdit === "address" ? (
+                <InputProfile
+                  handleOnChange={handleInputChange}
+                  name="address"
+                  title="Địa chỉ"
+                  value={userUpdate.address}
+                />
+              ) : null}
+              {fieldEdit === "address" ? (
+                <BtnUpdate onClick={handleSubmit} />
+              ) : null}
+            </div>
+
+            {/* password */}
+            <div className="my-3 py-4 border-t">
+              <HeadingField
+                title="Mật khẩu"
+                desc={
+                  "Đây là mật khẩu để đăng nhập của bạn, không nên chia sẻ với bất kỳ ai."
+                }
+                btnName={fieldEdit === "password" ? "Xoá" : "Chỉnh sửa"}
+                fieldName="password"
+                handleClick={(fieldName) => {
+                  if (fieldEdit === "password") {
+                    handleSetFieldEdit(null);
+                  } else {
+                    handleSetFieldEdit(fieldName);
+                  }
+                }}
+              />
+              {fieldEdit === "password" ? (
+                <div className="flex gap-6">
+                  <InputProfile
+                    handleOnChange={handleInputChange}
+                    name="password"
+                    title="Mật khẩu"
+                    value={userUpdate?.password}
+                  />
+                  <InputProfile
+                    handleOnChange={handleInputChange}
+                    name="re_password"
+                    title="Nhập lại mật khẩu"
+                    value={userUpdate?.re_password}
+                  />
+                </div>
+              ) : null}
+              {fieldEdit === "password" ? (
+                <BtnUpdate onClick={handleSubmit} />
+              ) : null}
             </div>
 
             {/* rate */}
@@ -97,24 +326,27 @@ export default function ProfileUser() {
                   Nhận xét của các Chủ nhà/Người tổ chức về Michelle
                 </h4>
                 <div className="flex gap-4">
-                  <div className="flex_center rounded-full border border-c-border cursor-pointer h-10 w-10"
+                  <div
+                    className="flex_center rounded-full border border-c-border cursor-pointer h-10 w-10"
                     onClick={() =>
-                      setIndexSilder((pre) => (pre - 2  < 0 ? 0 : pre + 1))
-                    }>
+                      setIndexSilder((pre) => (pre - 2 < 0 ? 0 : pre + 1))
+                    }
+                  >
                     <Image
                       src="/arrow/arrow_bottom.svg"
                       alt="arrow"
                       width={20}
                       height={20}
                       className="rotate-90"
-
                     />
                   </div>
 
                   <div
                     className="flex_center rounded-full border border-c-border cursor-pointer h-10 w-10"
                     onClick={() =>
-                      setIndexSilder((pre) => (pre + 2 > length / 2 ? 0 : pre + 1))
+                      setIndexSilder((pre) =>
+                        pre + 2 > length / 2 ? 0 : pre + 1
+                      )
                     }
                   >
                     <Image
@@ -177,5 +409,52 @@ export default function ProfileUser() {
         </div>
       </div>
     </>
+  );
+}
+
+interface IHeadingField {
+  btnName: string;
+  title: string;
+  desc: string;
+  fieldName: string;
+  handleClick: (fieldName: string) => void;
+}
+
+function HeadingField({
+  btnName,
+  title,
+  desc,
+  fieldName,
+  handleClick,
+}: IHeadingField) {
+  return (
+    <div className="flex justify-between">
+      <div>
+        <h4 className="text-lg font-medium">{title}</h4>
+        <p className="text-lg text-second">{desc}</p>
+      </div>
+
+      <div
+        className="text-lg font-semibold underline"
+        onClick={() => handleClick(fieldName)}
+      >
+        {btnName}
+      </div>
+    </div>
+  );
+}
+
+interface IBtnUpdate {
+  onClick: () => void;
+}
+
+function BtnUpdate({ onClick }: IBtnUpdate) {
+  return (
+    <div
+      className="text-white mt-6 py-4 px-6 bg-[#222222] hover:bg-black hover:shadow-lg transition-all duration-500 rounded-xl w-fit text-xl font-medium cursor-pointer"
+      onClick={onClick}
+    >
+      Lưu
+    </div>
   );
 }
