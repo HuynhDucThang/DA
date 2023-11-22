@@ -5,15 +5,13 @@ import CardComment from "./CardComment";
 import Modal from "@/components/common/modal/Modal";
 import useModal from "@/utils/hook/useModal";
 import { IComment } from "@/utils/interface";
-import Stars from "./comment/stars";
 import { useState } from "react";
 import { ratings as ratingsDefined } from "@/utils/constant";
-import { createApartmentComment } from "@/utils/proxy";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { useRouter } from "next/navigation";
 import { createApartmentCommentServer } from "@/utils/actions";
 import { setModalType } from "@/redux/slices/modalSlice";
 import { Loading } from "@/components/common";
+import Stars from "./comment/stars";
 
 interface IProps {
   comments: IComment[];
@@ -56,9 +54,8 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
       user_id: currentUser.id,
     });
 
-    console.log("res: ", res);
-
-    setIsLoading(true);
+    dispatch(setModalType(null));
+    setIsLoading(false);
 
     if (res?.errMsg) {
       alert(res?.errMsg);

@@ -20,6 +20,7 @@ export interface IUser {
 
 // apartmetn
 export interface IApartmentCreate {
+  address: string;
   name: string;
   desc: string;
   room: string;
@@ -45,12 +46,14 @@ export interface IApartmentRead {
   room: string;
   created_at: string;
   updated_at: string;
+  address: string;
   rate: number;
   total_people: number;
   images: IImagesApartment[];
 }
 
 export interface IApartmentDetail extends IApartmentRead {
+  total_rating : number;
   amenities: IAmenityRead[];
   apartment_contract: IApartmentContract[];
   apartment_tags: {
@@ -75,6 +78,8 @@ export interface IApartmentContract {
   start_date: string;
   apartment_id: string;
   user_id: string;
+  total_amount: number;
+  num_of_people: number;
 }
 
 // tags
@@ -148,4 +153,9 @@ export interface IStatisticalComment {
 
 export interface IApartmentComment extends IStatisticalComment {
   comments: IComment[];
+}
+
+export interface IContractLatest extends IApartmentContract {
+  apartment: IApartmentRead;
+  user: IUser;
 }

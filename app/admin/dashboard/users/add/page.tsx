@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import styles from "@/components/pages/admin/dashboard/users/addUser.module.css";
 import { addUser } from "@/utils/actions";
@@ -18,10 +18,13 @@ const AddUserPage = () => {
           name="password"
           required
         />
+        <input type="text" placeholder="address" name="address" required />
         <input type="phonenumber" placeholder="phone" name="phonenumber" />
         <select name="system_role" id="system_role">
+          <option value={""}>Choose permission</option>
           <option value={"RENTER"}>Renter</option>
           <option value={"MANAGER"}>Manager</option>
+          <option value={"ADMIN"}>Manager</option>
         </select>
 
         {/* <textarea

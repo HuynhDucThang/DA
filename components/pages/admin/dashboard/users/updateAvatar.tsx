@@ -3,12 +3,13 @@
 import styles from "./singleUser.module.css";
 import { useState, ChangeEvent, useRef } from "react";
 import { updateAvatarUserAction } from "@/utils/actions";
-import { URL as URL_API } from "@/utils/api";
+import { URL, URL as URL_API } from "@/utils/api";
 import { IUser } from "@/utils/interface";
 import Image from "next/image";
 import Modal from "@/components/common/modal/Modal";
 import useModal from "@/utils/hook/useModal";
 import { BtnCommon } from "@/components/common";
+import { useRouter } from "next/navigation";
 
 interface IProps {
   user: IUser;
@@ -19,6 +20,7 @@ export default function UpdateAvatar({ user }: IProps) {
   const { isOpen, closePopup, openPopup } = useModal();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
+  const router = useRouter();
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
@@ -37,6 +39,8 @@ export default function UpdateAvatar({ user }: IProps) {
     selectedFile && formData.append("avatar", selectedFile);
     setIsLoading(true);
     const res = await updateAvatarUserAction(user.id, formData);
+    
+    router.refresh();
     setIsLoading(false);
 
     console.log("res : ", res);
@@ -47,7 +51,7 @@ export default function UpdateAvatar({ user }: IProps) {
       <div className={styles.infoContainer}>
         <label htmlFor="upload_img" className={`${styles.imgContainer} block`}>
           <Image
-            src={`${URL_API}/${user.avatar}` || "/avatar.png"}
+            src={user.avatar ? `${URL}/${user.avatar}` : "/avatar_none_user.svg"}
             alt="avatar"
             fill
           />

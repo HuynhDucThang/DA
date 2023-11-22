@@ -77,17 +77,24 @@ export const updateUser = async (formData: FormData) => {
 };
 
 export const addUser = async (prevState: any, formData: FormData) => {
-  const { username, email, password, phonenumber, system_role } =
+  const { username, email, password, phonenumber, system_role, address } =
     Object.fromEntries(formData);
 
   try {
-    await userSignUp(email, password, username, phonenumber, system_role);
+    await userSignUp(
+      email,
+      password,
+      username,
+      phonenumber,
+      system_role,
+      address
+    );
   } catch (err) {
     console.log(err);
     return "Không thể tạo người dùng";
   }
 
-  // revalidatePath("/admin/dashboard/users");
+  revalidatePath("/admin/dashboard/users");
   redirect("/admin/dashboard/users");
 };
 
@@ -189,7 +196,8 @@ export const updateAvatarUserAction = async (
   formData: FormData
 ) => {
   try {
-    await uploadAvatarUser(userId, formData);
+   const { data } = await uploadAvatarUser(userId, formData);
+
     revalidatePath(`/admin/dashboard/users`);
     redirect(`/admin/dashboard/users`);
   } catch (error: any) {

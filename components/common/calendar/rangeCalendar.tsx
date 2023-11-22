@@ -2,6 +2,7 @@
 
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setDateBooking } from "@/redux/slices/booking";
+import { RootState } from "@/redux/store";
 import { useEffect, useMemo, useState } from "react";
 import { DateRangePicker, DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main style file
@@ -11,7 +12,7 @@ interface IProps {}
 
 export default function RangeCalendar({}: IProps) {
   const { dates, start_date, end_date } = useAppSelector(
-    (state) => state.booking
+    (state : RootState) => state.booking
   );
 
   const dispatch = useAppDispatch();

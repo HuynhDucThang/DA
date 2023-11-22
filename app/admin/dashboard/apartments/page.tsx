@@ -18,7 +18,7 @@ const ApartmentsPage = async ({ searchParams }: any) => {
   const apartments: IApartmentRead[] = data.data;
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} overflow-y-auto`}>
       <div className={styles.top}>
         <Search placeholder="Search for a product..." />
         <Link href="/admin/dashboard/apartments/add">
@@ -53,7 +53,7 @@ const ApartmentsPage = async ({ searchParams }: any) => {
                   {apartment.name}
                 </div>
               </td>
-              <td>{apartment.desc}</td>
+              <td className="line-clamp-3">{apartment.desc}</td>
               <td>${apartment.price_per_day}</td>
               <td>{handleConvertDate(new Date(apartment.created_at))}</td>
               <td>

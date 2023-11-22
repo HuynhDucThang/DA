@@ -1,6 +1,7 @@
 "use client"
 
-import { CardApartment } from "@/components/common";
+import CardApartment from "@/components/pages/Home/CardApartment";
+
 
 export default function RentedApartment() {
   return (
@@ -10,7 +11,7 @@ export default function RentedApartment() {
       </div>
       <div className="grid gap-3 grid-cols-1">
         {Array.from({ length: 4 }).map((_, index) => (
-          <CardApartment key={index} />
+          <div key={index}>carrd</div>
         ))}
       </div>
     </div>

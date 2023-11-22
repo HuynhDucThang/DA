@@ -8,24 +8,6 @@ import {
   getAdminStaticticalsCommon,
 } from "@/utils/proxyServer";
 
-export const cards = [
-  {
-    title: "Total Users",
-    value: 10.928,
-    change: 12,
-  },
-  {
-    title: "Total Apartments",
-    value: 8.236,
-    change: -2,
-  },
-  {
-    title: "Total Contract",
-    value: 6.642,
-    change: 18,
-  },
-];
-
 export interface IStatisticalsCommon {
   title: string;
   value: number;
@@ -53,8 +35,8 @@ const Dashboard = async () => {
     <div className={styles.wrapper}>
       <div className={styles.main}>
         <div className={styles.cards}>
-          {commonData.map((item) => (
-            <Card item={item} key={item.title} />
+          {commonData.map((item, index) => (
+            <Card item={item} key={index} />
           ))}
         </div>
         <Transactions />

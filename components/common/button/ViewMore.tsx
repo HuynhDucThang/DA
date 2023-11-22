@@ -1,15 +1,20 @@
 import Image from "next/image";
 
 interface IProps {
-  handleClick : () => void;
+  title?: string;
+  handleClick: () => void;
 }
 
-export default function ViewMore( { handleClick } : IProps) {
+export default function ViewMore({
+  title = "Hiển thị thêm",
+  handleClick,
+}: IProps) {
   return (
-    <div className="flex_center gap-2 w-fit cursor-pointer mt-4" onClick={handleClick}>
-      <h4 className="text-primary text-xl font-semibold underline">
-        Hiển thị thêm
-      </h4>
+    <div
+      className="flex_center gap-2 w-fit cursor-pointer mt-4"
+      onClick={handleClick}
+    >
+      <h4 className="text-primary text-xl font-semibold underline">{title}</h4>
       <Image
         src="/arrow/arrow_bottom.svg"
         alt="arrow_bottom"

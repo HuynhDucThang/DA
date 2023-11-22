@@ -76,6 +76,16 @@ const SingleApartmentPage = async ({ params }: any) => {
             placeholder={`${apartment.total_people}`}
           />
           {/* desc */}
+          <label>Address</label>
+          <textarea
+            name="address"
+            id="address"
+            rows={2}
+            placeholder={"Entered address"}
+            value={apartment.address}
+            className="resize-none"
+          ></textarea>
+          {/* desc */}
           <label>Description</label>
           <textarea
             name="desc"

@@ -57,7 +57,8 @@ export const userSignUp = async (
   password: FormDataEntryValue,
   username: FormDataEntryValue,
   phonenumber: FormDataEntryValue,
-  system_role: FormDataEntryValue
+  system_role: FormDataEntryValue,
+  address: FormDataEntryValue
 ) =>
   await axiosServer.post("/users/sign_up", {
     username,
@@ -65,6 +66,7 @@ export const userSignUp = async (
     email,
     password,
     system_role,
+    address,
   });
 
 export const getApartmentDetailServer = async (apartmentId: string) => {
@@ -92,6 +94,9 @@ export const getApartmentComments = async (apartmentId: string) =>
 
 export const getTagsFilterServer = async () =>
   await axiosServer.get(`/tags/all`);
+
+export const getContractsLatest = async () =>
+  await axiosServer.get(`/contracts/latest`);
 
 // statisticals
 

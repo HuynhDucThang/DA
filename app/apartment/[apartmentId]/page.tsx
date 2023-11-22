@@ -37,8 +37,13 @@ export default async function ApartmentDetail({ params }: IProps) {
     getComment,
   ]);
 
-  const { amenities, apartment_contract, apartment_tags, ...apartmentDetail } =
-    apartmentData.data as IApartmentDetail;
+  const {
+    total_rating,
+    amenities,
+    apartment_contract,
+    apartment_tags,
+    ...apartmentDetail
+  } = apartmentData.data as IApartmentDetail;
 
   return (
     <div className="px-pd-detail pt-10">
@@ -46,6 +51,7 @@ export default async function ApartmentDetail({ params }: IProps) {
       <OverView
         apartmentDetail={apartmentDetail}
         totalComment={commentData.data.data.comments.length}
+        total_rating={total_rating}
       />
       {/* body */}
       <Details apartment={apartmentData.data} />

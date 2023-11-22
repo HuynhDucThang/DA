@@ -14,6 +14,7 @@ const SingleApartmentPage = () => {
     name: "",
     desc: "",
     room: "0",
+    address: "",
     price_per_day: 0,
     num_bedrooms: 0,
     num_bathrooms: 0,
@@ -84,8 +85,6 @@ const SingleApartmentPage = () => {
         tag_ids,
         amenities: amenities_ids,
       });
-      console.log(data);
-
       const res = await updateImagesApartment(data?.id, formData);
 
       alert("Thành công ");
@@ -176,6 +175,17 @@ const SingleApartmentPage = () => {
             onChange={handleOnchange}
           />
           {/* desc */}
+          <label>Address</label>
+          <textarea
+            name="address"
+            id="address"
+            rows={2}
+            placeholder={"Entered address"}
+            value={apartmentCreate.address}
+            onChange={handleOnchange}
+            className="resize-none"
+          ></textarea>
+          {/* desc */}
           <label>Description</label>
           <textarea
             name="desc"
@@ -184,6 +194,7 @@ const SingleApartmentPage = () => {
             placeholder={"Entered description"}
             value={apartmentCreate.desc}
             onChange={handleOnchange}
+            className="resize-none"
           ></textarea>
           <BtnSubmit value="Submit" />
         </form>

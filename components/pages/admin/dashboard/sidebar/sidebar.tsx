@@ -1,5 +1,7 @@
 import Image from "next/image";
 import styles from "./sidebar.module.css";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 import {
   MdDashboard,
@@ -79,9 +81,8 @@ const menuItems = [
   },
 ];
 
-const Sidebar = async () => {
+const Sidebar = () => {
   //   const { user } = await auth();
-  const user = {};
   return (
     <div className={styles.container}>
       <div className={styles.user}>
@@ -110,9 +111,9 @@ const Sidebar = async () => {
       <form
         action={async () => {
           "use server";
-          //   await signOut();
-
-          alert("log out");
+          cookies().delete("access_token_admin");
+          cookies().delete("refresh_token_admin");
+          redirect("/admin/login");
         }}
       >
         <button className={styles.logout}>

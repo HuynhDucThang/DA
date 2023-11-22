@@ -100,6 +100,8 @@ export default function ProfileUser() {
     });
   };
 
+  const allowEdit = currentUser.id === userId;
+
   return (
     <>
       {isLoading ? <Loading /> : null}
@@ -203,6 +205,7 @@ export default function ProfileUser() {
                     handleSetFieldEdit(fieldName);
                   }
                 }}
+                isEdit={allowEdit}
               />
               {fieldEdit === "username" ? (
                 <InputProfile
@@ -235,6 +238,7 @@ export default function ProfileUser() {
                     handleSetFieldEdit(fieldName);
                   }
                 }}
+                isEdit={allowEdit}
               />
               {fieldEdit === "phonenumber" ? (
                 <InputProfile
@@ -267,6 +271,7 @@ export default function ProfileUser() {
                     handleSetFieldEdit(fieldName);
                   }
                 }}
+                isEdit={allowEdit}
               />
               {fieldEdit === "address" ? (
                 <InputProfile
@@ -297,6 +302,7 @@ export default function ProfileUser() {
                     handleSetFieldEdit(fieldName);
                   }
                 }}
+                isEdit={allowEdit}
               />
               {fieldEdit === "password" ? (
                 <div className="flex gap-6">
@@ -417,6 +423,7 @@ interface IHeadingField {
   title: string;
   desc: string;
   fieldName: string;
+  isEdit: boolean;
   handleClick: (fieldName: string) => void;
 }
 
@@ -425,6 +432,7 @@ function HeadingField({
   title,
   desc,
   fieldName,
+  isEdit = true,
   handleClick,
 }: IHeadingField) {
   return (
@@ -434,12 +442,14 @@ function HeadingField({
         <p className="text-lg text-second">{desc}</p>
       </div>
 
-      <div
-        className="text-lg font-semibold underline"
-        onClick={() => handleClick(fieldName)}
-      >
-        {btnName}
-      </div>
+      {isEdit ? (
+        <div
+          className="text-lg font-semibold underline"
+          onClick={() => handleClick(fieldName)}
+        >
+          {btnName}
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -95,7 +95,7 @@ export default function PayDetail({ apartmentDetail }: IProps) {
       const { data } = await createContract({
         apartment_id: params.apartmentId as string,
         user_id: currentUser.id,
-        content: `${currentUser.id} đặt phòng lúc ${handleConvertDate(
+        content: `${currentUser.username} đặt phòng trong khoảng thời gian ${handleConvertDate(
           start_date
         )} - ${handleConvertDate(end_date)}`,
         end_date: end_date,
@@ -165,7 +165,9 @@ export default function PayDetail({ apartmentDetail }: IProps) {
               >
                 <p className="text_filter_apartment">Nhận phòng</p>
                 <div className="text-second text-lg font-medium">
-                  {start_date ? handleConvertDate(start_date) : "Chọn Ngày"}
+                  {start_date
+                    ? handleConvertDate(start_date, "dd/MM/yyyy")
+                    : "Chọn Ngày"}
                 </div>
               </div>
               <div
@@ -178,7 +180,9 @@ export default function PayDetail({ apartmentDetail }: IProps) {
               >
                 <p className="text_filter_apartment">Trả phòng</p>
                 <div className="text-second text-lg font-medium">
-                  {end_date ? handleConvertDate(end_date) : "Chọn Ngày"}
+                  {end_date
+                    ? handleConvertDate(end_date, "dd/MM/yyyy")
+                    : "Chọn Ngày"}
                 </div>
               </div>
 

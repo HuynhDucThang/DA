@@ -1,12 +1,28 @@
+"use client";
+
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { addToWhiteList, deleteWhiteListItem } from "@/redux/slices/userStore";
 import { IApartmentRead } from "@/utils/interface";
 import Image from "next/image";
 
 interface IProps {
   apartmentDetail: IApartmentRead;
-  totalComment:number;
+  totalComment: number;
+  total_rating: number;
 }
 
-export default function OverView({ apartmentDetail, totalComment }: IProps) {
+export default function OverView({
+  apartmentDetail,
+  totalComment,
+  total_rating,
+}: IProps) {
+  const { whiteList } = useAppSelector((state) => state.userStore);
+  const dispatch = useAppDispatch();
+
+  const apartmentInWhiteList = whiteList.findIndex(
+    (item) => item.id === apartmentDetail.id
+  );
+
   return (
     <div className="mb-10">
       <div className="mb-2 flex gap-3">
@@ -24,7 +40,7 @@ export default function OverView({ apartmentDetail, totalComment }: IProps) {
         <div className="flex items-center gap-2">
           <div className="text_apartment_detail flex items-center gap-1">
             <Image src="/star.svg" alt="star icon" width={24} height={24} />
-            {apartmentDetail?.rate}
+            {total_rating}
           </div>
 
           <Image src="/dot.svg" alt="dot icon" width={10} height={10} />
@@ -33,8 +49,7 @@ export default function OverView({ apartmentDetail, totalComment }: IProps) {
           </p>
           <Image src="/dot.svg" alt="dot icon" width={10} height={10} />
           <p className="text_apartment_detail underline cursor-pointer">
-            {/* {apartmentDetail?.desc} */}
-            Thành phố Hội An, Quảng Nam, Việt Nam
+            {apartmentDetail?.address}
           </p>
         </div>
 
@@ -43,14 +58,25 @@ export default function OverView({ apartmentDetail, totalComment }: IProps) {
             <Image src="/share.svg" alt="dot icon" width={24} height={24} />
             <p className="text_apartment_detail underline ">Chia sẻ</p>
           </div>
-          <div className="flex_center gap-2 p-2 transition-all rounded-lg cursor-pointer hover:bg-c-grey-blur hover:shadow-sm">
+          <div
+            className="flex_center gap-2 p-2 transition-all rounded-lg cursor-pointer hover:bg-c-grey-blur hover:shadow-sm"
+            onClick={() =>
+              apartmentInWhiteList !== -1
+                ? dispatch(deleteWhiteListItem(apartmentDetail.id))
+                : dispatch(addToWhiteList(apartmentDetail))
+            }
+          >
             <Image
-              src="/heart/empty_heart.svg"
+              src={
+                apartmentInWhiteList
+                  ? "/heart/heart_red.svg"
+                  : "/heart/heart_grey.svg"
+              }
               alt="dot icon"
-              width={22}
-              height={22}
+              width={30}
+              height={30}
             />
-            <p className="text_apartment_detail underline ">Chia sẻ</p>
+            <p className="text_apartment_detail underline">Lưu</p>
           </div>
         </div>
       </div>
@@ -58,7 +84,7 @@ export default function OverView({ apartmentDetail, totalComment }: IProps) {
       {/* imges */}
       <div className="spacing_between_cpn_detail">
         <div className="grid grid-cols-4 w-full aspect-[3/1] gap-3">
-          {apartmentDetail?.images.slice(0,5).map((imageApartment, index) => (
+          {apartmentDetail?.images.slice(0, 5).map((imageApartment, index) => (
             <div
               className={`relative ${
                 index === 0

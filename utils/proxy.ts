@@ -60,7 +60,10 @@ export const updateUser = async (userId: string, body: any) =>
   await axiosAuth.patch(`/users/update_user/${userId}`, body);
 
 export const uploadAvatar = async (userId: string, formData: FormData) =>
-  await axiosAuthCookieMultiData.patch(`/users/update_avatar/${userId}`, formData);
+  await axiosAuthCookieMultiData.patch(
+    `/users/update_avatar/${userId}`,
+    formData
+  );
 
 // ------------------------------ apartment ---------------------------------
 
@@ -85,6 +88,7 @@ export const createApartment = async (
   params.set("num_toilets", `${apartment.num_toilets}`);
   params.set("total_people", `${apartment.total_people}`);
   params.set("rate", `0`);
+  params.set("address", apartment.address);
 
   return await axiosAuth.post(`/apartments?${params.toString()}`, formData);
 };
