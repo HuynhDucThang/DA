@@ -7,7 +7,7 @@ import {
   userLogout,
 } from "../slices/authSlice";
 import { userLogin } from "@/utils/proxy";
-import { removeCookie } from "@/utils/helpers/common";
+import { removeCookie, showToast } from "@/utils/helpers/common";
 
 interface IUser {
   email: string;
@@ -26,9 +26,15 @@ function* workUserLogin(action: PayloadAction<IUser>): any {
     yield call(saveAuthToken, "refresh_token", data.data.refresh_token);
 
     yield put(userLoginFulfill(data.data.access_token));
+    yield call(showToast, "Đăng nhập thành công");
+
   } catch (error: any) {
     yield put(
       userLoginReject(error.response?.data?.detail?.message ?? "Server Error")
+    );
+    yield call(
+      showToast,
+      `Đăng nhập thất bại ${error.response?.data?.detail?.message}`
     );
   }
 }

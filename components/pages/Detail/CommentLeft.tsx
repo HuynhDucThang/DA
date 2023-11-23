@@ -12,6 +12,7 @@ import { createApartmentCommentServer } from "@/utils/actions";
 import { setModalType } from "@/redux/slices/modalSlice";
 import { Loading } from "@/components/common";
 import Stars from "./comment/stars";
+import { showToast } from "@/utils/helpers/common";
 
 interface IProps {
   comments: IComment[];
@@ -40,7 +41,7 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
 
   const handleOnRating = async () => {
     if (!currentUser.id) {
-      alert("Hãy đăng nhập trước nhé");
+      showToast("Bạn chưa đăng nhập", "error");
       dispatch(setModalType("LOGIN"));
       return;
     }
@@ -58,7 +59,7 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
     setIsLoading(false);
 
     if (res?.errMsg) {
-      alert(res?.errMsg);
+      showToast(`Lỗi ${res?.errMsg}`, "error");
     }
   };
 

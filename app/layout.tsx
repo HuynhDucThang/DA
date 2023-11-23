@@ -4,6 +4,7 @@ import "../styles/index.css";
 import ReduxProvider from "@/components/layouts/ReduxProvider";
 import LayoutMain from "@/components/layouts/LayoutMain";
 import ModalProvider from "@/components/layouts/modal/ModalProvider";
+import ToastifyProvider from "@/components/common/toastify";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default function RootLayout({
           <ModalProvider />
           <LayoutMain>{children}</LayoutMain>
         </ReduxProvider>
+        <ToastifyProvider />
       </body>
     </html>
   );

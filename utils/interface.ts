@@ -28,9 +28,9 @@ export interface IApartmentCreate {
   num_bedrooms: number;
   num_living_rooms: number;
   num_bathrooms: number;
-  num_toilets: number;
   total_people: number;
-  rate: number;
+  city: string;
+  apartment_type: string;
 }
 
 export interface IApartmentRead {
@@ -41,19 +41,18 @@ export interface IApartmentRead {
   num_bedrooms: number;
   num_bathrooms: number;
   num_living_rooms: number;
-  num_toilets: number;
   name: string;
   room: string;
   created_at: string;
   updated_at: string;
   address: string;
-  rate: number;
   total_people: number;
+  apartment_type: string;
   images: IImagesApartment[];
 }
 
 export interface IApartmentDetail extends IApartmentRead {
-  total_rating : number;
+  total_rating: number;
   amenities: IAmenityRead[];
   apartment_contract: IApartmentContract[];
   apartment_tags: {
@@ -104,6 +103,11 @@ export interface IContractCreate {
   end_date: Date;
   total_amount: number;
   num_of_people: number;
+}
+
+export interface IContractsTrip extends IContractCreate {
+  id: string;
+  apartment: IApartmentRead;
 }
 
 // amenity

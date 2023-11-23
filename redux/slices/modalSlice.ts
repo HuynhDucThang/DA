@@ -6,7 +6,8 @@ export type TYPE_MODAL =
   | "HOUSE_ROLE"
   | "SAFETY_AND_ACCOMMONDATION"
   | "CANCEL_POLICY"
-  | "UPDATE_AVATAR";
+  | "UPDATE_AVATAR"
+  | "SEARCH";
 
 interface IInitstates {
   typeModal: TYPE_MODAL | null;

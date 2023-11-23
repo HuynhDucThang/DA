@@ -85,10 +85,10 @@ export const createApartment = async (
   params.set("num_bedrooms", `${apartment.num_bedrooms}`);
   params.set("num_living_rooms", `${apartment.num_living_rooms}`);
   params.set("num_bathrooms", `${apartment.num_bathrooms}`);
-  params.set("num_toilets", `${apartment.num_toilets}`);
   params.set("total_people", `${apartment.total_people}`);
-  params.set("rate", `0`);
   params.set("address", apartment.address);
+  params.set("city", apartment.city);
+  params.set("apartment_type", apartment.apartment_type);
 
   return await axiosAuth.post(`/apartments?${params.toString()}`, formData);
 };
@@ -128,8 +128,8 @@ export const deleteTag = async (tagId: string) =>
 export const getContracts = async (query: string, page: number) =>
   await axiosAuth.get(`/contracts/all`);
 
-export const getContractByUserId = async (userId: string) =>
-  await axiosAuth.get(`/contracts/${userId}`);
+export const getContractsTrip = async (userId: string) =>
+  await axiosAuth.get(`/contracts?id=${userId}&type_id=USER_ID`);
 
 export const createContract = async (contract: IContractCreate) =>
   await axiosAuth.post("/contracts", contract);

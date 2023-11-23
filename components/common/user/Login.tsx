@@ -5,9 +5,10 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { BtnCommon, InputField } from "..";
 import { userLoginPending } from "@/redux/slices/authSlice";
 import { removeModalType } from "@/redux/slices/modalSlice";
+import { showToast } from "@/utils/helpers/common";
 
 export default function Login() {
-  const { access_token } = useAppSelector((state) => state.auth);
+  const { access_token, error } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   const [user, setUser] = useState({

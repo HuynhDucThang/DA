@@ -9,6 +9,7 @@ import { uploadAvatar } from "@/utils/proxy";
 import Modal from "@/components/common/modal/Modal";
 import { BtnCommon } from "@/components/common";
 import { setUserMe } from "@/redux/slices/userSlice";
+import { showToast } from "@/utils/helpers/common";
 
 export default function ModalUpdateAvatar() {
   const [avatar, setAvatar] = useState<any | null>(null);
@@ -25,7 +26,7 @@ export default function ModalUpdateAvatar() {
   // xử lý người dùng đăng nhập
   const handleUpdateAvatar = async () => {
     if (!currentUser) {
-      alert("Bạn hãy đăng nhập trước");
+      showToast("Bạn hãy đăng nhập trước", "error");
       return;
     }
 
@@ -35,12 +36,13 @@ export default function ModalUpdateAvatar() {
       formData.append("avatar", avatar);
 
       await uploadAvatar(currentUser.id, formData);
-        alert("Thành công")
-    //   router.refresh();
+      showToast("Thành công", "success");
+
+      //   router.refresh();
       dispatch(removeModalType());
     } catch (error) {
       console.log("error : ", error);
-      alert("thất bại");
+      showToast("Lỗi", "error");
     } finally {
       setIsLoading(false);
     }
