@@ -116,3 +116,4 @@ export const showToast = (message: string, type = "success" as TOAST_TYPE) => {
       break;
   }
 };
+

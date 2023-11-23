@@ -7,7 +7,7 @@ export type TYPE_MODAL =
   | "SAFETY_AND_ACCOMMONDATION"
   | "CANCEL_POLICY"
   | "UPDATE_AVATAR"
-  | "CONFIRM";
+  | "SEARCH";
 
 interface IInitstates {
   typeModal: TYPE_MODAL | null;

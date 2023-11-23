@@ -6,21 +6,28 @@ import FilterItem from "./FilterItem";
 import Image from "next/image";
 import CheckBox from "../checkbox/CheckBox";
 import { getTagsFilter } from "@/utils/proxy";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  clearAllSearchParams,
+  updateSearchParams,
+} from "@/utils/helpers/common";
 
 interface IProps {}
 
 export default function FilterApartment({}: IProps) {
   const [tags, setTags] = useState<ITagRead[]>([]);
   const [isChecked, setIsChecked] = useState(false);
-  
+
   const searchParams = useSearchParams();
   const tagId = searchParams.get("tagId") ?? tags[0]?.id ?? "";
+  const router = useRouter();
 
   useEffect(() => {
     (async () => {
       try {
         const { data } = await getTagsFilter();
+        const search = updateSearchParams("tagId", data.data?.[0]?.id ?? "");
+        router.replace(search);
         setTags(data.data);
       } catch (error) {
         console.log(error);
@@ -30,6 +37,10 @@ export default function FilterApartment({}: IProps) {
 
   const toggleSwitch = () => {
     setIsChecked((pre) => !pre);
+  };
+
+  const handleReset = () => {
+    router.replace(clearAllSearchParams(), { scroll: false });
   };
 
   return (
@@ -45,17 +56,14 @@ export default function FilterApartment({}: IProps) {
       <div className="flex items-center gap-4">
         <div className="border border-c-border py-4 rounded-2xl cursor-pointer">
           <div className="flex_center gap-3 px-5">
-            <Image
-              src="/filter/filter_black.svg"
-              alt="icon filter"
-              width={20}
-              height={20}
-            />
-            <p className="text_filter_apartment">Bộ lọc</p>
+            <Image src="/reset.svg" alt="icon filter" width={24} height={24} />
+            <p className="text_filter_apartment" onClick={handleReset}>
+              Đặt lại bộ tìm kiếm
+            </p>
           </div>
         </div>
 
-        <div
+        {/* <div
           className="flex items-center gap-2 border border-c-border py-2 px-5 rounded-2xl cursor-pointer"
           onClick={toggleSwitch}
         >
@@ -63,7 +71,7 @@ export default function FilterApartment({}: IProps) {
             Hiển thị căn hộ có người thuê
           </p>
           <CheckBox isChecked={isChecked} toggleSwitch={toggleSwitch} />
-        </div>
+        </div> */}
       </div>
     </div>
   );

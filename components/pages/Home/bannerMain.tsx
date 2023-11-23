@@ -1,8 +1,12 @@
 "use client";
 
+import { useAppDispatch } from "@/redux/hooks";
+import { setModalType } from "@/redux/slices/modalSlice";
 import Image from "next/image";
 
 export default function BannerMain() {
+  const dispatch = useAppDispatch();
+
   return (
     <div className="h-[600px] relative">
       <Image src="/images/banner_main.png" alt="banner_main" fill />
@@ -19,16 +23,11 @@ export default function BannerMain() {
             Mang đến cho bạn những sự lựa chọn tốt nhất cho điểm đến của bạn !!!{" "}
           </p>
           <div className="flex_center gap-3 w-[80%] h-[80px] mt-6">
-            <div className="flex-1 h-full">
-              <input
-                type="text"
-                placeholder="Tìm kiếm theo tên căn hộ ...."
-                className="outline-none rounded-lg py-3 px-8 w-full h-full text-black text-2xl"
-              />
-            </div>
-
-            <div className="py-4 px-8 bg-[var(--color-red)] cursor-pointer text-white h-full rounded-xl flex_center text-2xl font-semibold">
-              Tìm kiếm
+            <div
+              className="py-4 px-8 bg-[var(--color-red)] cursor-pointer text-white h-full rounded-xl flex_center text-2xl font-semibold"
+              onClick={() => dispatch(setModalType("SEARCH"))}
+            >
+              Nhấn vào đây để tìm kiếm
             </div>
           </div>
         </div>

@@ -28,9 +28,9 @@ export interface IApartmentCreate {
   num_bedrooms: number;
   num_living_rooms: number;
   num_bathrooms: number;
-  num_toilets: number;
   total_people: number;
-  rate: number;
+  city: string;
+  apartment_type: string;
 }
 
 export interface IApartmentRead {
@@ -41,14 +41,13 @@ export interface IApartmentRead {
   num_bedrooms: number;
   num_bathrooms: number;
   num_living_rooms: number;
-  num_toilets: number;
   name: string;
   room: string;
   created_at: string;
   updated_at: string;
   address: string;
-  rate: number;
   total_people: number;
+  apartment_type: string;
   images: IImagesApartment[];
 }
 

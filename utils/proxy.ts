@@ -85,10 +85,10 @@ export const createApartment = async (
   params.set("num_bedrooms", `${apartment.num_bedrooms}`);
   params.set("num_living_rooms", `${apartment.num_living_rooms}`);
   params.set("num_bathrooms", `${apartment.num_bathrooms}`);
-  params.set("num_toilets", `${apartment.num_toilets}`);
   params.set("total_people", `${apartment.total_people}`);
-  params.set("rate", `0`);
   params.set("address", apartment.address);
+  params.set("city", apartment.city);
+  params.set("apartment_type", apartment.apartment_type);
 
   return await axiosAuth.post(`/apartments?${params.toString()}`, formData);
 };

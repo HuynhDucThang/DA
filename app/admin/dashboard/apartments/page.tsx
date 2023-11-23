@@ -31,7 +31,8 @@ const ApartmentsPage = async ({ searchParams }: any) => {
             <td>Title</td>
             <td>Description</td>
             <td>Price</td>
-            <td>Created At</td>
+            <td>Create At</td>
+            <td>Type</td>
             <td>Total rooms</td>
             <td>Action</td>
           </tr>
@@ -43,7 +44,8 @@ const ApartmentsPage = async ({ searchParams }: any) => {
                 <div className={styles.product}>
                   <Image
                     src={
-                      `${URL}/${apartment?.images?.[0]?.image_url}` || "/avatar.png"
+                      `${URL}/${apartment?.images?.[0]?.image_url}` ||
+                      "/avatar.png"
                     }
                     alt="banner"
                     width={40}
@@ -56,6 +58,7 @@ const ApartmentsPage = async ({ searchParams }: any) => {
               <td className="line-clamp-3">{apartment.desc}</td>
               <td>${apartment.price_per_day}</td>
               <td>{handleConvertDate(new Date(apartment.created_at))}</td>
+              <td>{apartment.apartment_type}</td>
               <td>
                 {apartment.num_bathrooms +
                   apartment.num_bedrooms +

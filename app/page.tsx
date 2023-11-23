@@ -7,21 +7,36 @@ import { Suspense } from "react";
 
 interface IProps {
   searchParams: {
+    city: string;
     skip: string;
     limit: string;
     tagId: string;
+    lowest_price: number;
+    hightest_price: number;
+    apartment_type: string;
   };
 }
 
-async function getApartments(tagId: string) {
+async function getApartments(searchParams: any) {
+  const params = new URLSearchParams();
+  const addParamIfExist = (key: string, value: any) => {
+    if (value) {
+      params.set(key, value);
+    }
+  };
+
+  Object.keys(searchParams).forEach((key) => {
+    if (searchParams[key]) {
+      const keyName = key === "tagId" ? "tag_id" : key;
+      addParamIfExist(keyName, searchParams[key]);
+    }
+  });
+
   const res = await fetch(
-    `http://127.0.0.1:8000/api/apartments/tag${
-      tagId ? `?tag_id=${tagId}` : ""
-    }`,
+    `http://127.0.0.1:8000/api/apartments/tag?${params.toString()}`,
     { cache: "no-store" }
   );
   const data = await res.json();
-
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
@@ -30,7 +45,7 @@ async function getApartments(tagId: string) {
 }
 
 export default async function Home({ searchParams }: IProps) {
-  const promiseApartment = getApartments(searchParams.tagId);
+  const promiseApartment = getApartments(searchParams);
 
   return (
     <>

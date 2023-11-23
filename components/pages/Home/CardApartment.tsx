@@ -66,7 +66,6 @@ export default function CardApartment({ apartment }: IProps) {
             <h4 className="text_card_heading line-clamp-1">{apartment.name}</h4>
             <div className="flex_center gap-1">
               <Image src="/star.svg" alt="star icon" width={20} height={20} />
-              <span>{apartment.rate}</span>
             </div>
           </div>
 
@@ -85,10 +84,20 @@ export default function CardApartment({ apartment }: IProps) {
             </p>
           </div>
           {/* price */}
-          <div className="flex items-center gap-1">
-            <Image src="/dolar.svg" alt="star icon" width={20} height={20} />
-            <span className="text_card_heading">{apartment.price_per_day}</span>
-            /<span>đêm</span>
+          <div className="flex justify-between items-center gap-2">
+            <div className="flex items-center gap-1">
+              <Image src="/dolar.svg" alt="star icon" width={20} height={20} />
+              <span className="text_card_heading">
+                {apartment.price_per_day}
+              </span>
+              /<span>đêm</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Image src="/filter/house.svg" alt="star icon" width={20} height={20} />
+              <span className="text_card_heading">
+                {apartment.apartment_type}
+              </span>
+            </div>
           </div>
         </div>
       </div>
