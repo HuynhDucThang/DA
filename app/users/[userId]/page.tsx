@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setModalType } from "@/redux/slices/modalSlice";
 import { setUserMe } from "@/redux/slices/userSlice";
 import { URL } from "@/utils/api";
+import { showToast } from "@/utils/helpers/common";
 import { IUser } from "@/utils/interface";
 import { getUserById, updateUser } from "@/utils/proxy";
 import Image from "next/image";
@@ -57,7 +58,7 @@ export default function ProfileUser() {
 
   const handleSubmit = async () => {
     if (!currentUser?.id) {
-      alert("Bạn chưa đăng nhập");
+      showToast("Bạn chưa đăng nhập", "error");
       dispatch(setModalType("LOGIN"));
       return;
     }
@@ -79,8 +80,9 @@ export default function ProfileUser() {
       data?.data?.id === currentUser?.id && dispatch(setUserMe(data.data));
       setFieldEdit(null);
       setUserUpdate(initUserUpdate);
-      alert("Tạo thành công");
+      showToast("Thành công");
     } catch (error) {
+      showToast("Lỗi");
       console.error("Error:", error);
     } finally {
       setIsLoading(false);

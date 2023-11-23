@@ -5,6 +5,7 @@ import { useState } from "react";
 import { userSignUp } from "@/utils/proxy";
 import { useAppDispatch } from "@/redux/hooks";
 import { removeModalType, setModalType } from "@/redux/slices/modalSlice";
+import { showToast } from "@/utils/helpers/common";
 
 export default function Register() {
   const [user, setUser] = useState({
@@ -21,16 +22,16 @@ export default function Register() {
     try {
       const { confirm_password, email, password, username, phonenumber } = user;
       if (password !== confirm_password) {
-        alert("Xác nhận lại mật khẩu không chính xác");
+        showToast("Xác nhận lại mật khẩu không chính xác", "error");
         return;
       }
       await userSignUp(email, password, username, phonenumber);
-      alert("Đăng ký thành công");
+      showToast("Đăng ký thành công", "success");
 
       dispatch(removeModalType());
       dispatch(setModalType("LOGIN"));
     } catch (error: any) {
-      alert("Đăng ký không thành công");
+      showToast("Đăng ký không thành công", "error");
     }
   };
 

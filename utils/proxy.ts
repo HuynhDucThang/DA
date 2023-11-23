@@ -128,8 +128,8 @@ export const deleteTag = async (tagId: string) =>
 export const getContracts = async (query: string, page: number) =>
   await axiosAuth.get(`/contracts/all`);
 
-export const getContractByUserId = async (userId: string) =>
-  await axiosAuth.get(`/contracts/${userId}`);
+export const getContractsTrip = async (userId: string) =>
+  await axiosAuth.get(`/contracts?id=${userId}&type_id=USER_ID`);
 
 export const createContract = async (contract: IContractCreate) =>
   await axiosAuth.post("/contracts", contract);

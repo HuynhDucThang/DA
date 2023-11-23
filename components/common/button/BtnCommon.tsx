@@ -15,7 +15,7 @@ export default function BtnCommon({
         typeBtn === "fill"
           ? "bg-[#dc0e64] hover:opacity-80"
           : "border border-[#dc0e64] hover:bg-[#dc0e64]"
-      } flex_center rounded-lg py-4 mt-4 cursor-pointer transition-all group`}
+      } flex_center rounded-lg py-4 mt-4 cursor-pointer transition-all group-btn`}
       onClick={handleClick}
     >
       <div

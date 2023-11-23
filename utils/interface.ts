@@ -53,7 +53,7 @@ export interface IApartmentRead {
 }
 
 export interface IApartmentDetail extends IApartmentRead {
-  total_rating : number;
+  total_rating: number;
   amenities: IAmenityRead[];
   apartment_contract: IApartmentContract[];
   apartment_tags: {
@@ -104,6 +104,11 @@ export interface IContractCreate {
   end_date: Date;
   total_amount: number;
   num_of_people: number;
+}
+
+export interface IContractsTrip extends IContractCreate {
+  id: string;
+  apartment: IApartmentRead;
 }
 
 // amenity

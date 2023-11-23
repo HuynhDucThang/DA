@@ -6,7 +6,7 @@ import ModalAbs from "@/components/common/modal/ModalAbs";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { removeDate, setDate } from "@/redux/slices/booking";
 import { setModalType } from "@/redux/slices/modalSlice";
-import { handleConvertDate } from "@/utils/helpers/common";
+import { handleConvertDate, showToast } from "@/utils/helpers/common";
 import useModal from "@/utils/hook/useModal";
 import { IApartmentRead } from "@/utils/interface";
 import { createContract } from "@/utils/proxy";
@@ -81,13 +81,14 @@ export default function PayDetail({ apartmentDetail }: IProps) {
 
   const handleBooking = async () => {
     if (!currentUser.id) {
-      alert("Hãy đăng nhập trước nhé");
+      showToast(`"Hãy đăng nhập trước nhé`, "error");
       dispatch(setModalType("LOGIN"));
       return;
     }
 
     if (!start_date || !end_date) {
-      alert("Hãy chọn ngày đặt lịch");
+      showToast(`Hãy chọn ngày đặt lịch`, "error");
+
       return;
     }
 
@@ -95,7 +96,9 @@ export default function PayDetail({ apartmentDetail }: IProps) {
       const { data } = await createContract({
         apartment_id: params.apartmentId as string,
         user_id: currentUser.id,
-        content: `${currentUser.username} đặt phòng trong khoảng thời gian ${handleConvertDate(
+        content: `${
+          currentUser.username
+        } đặt phòng trong khoảng thời gian ${handleConvertDate(
           start_date
         )} - ${handleConvertDate(end_date)}`,
         end_date: end_date,
@@ -112,10 +115,9 @@ export default function PayDetail({ apartmentDetail }: IProps) {
       });
       dispatch(setDate(data));
 
-      alert("Thành công");
+      showToast(`Thành công`);
     } catch (error) {
-      console.log("error : ", error);
-      alert("Thất bại rồi");
+      showToast(`Lỗi`, "error");
     }
   };
 

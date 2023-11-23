@@ -8,7 +8,7 @@ import { getUser } from "@/utils/proxy";
 
 function* workGetCurrentUser(): any {
   try {
-    const {data} = yield call(getUser);
+    const { data } = yield call(getUser);
     yield put(getCurrentUserFulfill({ ...data.data }));
   } catch (error: any) {
     removeCookie("access_token");

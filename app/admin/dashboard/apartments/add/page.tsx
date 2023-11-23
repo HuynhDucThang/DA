@@ -3,6 +3,7 @@
 import BtnSubmit from "@/components/common/button/btnSubmit";
 import PhotoPreview from "@/components/pages/admin/dashboard/apartments/photoPreview";
 import styles from "@/components/pages/admin/dashboard/apartments/singleApartment.module.css";
+import { showToast } from "@/utils/helpers/common";
 import { IApartmentCreate } from "@/utils/interface";
 import { createApartment, updateImagesApartment } from "@/utils/proxy";
 import Image from "next/image";
@@ -69,8 +70,8 @@ const SingleApartmentPage = () => {
   ) => {
     event.preventDefault();
 
-    if (images.length < 3) {
-      alert(" phải nhiều hơn 3 ảnh");
+    if (images.length < 5) {
+      showToast("Phải có nhiều hơn 5 ảnh", "warn")
       return;
     }
 
@@ -87,11 +88,11 @@ const SingleApartmentPage = () => {
       });
       const res = await updateImagesApartment(data?.id, formData);
 
-      alert("Thành công ");
+      showToast("Thành công")
       router.push("/admin/dashboard/apartments");
     } catch (error) {
       console.log(error);
-      alert("Lỗi không thể tạo căn hộ");
+      showToast("Lỗi", "error")
     }
   };
 
