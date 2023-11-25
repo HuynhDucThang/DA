@@ -65,6 +65,7 @@ export default function CardApartment({ apartment }: IProps) {
           <div className="flex justify-between items-center gap-2">
             <h4 className="text_card_heading line-clamp-1">{apartment.name}</h4>
             <div className="flex_center gap-1">
+              <span>{apartment.total_rating}</span>
               <Image src="/star.svg" alt="star icon" width={20} height={20} />
             </div>
           </div>
@@ -93,7 +94,12 @@ export default function CardApartment({ apartment }: IProps) {
               /<span>đêm</span>
             </div>
             <div className="flex items-center gap-1">
-              <Image src="/filter/house.svg" alt="star icon" width={20} height={20} />
+              <Image
+                src="/filter/house.svg"
+                alt="star icon"
+                width={20}
+                height={20}
+              />
               <span className="text_card_heading">
                 {apartment.apartment_type}
               </span>

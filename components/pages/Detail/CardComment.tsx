@@ -4,6 +4,7 @@ import { IComment } from "@/utils/interface";
 import Image from "next/image";
 import Stars from "./comment/stars";
 import Link from "next/link";
+import Desc from "./Desc";
 
 interface IProps {
   comment: IComment;
@@ -14,7 +15,10 @@ export default function CardComment({ comment }: IProps) {
     <div className="card flex gap-6">
       {/* avatar */}
       <div className="">
-        <Link href={`/users/${comment.user_id}`} className="block w-20 h-20 relative">
+        <Link
+          href={`/users/${comment.user_id}`}
+          className="block w-20 h-20 relative"
+        >
           <Image
             src={
               comment.user?.avatar
@@ -96,17 +100,8 @@ export default function CardComment({ comment }: IProps) {
 
         {/* body */}
         <div className="pt-4">
-          <p className="text-lg">
-            {comment.text}
-            🌸Xách ba lô lên và đi Đà Lạt, nhưng mà là Đà Lạt giữa lòng thủ đô
-            ^^ ☕️Mình tình cờ biết về quán qua post của 1 bạn reviewer, thấy
-            quán cũng xinh và hợp với đứa nghiện sống ảo như mình, nhưng đến tận
-            nơi thì chưa hẳn đã như tưởng tượng… 🌵Mình chưa thấy quán nào chỉ
-            order một cốc cà phê mà có tới một đống ảnh xinh xẻo, không gian
-            rộng rãi thoáng đãng, nhiều cây xanh nữa. Đồ uống mình order là cà
-            phê Sol, các bạn pha chế giới thiệu món này dành riêng cho các bạn
-            nữ muốn thử vị cà phê pha máy kết hợp vs vị béo của kem.
-          </p>
+          <Desc text={comment.text} />
+          <span>🌸☕️🌵</span>
         </div>
       </div>
     </div>

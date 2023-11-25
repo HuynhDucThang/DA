@@ -1,21 +1,21 @@
 "use client";
 
 import BtnSubmit from "@/components/common/button/btnSubmit";
+import SelectC, { IOption } from "@/components/common/select";
 import PhotoPreview from "@/components/pages/admin/dashboard/apartments/photoPreview";
 import styles from "@/components/pages/admin/dashboard/apartments/singleApartment.module.css";
 import { APARTMENT_TYPE, CITY } from "@/utils/enum";
 import { showToast } from "@/utils/helpers/common";
 import { IApartmentCreate } from "@/utils/interface";
-import { createApartment, updateImagesApartment } from "@/utils/proxy";
+import {
+  createApartment,
+  getAmenities,
+  getTagsFilter,
+  updateImagesApartment,
+} from "@/utils/proxy";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useState } from "react";
-
-const options = [
-  { label: "Grapes 🍇", value: "grapes" },
-  { label: "Mango 🥭", value: "mango" },
-  { label: "Strawberry 🍓", value: "strawberry", disabled: true },
-];
+import { useEffect, useState } from "react";
 
 const SingleApartmentPage = () => {
   const [apartmentCreate, setApartmentCreate] = useState<IApartmentCreate>({
@@ -31,33 +31,46 @@ const SingleApartmentPage = () => {
     city: "",
     apartment_type: "",
   });
+  const [images, setImages] = useState<any[]>([]);
 
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [selectedAmenities, setSelectedAmenities] = useState<IOption[]>([]);
+  const [selectedTags, setSelectedTags] = useState<IOption[]>([]);
+  const [tags, setTags] = useState<IOption[]>([]);
+  const [amenities, setAmenities] = useState<IOption[]>([]);
 
-  // Hàm xử lý sự kiện thay đổi dropdown
-  const handleDropdownChange = (event : ChangeEvent<HTMLSelectElement>) => {
-    const selectedValues = Array.from(event.target.selectedOptions, (option) => option.value);
-    setSelectedOptions(selectedValues);
+  const convertOptions = (data: any[]) => {
+    const dataOptions: IOption[] = [];
+    data.forEach((option) => {
+      dataOptions.push({
+        key: option.id,
+        value: option.name,
+      });
+    });
+    return dataOptions;
   };
 
-  const tag_ids = [
-    "4a7053c9-007b-411d-a07e-16ad51daf4eb",
-    "f18ae502-a1a0-4e7a-8ef9-c6429ba616b0",
-    "7db6bed0-fc29-478b-b0eb-9e37da770ae1",
-    "c1a982f0-00b7-496b-b370-068cf903d5a0",
-  ];
+  useEffect(() => {
+    const getValuesCreate = async () => {
+      try {
+        const promiseTags = getTagsFilter();
+        const promiseAmenities = getAmenities();
 
-  const amenities_ids = [
-    "2a388ab3-5f82-4245-b7c6-6bfb03b0c5d9",
-    "fe2675c0-a162-411d-8723-4659f3d0637e",
-    "a9c1c81f-8e81-4c95-9deb-28707ab62869",
-    "fb2a25a2-12ef-4657-a9fe-bf9a7bd8fa62",
-    "b7762425-5c07-4679-801f-efb4bbd5309f",
-  ];
+        const [dataTags, dataAmenities] = await Promise.all([
+          promiseTags,
+          promiseAmenities,
+        ]);
+
+        setTags(convertOptions(dataTags.data.data));
+        setAmenities(convertOptions(dataAmenities.data.data));
+      } catch (error) {
+        showToast("Lỗi trong quá trình xử lý");
+      }
+    };
+
+    getValuesCreate();
+  }, []);
 
   const router = useRouter();
-
-  const [images, setImages] = useState<any[]>([]);
 
   const handleOnchange = (
     e: React.ChangeEvent<
@@ -82,6 +95,12 @@ const SingleApartmentPage = () => {
     setImages((pre) => [...Object.values(files), ...pre]);
   };
 
+  const handleCovertToArrIds = (data: any[]) => {
+    const ids: string[] = [];
+    data.forEach((item) => ids.push(item.key));
+    return ids;
+  };
+
   const handleCreateApartment = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
@@ -97,6 +116,12 @@ const SingleApartmentPage = () => {
     images.forEach((img) => {
       formData.append("images", img);
     });
+
+    const tag_ids = handleCovertToArrIds(selectedTags);
+    const amenities_ids = handleCovertToArrIds(selectedAmenities);
+
+    console.log("tag_ids : ", tag_ids);
+    console.log("amenities_ids : ", amenities_ids);
 
     try {
       const { data } = await createApartment(apartmentCreate, {
@@ -117,9 +142,9 @@ const SingleApartmentPage = () => {
     <div className={styles.container}>
       {/* left */}
       <div className={styles.infoContainer}>
-        <div className={styles.imgContainer}>
-          <Image src={`/avatar.png`} alt="" fill />
-        </div>
+        <label htmlFor="images" className={`${styles.imgContainer} block cursor-pointer`}>
+          <Image src={`/img-upload.png`} alt="" fill />
+        </label>
         <div className="flex">
           {images.length &&
             images.map((img, index) => (
@@ -131,9 +156,11 @@ const SingleApartmentPage = () => {
             ))}
         </div>
         <input
+          id="images"
           type="file"
           accept=".png, .jpg"
           multiple
+          hidden
           onChange={handleUploadFiles}
         />
       </div>
@@ -206,6 +233,29 @@ const SingleApartmentPage = () => {
             value={apartmentCreate.total_people}
             onChange={handleOnchange}
           />
+          {/* select */}
+          <div className="flex items-center w-full gap-4">
+            <div className="flex flex-col w-1/2">
+              <label>apartment amenities</label>
+              <SelectC
+                title="amenities"
+                selected={selectedAmenities}
+                handleOnSelected={(options) => setSelectedAmenities(options)}
+                options={amenities}
+              />
+            </div>
+
+            <div className="flex flex-col w-1/2">
+              <label>apartment tags</label>
+              <SelectC
+                title="tags"
+                selected={selectedTags}
+                handleOnSelected={(options) => setSelectedTags(options)}
+                options={tags}
+              />
+            </div>
+          </div>
+
           {/* row */}
           <div className="flex items-center w-full gap-4">
             <div className="flex flex-col w-1/2">

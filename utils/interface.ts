@@ -49,6 +49,8 @@ export interface IApartmentRead {
   total_people: number;
   apartment_type: string;
   images: IImagesApartment[];
+  comments: IComment[];
+  total_rating?: number;
 }
 
 export interface IApartmentDetail extends IApartmentRead {

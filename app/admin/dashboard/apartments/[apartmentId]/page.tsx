@@ -63,12 +63,6 @@ const SingleApartmentPage = async ({ params }: any) => {
             name="num_living_rooms"
             placeholder={`${apartment.num_living_rooms}`}
           />
-          <label>num_toilets</label>
-          <input
-            type="number"
-            name="num_toilets"
-            placeholder={`${apartment.num_toilets}`}
-          />
           <label>total_people</label>
           <input
             type="number"
@@ -81,8 +75,7 @@ const SingleApartmentPage = async ({ params }: any) => {
             name="address"
             id="address"
             rows={2}
-            placeholder={"Entered address"}
-            value={apartment.address}
+            placeholder={apartment.address}
             className="resize-none"
           ></textarea>
           {/* desc */}

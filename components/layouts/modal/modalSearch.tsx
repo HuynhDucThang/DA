@@ -1,4 +1,5 @@
 import { BtnCommon, Login } from "@/components/common";
+import LoadingSearch from "@/components/common/loadingSearch";
 import Modal from "@/components/common/modal/Modal";
 import RangeSlider from "@/components/common/slider";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -8,8 +9,10 @@ import {
   updateMutilpleSearchParams,
   updateSearchParams,
 } from "@/utils/helpers/common";
+import { IAmenityRead } from "@/utils/interface";
+import { getAmenities, getApartmentsLocal } from "@/utils/proxy";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const DATA_APARTMENT_TYPE = [
@@ -31,8 +34,10 @@ const DATA_APARTMENT_TYPE = [
 ];
 
 export default function ModalSearch() {
+  const [amenities, setAmenities] = useState<IAmenityRead[]>([]);
   const { typeModal } = useAppSelector((state) => state.modal);
-
+  const [totalApartment, setTotalApartment] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useState({
     city: "",
     lowest_price: 0,
@@ -45,6 +50,37 @@ export default function ModalSearch() {
   const router = useRouter();
 
   const [checkboxState, setCheckboxState] = useState<number[]>([]);
+
+  const params = useSearchParams();
+  const tagId = params.get("tagId");
+
+  useEffect(() => {
+    const getApartmentFilter = async () => {
+      setIsLoading(true);
+      try {
+        const { data } = await getApartmentsLocal({
+          ...searchParams,
+          tag_id: tagId,
+        });
+        setTotalApartment(data?.data?.length);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getApartmentFilter();
+  }, [searchParams, tagId]);
+
+  useEffect(() => {
+    const getAmenitiesFilter = async () => {
+      try {
+        const { data } = await getAmenities();
+        setAmenities(data.data);
+      } catch (error) {}
+    };
+    getAmenitiesFilter();
+  }, []);
 
   const handleCheckboxChange = (index: number) => {
     setCheckboxState((prevCheckboxState) => {
@@ -63,8 +99,6 @@ export default function ModalSearch() {
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSearchParams((pre) => ({ ...pre, city: event.target.value }));
   };
-
-  const [typeApartment, setTypeApartment] = useState<string>("");
 
   const handleSliderChange = (event: any) => {
     const { name, value } = event.target;
@@ -90,37 +124,38 @@ export default function ModalSearch() {
     <Modal
       isOpen={typeModal === "SEARCH" ? true : false}
       handleCloseModal={() => dispatch(removeModalType())}
-      commonStyles="max-w-[700px]"
+      commonStyles="max-w-[760px]"
       title="Tìm kiếm căn hộ"
     >
       <div className="h-[60vh] overflow-y-auto -mr-4 px-2">
-        <div className="py-4">
-          <h2>Thành phố</h2>
-          <p>Tên thành phố mà bạn muốn đến.</p>
-
-          <label htmlFor="city" className="border border-c-grey rounded-lg">
+        <Container title="Thành phố" desc="Tên thành phố mà bạn muốn đến.">
+          <label
+            htmlFor="city"
+            className="border border-c-grey rounded-lg flex items-center justify-between"
+          >
             <select
               id="city"
               value={searchParams.city}
               onChange={handleSelectChange}
-              className="outline-none"
+              className="outline-none w-full p-4 overflow-hidden rounded-xl"
             >
-              <option value="" disabled hidden>
+              <option value="" className="text-lg block p-4" disabled hidden>
                 Chọn thành phố
               </option>
               {Object.keys(CITY).map((key) => (
-                <option key={key} value={key}>
+                <option key={key} value={key} className="text-lg block p-2">
                   {CITY[key as keyof typeof CITY]}
                 </option>
               ))}
             </select>
           </label>
-        </div>
-        {/*  */}
-        <div className="py-4">
-          <h2>Loại nơi ở</h2>
-          <p>Tìm phòng, nhà nguyên căn hoặc bất kỳ loại chỗ ở nào.</p>
+        </Container>
 
+        {/*  */}
+        <Container
+          title="Loại nơi ở "
+          desc="Tìm phòng, nhà nguyên căn hoặc bất kỳ loại chỗ ở nào."
+        >
           <div className="mt-6 grid grid-cols-3 gap-4">
             {DATA_APARTMENT_TYPE.map((type, index) => (
               <div
@@ -142,33 +177,34 @@ export default function ModalSearch() {
               </div>
             ))}
           </div>
-        </div>
+        </Container>
 
-        <div className="border-t border-c-grey py-4">
-          <h2>Tiện nghi </h2>
-          <p>Đồ dùng thiết yếu và vật dụng khác</p>
-
+        {/*  */}
+        <Container title="Tiện nghi " desc="Đồ dùng thiết yếu và vật dụng khác">
           <div className="mt-6 grid grid-cols-2 gap-4">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <label className="block w-1/2" key={index}>
+            {amenities.map((amenity, index) => (
+              <label
+                className="flex item-center gap-3 cursor-pointer"
+                key={index}
+              >
                 <input
                   type="checkbox"
                   name={`item2-${index}`}
                   checked={checkboxState.includes(index)}
                   onChange={() => handleCheckboxChange(index)}
+                  className="w-6 h-6"
                 />
-                {index}
+                <span className="text-lg">{amenity.name}</span>
               </label>
             ))}
           </div>
+        </Container>
 
-          {/*  */}
-        </div>
-
-        <div className="border-t border-c-grey py-4">
-          <h2>Khoảng giá</h2>
-          <p>Giá theo đêm chưa bao gồm phí và thuế</p>
-
+        {/*  */}
+        <Container
+          title="Khoảng giá"
+          desc="Giá theo đêm chưa bao gồm phí và thuế"
+        >
           <div>
             <label htmlFor="">Giá Thấp Nhất</label>
             <input
@@ -194,10 +230,34 @@ export default function ModalSearch() {
               name="hightest_price"
             />
           </div>
-        </div>
+        </Container>
 
-        <BtnCommon title="Tìm kiếm" handleClick={handleFilterApartments} />
+        <div className="sticky bottom-0">
+          <BtnCommon
+            title={`Tìm kiếm căn hộ (${
+              isLoading ? "...đang tải..." : totalApartment
+            })`}
+            handleClick={handleFilterApartments}
+          />
+        </div>
       </div>
     </Modal>
+  );
+}
+
+interface IContainer {
+  children: React.ReactNode;
+  title: string;
+  desc: string;
+}
+
+function Container({ children, desc, title }: IContainer) {
+  return (
+    <div className="py-4 border-b border-c-grey">
+      <h2 className="text-2xl text-txt-primary font-semibold">{title}</h2>
+      <p className="text-xl text-second font-medium mb-6">{desc}</p>
+
+      {children}
+    </div>
   );
 }
