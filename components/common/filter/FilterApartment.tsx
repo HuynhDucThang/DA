@@ -11,12 +11,12 @@ import {
   clearAllSearchParams,
   updateSearchParams,
 } from "@/utils/helpers/common";
+import SelectC from "../select";
 
 interface IProps {}
 
 export default function FilterApartment({}: IProps) {
   const [tags, setTags] = useState<ITagRead[]>([]);
-  const [isChecked, setIsChecked] = useState(false);
 
   const searchParams = useSearchParams();
   const tagId = searchParams.get("tagId") ?? tags[0]?.id ?? "";
@@ -35,9 +35,6 @@ export default function FilterApartment({}: IProps) {
     })();
   }, []);
 
-  const toggleSwitch = () => {
-    setIsChecked((pre) => !pre);
-  };
 
   const handleReset = () => {
     router.replace(clearAllSearchParams(), { scroll: false });

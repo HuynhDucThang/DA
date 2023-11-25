@@ -55,7 +55,9 @@ const ApartmentsPage = async ({ searchParams }: any) => {
                   {apartment.name}
                 </div>
               </td>
-              <td className="line-clamp-3">{apartment.desc}</td>
+              <td className="flex items-center line-clamp-3 overflow-y-auto max-h-20 max-w-[200px]">
+                {apartment.desc}
+              </td>
               <td>${apartment.price_per_day}</td>
               <td>{handleConvertDate(new Date(apartment.created_at))}</td>
               <td>{apartment.apartment_type}</td>

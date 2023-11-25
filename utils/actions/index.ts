@@ -158,7 +158,6 @@ export const updateApartmentAction = async (formData: FormData) => {
     num_bathrooms,
     num_bedrooms,
     num_living_rooms,
-    num_toilets,
     price_per_day,
     total_people,
   };

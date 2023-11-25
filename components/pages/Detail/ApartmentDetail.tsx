@@ -29,7 +29,7 @@ export default function Details({ apartment }: IProps) {
     <div className="flex gap-16 pb-8">
       <div className="w-[65%]">
         <TitleDetail apartmentDetail={apartmentDetail} />
-        <Desc />
+        <Desc text={apartmentDetail.desc} />
         <NumbRoom />
         <Amenities amenities={amenities} />
         <TimeBooking />

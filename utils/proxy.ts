@@ -110,6 +110,24 @@ export const updateImagesApartment = async (
 export const deleteApartment = async (apartmentId: string) =>
   await axiosAuth.delete(`/apartments/${apartmentId}`);
 
+export async function getApartmentsLocal(searchParams: any) {
+  const params = new URLSearchParams();
+  const addParamIfExist = (key: string, value: any) => {
+    if (value) {
+      params.set(key, value);
+    }
+  };
+
+  Object.keys(searchParams).forEach((key) => {
+    if (searchParams[key]) {
+      const keyName = key === "tagId" ? "tag_id" : key;
+      addParamIfExist(keyName, searchParams[key]);
+    }
+  });
+
+  return await axiosAuth(`/apartments/tag?${params.toString()}`);
+}
+
 // ------------------------------- tags -------------------------------
 
 export const getTagsFilter = async () => await axiosAuth.get(`/tags/all`);

@@ -40,12 +40,6 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
   };
 
   const handleOnRating = async () => {
-    if (!currentUser.id) {
-      showToast("Bạn chưa đăng nhập", "error");
-      dispatch(setModalType("LOGIN"));
-      return;
-    }
-
     setIsLoading(true);
 
     const res = await createApartmentCommentServer({
@@ -59,7 +53,7 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
     setIsLoading(false);
 
     if (res?.errMsg) {
-      showToast(`Lỗi ${res?.errMsg}`, "error");
+      showToast(`Lỗi 13 ${res?.errMsg}`, "error");
     }
   };
 
@@ -70,10 +64,17 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
         <div className="p-4">
           <div className="flex items-center justify-between py-4">
             <h2 className="heading__detail_apartment text-3xl">
-              Đánh giá từ cộng đồng <span>(3)</span>
+              Đánh giá từ cộng đồng <span>({comments.length})</span>
             </h2>
             <button
-              onClick={openPopup}
+              onClick={() => {
+                if (!currentUser.id) {
+                  showToast("Hãy đăng nhập để sử dụng tính năng này", "error");
+                  dispatch(setModalType("LOGIN"));
+                  return;
+                }
+                openPopup();
+              }}
               className="text-white bg-c-logo py-2 px-3 rounded-lg text-lg font-semibold"
             >
               Viết đánh giá
@@ -231,7 +232,7 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
               className="text-white bg-c-logo py-2 px-3 rounded-lg text-lg font-semibold"
               onClick={handleOnRating}
             >
-              Viết đánh giá
+              {isLoading ? "Đang xử lý" : "Viết đánh giá"}
             </button>
           </div>
         </form>
