@@ -2,10 +2,12 @@ import { BtnCommon, Login } from "@/components/common";
 import LoadingSearch from "@/components/common/loadingSearch";
 import Modal from "@/components/common/modal/Modal";
 import RangeSlider from "@/components/common/slider";
+import SliderC from "@/components/common/slider/slider";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { removeModalType } from "@/redux/slices/modalSlice";
 import { CITY } from "@/utils/enum";
 import {
+  clearAllSearchParams,
   updateMutilpleSearchParams,
   updateSearchParams,
 } from "@/utils/helpers/common";
@@ -34,22 +36,21 @@ const DATA_APARTMENT_TYPE = [
 ];
 
 export default function ModalSearch() {
-  const [amenities, setAmenities] = useState<IAmenityRead[]>([]);
   const { typeModal } = useAppSelector((state) => state.modal);
   const [totalApartment, setTotalApartment] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useState({
     city: "",
-    lowest_price: 0,
-    hightest_price: 0,
+    lowest_price: 1,
+    hightest_price: 5000,
     apartment_type: "",
+    amenities: [] as string[],
   });
+  const [amenities, setAmenities] = useState<IAmenityRead[]>([]);
 
   const dispatch = useAppDispatch();
 
   const router = useRouter();
-
-  const [checkboxState, setCheckboxState] = useState<number[]>([]);
 
   const params = useSearchParams();
   const tagId = params.get("tagId");
@@ -58,10 +59,12 @@ export default function ModalSearch() {
     const getApartmentFilter = async () => {
       setIsLoading(true);
       try {
-        const { data } = await getApartmentsLocal({
+        const objectChecked = checkValuesIsExistInObject({
           ...searchParams,
           tag_id: tagId,
         });
+
+        const { data } = await getApartmentsLocal(objectChecked);
         setTotalApartment(data?.data?.length);
       } catch (error) {
         console.log(error);
@@ -71,6 +74,21 @@ export default function ModalSearch() {
     };
     getApartmentFilter();
   }, [searchParams, tagId]);
+
+  const checkValuesIsExistInObject = (object: any) => {
+    Object.keys(object).forEach((key) => {
+      const value = object[key as keyof typeof object];
+
+      if (Array.isArray(value) && value.length === 0) {
+        delete object[key as keyof typeof object];
+      }
+
+      if (!value || (typeof value === "string" && value === "")) {
+        delete object[key as keyof typeof object];
+      }
+    });
+    return object;
+  };
 
   useEffect(() => {
     const getAmenitiesFilter = async () => {
@@ -82,17 +100,23 @@ export default function ModalSearch() {
     getAmenitiesFilter();
   }, []);
 
-  const handleCheckboxChange = (index: number) => {
-    setCheckboxState((prevCheckboxState) => {
-      const find = prevCheckboxState.includes(index);
-      let newState = [...prevCheckboxState];
+  const handleCheckboxChange = (amenityValue: string) => {
+    setSearchParams((prevCheckboxState) => {
+      const find = prevCheckboxState.amenities.findIndex(
+        (amenity) => amenity === amenityValue
+      );
 
-      if (find) {
-        newState = newState.filter((item) => item !== index);
+      let newAmenities: string[] = [...prevCheckboxState.amenities];
+
+      if (find !== -1) {
+        newAmenities = newAmenities.filter(
+          (amenity) => amenity !== amenityValue
+        );
       } else {
-        newState.push(index);
+        newAmenities.push(amenityValue);
       }
-      return newState;
+
+      return { ...prevCheckboxState, amenities: newAmenities };
     });
   };
 
@@ -100,23 +124,25 @@ export default function ModalSearch() {
     setSearchParams((pre) => ({ ...pre, city: event.target.value }));
   };
 
-  const handleSliderChange = (event: any) => {
-    const { name, value } = event.target;
-
-    setSearchParams((prevRange) => ({
-      ...prevRange,
-      [name]: parseInt(value, 10),
-    }));
-  };
-
   const handleFilterApartments = () => {
     Object.keys(searchParams).forEach((key) => {
-      if (!searchParams[key as keyof typeof searchParams]) {
+      const value = searchParams[key as keyof typeof searchParams];
+
+      if (Array.isArray(value) && value.length === 0) {
+        delete searchParams[key as keyof typeof searchParams];
+      }
+
+      if (!value || (typeof value === "string" && value === "")) {
         delete searchParams[key as keyof typeof searchParams];
       }
     });
 
     const params = updateMutilpleSearchParams(searchParams);
+    router.replace(params, { scroll: false });
+  };
+
+  const handleClearAllSearchParams = () => {
+    const params = clearAllSearchParams();
     router.replace(params, { scroll: false });
   };
 
@@ -163,12 +189,12 @@ export default function ModalSearch() {
                 className={`rounded-xl border border-c-grey flex flex-col gap-8 items-center justify-center aspect-[2/1.3] transition-all cursor-pointer ${
                   type.key === searchParams.apartment_type && "bg-slate-300"
                 }`}
-                onClick={() =>
+                onClick={() => {
                   setSearchParams((pre) => ({
                     ...pre,
                     apartment_type: type.key,
-                  }))
-                }
+                  }));
+                }}
               >
                 <Image src={type.icon} alt="TV" width={30} height={30} />
                 <p className="text-lg font-semibold text-primary">
@@ -190,8 +216,9 @@ export default function ModalSearch() {
                 <input
                   type="checkbox"
                   name={`item2-${index}`}
-                  checked={checkboxState.includes(index)}
-                  onChange={() => handleCheckboxChange(index)}
+                  value={amenity.name}
+                  checked={searchParams.amenities.includes(amenity.name)}
+                  onChange={() => handleCheckboxChange(amenity.name)}
                   className="w-6 h-6"
                 />
                 <span className="text-lg">{amenity.name}</span>
@@ -205,40 +232,36 @@ export default function ModalSearch() {
           title="Khoảng giá"
           desc="Giá theo đêm chưa bao gồm phí và thuế"
         >
-          <div>
-            <label htmlFor="">Giá Thấp Nhất</label>
-            <input
-              type="range"
-              min={0}
-              max={1000}
-              step={1}
-              value={searchParams.lowest_price}
-              onChange={handleSliderChange}
-              name="lowest_price"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="">Giá Cao nhất</label>
-            <input
-              type="range"
-              min={0}
-              max={1000}
-              step={1}
-              value={searchParams.hightest_price}
-              onChange={handleSliderChange}
-              name="hightest_price"
-            />
-          </div>
+          <SliderC
+            min={1}
+            max={5000}
+            values={[searchParams.lowest_price, searchParams.hightest_price]}
+            handleChange={(newValue: number[]) =>
+              setSearchParams((pre) => ({
+                ...pre,
+                lowest_price: newValue[0],
+                hightest_price: newValue[1],
+              }))
+            }
+          />
         </Container>
 
-        <div className="sticky bottom-0">
-          <BtnCommon
-            title={`Tìm kiếm căn hộ (${
-              isLoading ? "...đang tải..." : totalApartment
-            })`}
-            handleClick={handleFilterApartments}
-          />
+        <div className="sticky bottom-0 z-20 pt-4 bg-white shadow-lg -ml-4 pl-4">
+          <div className="flex w-full justify-between items-center">
+            <div
+              className="text-txt-primary text-xl font-semibold underline p-3 rounded-xl transition-all hover:bg-slate-100 cursor-pointer"
+              onClick={handleClearAllSearchParams}
+            >
+              Xoá tất cả
+            </div>
+
+            <div
+              className="text-white py-4 px-6 bg-[#222222] hover:bg-black hover:shadow-lg transition-all duration-500 rounded-xl w-fit text-xl font-medium cursor-pointer"
+              onClick={handleFilterApartments}
+            >
+              {`Hiển thị (${totalApartment}) địa điểm`}
+            </div>
+          </div>
         </div>
       </div>
     </Modal>

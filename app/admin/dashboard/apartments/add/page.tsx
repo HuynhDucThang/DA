@@ -120,9 +120,6 @@ const SingleApartmentPage = () => {
     const tag_ids = handleCovertToArrIds(selectedTags);
     const amenities_ids = handleCovertToArrIds(selectedAmenities);
 
-    console.log("tag_ids : ", tag_ids);
-    console.log("amenities_ids : ", amenities_ids);
-
     try {
       const { data } = await createApartment(apartmentCreate, {
         tag_ids,
