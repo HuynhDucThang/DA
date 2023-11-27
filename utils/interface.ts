@@ -165,3 +165,44 @@ export interface IContractLatest extends IApartmentContract {
   apartment: IApartmentRead;
   user: IUser;
 }
+
+export interface IMember {
+  user_id: string;
+  room_id: string;
+  created_at: string;
+  updated_at: string;
+  id: string;
+  user: IUser;
+}
+
+export interface IConversationRead {
+  key: string;
+  id: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface IConversation extends IConversationRead {
+  members: IMember[];
+}
+
+export interface IMessage {
+  sender_id: string;
+  id: string;
+  room_id: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+  user: IUser;
+}
+
+export interface IMessageCreate {
+  sender_id: string;
+  room_id: string;
+  content: string;
+}
+
+export interface IConversationMessage extends IConversationRead {
+  messages: IMessage[];
+}

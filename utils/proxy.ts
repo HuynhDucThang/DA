@@ -10,6 +10,7 @@ import {
   IApartCommentCreate,
   IApartmentCreate,
   IContractCreate,
+  IMessageCreate,
   ITagCreate,
 } from "./interface";
 
@@ -179,3 +180,14 @@ export const deleteAmenity = async (AmenityId: string) =>
 
 export const createApartmentComment = async (comment: IApartCommentCreate) =>
   await axiosServer.post("/apartmentComment", comment);
+
+// chat
+
+export const getConversationsByUser = async (userId: string) =>
+  await axiosAuth.get(`/rooms?type_query=USER_ID&id=${userId}`);
+
+export const getMessageRoom = async (roomId: string) =>
+  await axiosAuth.get(`/rooms?type_query=ROOM_ID&id=${roomId}`);
+
+  export const createMessage = async (comment: IMessageCreate) =>
+  await axiosAuth.post("/messages", comment);
