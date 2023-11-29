@@ -38,7 +38,7 @@ export default function DropdownNoUser() {
       </div>
       <div className="border-t">
         <div className="text-primary text-base p-3 font-medium hover:bg-slate-300">
-          Cho thuê chỗ ở qua Airbnb
+          Tìm hiểu về Air
         </div>
         <div className="text-primary text-base p-3 font-medium hover:bg-slate-300">
           Trung tâm trợ giúp

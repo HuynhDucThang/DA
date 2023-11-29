@@ -11,6 +11,7 @@ import {
   IApartmentCreate,
   IContractCreate,
   IMessageCreate,
+  IRoomCreate,
   ITagCreate,
 } from "./interface";
 
@@ -75,7 +76,7 @@ export const getApartmentDetail = async (apartmentId: string) =>
   await axiosAuth.get(`/apartments/${apartmentId}/apartment`);
 
 export const createApartment = async (
-  apartment: IApartmentCreate,
+  apartment: IApartmentCreate, // Assuming IApartmentCreate is an interface or type
   formData: any
 ) => {
   const params = new URLSearchParams();
@@ -90,6 +91,7 @@ export const createApartment = async (
   params.set("address", apartment.address);
   params.set("city", apartment.city);
   params.set("apartment_type", apartment.apartment_type);
+  apartment.user_id && params.set("user_id", apartment.user_id);
 
   return await axiosAuth.post(`/apartments?${params.toString()}`, formData);
 };
@@ -195,3 +197,6 @@ export const getMessageRoom = async (roomId: string) =>
 
 export const createMessage = async (comment: IMessageCreate) =>
   await axiosAuth.post("/messages", comment);
+
+export const createRoomChat = async (roomData: IRoomCreate) =>
+  await axiosAuth.post("/rooms", roomData);

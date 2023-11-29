@@ -97,6 +97,7 @@ export default function OverView({
                 src={`http://127.0.0.1:8000/api/${imageApartment?.image_url}`}
                 alt={imageApartment.id}
                 fill
+                className="object-cover"
               />
             </div>
           ))}

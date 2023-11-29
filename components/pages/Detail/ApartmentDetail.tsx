@@ -25,6 +25,9 @@ export default function Details({ apartment }: IProps) {
     dispatch(setDates(apartment_contract));
   }, []);
 
+  console.log("apartment : " , apartment);
+  
+
   return (
     <div className="flex gap-16 pb-8">
       <div className="w-[65%]">

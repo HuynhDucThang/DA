@@ -33,7 +33,12 @@ export default function DropdownUser() {
       </div>
       {/*  */}
       <div className="border-t">
-        <div className={`${stylesItem}`}>Cho thuê chỗ ở qua Airbnb</div>
+        <Link
+          href={`/users/${currentUser.id}/add-apartment`}
+          className={`block ${stylesItem}`}
+        >
+          Tạo mới chỗ ở qua Airbnb
+        </Link>
         <Link
           href={`/users/${currentUser.id}`}
           prefetch={false}

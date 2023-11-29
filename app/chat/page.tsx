@@ -11,18 +11,39 @@ import Infor from "@/components/pages/chat/infor";
 import { useAppSelector } from "@/redux/hooks";
 
 const Chat = () => {
+  const [client, setClient] = useState<WebSocket | null>(null);
   const searchParams = useSearchParams();
+
+  const userId = searchParams.get("uid");
+  const receiver_id = searchParams.get("ruid");
   const room = searchParams.get("room");
+
+  useEffect(() => {
+    const client = new W3CWebSocket(
+      `ws://localhost:8000/ws/private/${userId}/${receiver_id}/${room}`
+    );
+    setClient(client);
+    return () => {
+      client.close();
+    };
+  }, []);
 
   return (
     <div className="flex h-[calc(100vh-100px)] overflow-hidden">
       <Conversations />
       {room ? (
         <>
-          <ChatUI />
-          <Infor />
+          <ChatUI client={client} />
         </>
-      ) : null}
+      ) : (
+        <div className="w-full h-full flex justify-center items-center flex-col">
+          <div className="text-3xl text-primary font-semibold">
+            Hãy chọn một cuộc trò chuyện
+          </div>
+          <p>Nếu chưa có bạn có thể khởi tạo</p>
+        </div>
+      )}
+      <Infor />
     </div>
   );
 };

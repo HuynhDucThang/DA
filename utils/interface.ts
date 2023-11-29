@@ -31,6 +31,7 @@ export interface IApartmentCreate {
   total_people: number;
   city: string;
   apartment_type: string;
+  user_id?: string;
 }
 
 export interface IApartmentRead {
@@ -63,7 +64,7 @@ export interface IApartmentDetail extends IApartmentRead {
     apartment_id: string;
     tag: ITagRead;
   }[];
-  owner : IUser;
+  owner: IUser;
 }
 
 export interface IImagesApartment {
@@ -206,4 +207,10 @@ export interface IMessageCreate {
 
 export interface IConversationMessage extends IConversationRead {
   messages: IMessage[];
+}
+
+export interface IRoomCreate {
+  name: string;
+  key: string;
+  users_id: string[];
 }

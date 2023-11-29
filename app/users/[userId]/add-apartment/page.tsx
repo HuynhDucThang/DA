@@ -12,7 +12,7 @@ import {
   updateImagesApartment,
 } from "@/utils/proxy";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function AddApartment() {
   const [apartmentCreate, setApartmentCreate] = useState<IApartmentCreate>({
@@ -37,6 +37,8 @@ export default function AddApartment() {
   const [tags, setTags] = useState<IOption[]>([]);
   const [amenities, setAmenities] = useState<IOption[]>([]);
   const router = useRouter();
+
+  const { currentUser } = useAppSelector((state) => state.user);
 
   const convertOptions = (data: any[]) => {
     const dataOptions: IOption[] = [];
@@ -110,13 +112,14 @@ export default function AddApartment() {
     return ids;
   };
 
-  const handleCreateApartment = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
+  const handleCreateApartment = async () => {
+    if (!currentUser.id) {
+      showToast("Haỹ đăng nhập để sử dụng chức năng này", "error");
 
+      return;
+    }
     if (images.length < 5) {
-      showToast("Phải có nhiều hơn 5 ảnh", "warn");
+      showToast("Phải có nhiều hơn 5 ảnh", "error");
       return;
     }
 
@@ -130,14 +133,17 @@ export default function AddApartment() {
     const amenities_ids = handleCovertToArrIds(selectedAmenities);
 
     try {
-      const { data } = await createApartment(apartmentCreate, {
-        tag_ids,
-        amenities: amenities_ids,
-      });
-      const res = await updateImagesApartment(data?.id, formData);
+      const { data } = await createApartment(
+        { ...apartmentCreate, user_id: currentUser.id },
+        {
+          tag_ids,
+          amenities: amenities_ids,
+        }
+      );
+      await updateImagesApartment(data?.id, formData);
 
       showToast("Thành công");
-      router.push("/admin/dashboard/apartments");
+      router.push("/");
     } catch (error) {
       console.log(error);
       showToast("Lỗi", "error");
@@ -155,7 +161,7 @@ export default function AddApartment() {
   return (
     <div className="">
       <div className="container mt-10 mx-auto">
-        <div className="grid grid-cols-1 w-[50vw] h-[82vh] overflow-y-auto mx-auto shadow-2xl rounded-2xl place-items-center gap-4">
+        <div className="grid grid-cols-1 max-w-[800px] w-full h-[82vh] overflow-y-auto mx-auto shadow-2xl rounded-2xl place-items-center gap-4">
           {/* <div>
             <h1 className="text-brand font-bold text-7xl">Airbnb it</h1>
             <h1 className="text-black font-semibold text-3xl mb-3">
@@ -183,8 +189,8 @@ export default function AddApartment() {
               />
             </div>
           </div> */}
-          <h2 className="text-3xl text-txt-primary font-medium sticky top-0 z-10 bg-white p-6 w-full text-center shadow-lg">
-            Nhập thông tin căn hộ
+          <h2 className="text-3xl text-txt-primary font-semibold sticky top-0 z-10 bg-white p-6 w-full text-center shadow-lg">
+            {["Nhập thông tin căn hộ", "Tải ảnh cho căn hộ"][step]}
           </h2>
 
           {step === 0 ? (
@@ -353,16 +359,192 @@ export default function AddApartment() {
               ></textarea>
             </form>
           ) : (
-            <div></div>
+            <div className="w-full h-[300px] p-4">
+              {!images.length ? (
+                <label
+                  htmlFor="images"
+                  className={`relative cursor-pointer h-full border-[5px] border-dashed rounded-xl flex-col flex items-center justify-center`}
+                >
+                  <Image
+                    src={`/img-upload.png`}
+                    alt=""
+                    width={150}
+                    height={80}
+                  />
+                  <p className="text-xl text-txt-primary font-semibold">
+                    Click vào đây để tải ảnh lên
+                  </p>
+                </label>
+              ) : (
+                <div className="flex">
+                  <ListFiles files={images} handleDeleteImgsTmp={handleDelete}>
+                    <label
+                      htmlFor="images"
+                      className={`relative cursor-pointer h-full border-[5px] border-dashed rounded-xl flex-col flex items-center justify-center`}
+                    >
+                      <Image
+                        src={`/img-upload.png`}
+                        alt=""
+                        width={100}
+                        height={50}
+                      />
+                      <p className="text-xl text-txt-primary font-semibold">
+                        Upload{" "}
+                      </p>
+                    </label>
+                  </ListFiles>
+                </div>
+              )}
+
+              <input
+                id="images"
+                type="file"
+                accept=".png, .jpg"
+                multiple
+                hidden
+                onChange={handleUploadFiles}
+              />
+            </div>
           )}
 
           <div className="p-4 sticky bottom-0 shadow-2xl border-t border-c-grey w-full px-[-20px] mt-4 bg-white flex justify-center">
             <div
               className="text-white w-1/2 py-4 px-6 bg-[#222222] hover:bg-black hover:shadow-lg transition-all duration-500 rounded-xl text-center text-xl font-medium cursor-pointer"
-              onClick={handleNextStep}
+              onClick={() => {
+                if (step === 0) {
+                  handleNextStep();
+                } else {
+                  handleCreateApartment();
+                }
+              }}
             >
-              Bước tiếp theo
+              {["Bước tiếp theo", "Tạo căn hộ"][step]}
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+import Image from "next/image";
+import { useAppSelector } from "@/redux/hooks";
+
+interface IProps {
+  files: File[];
+  children?: React.ReactNode;
+  handleDeleteImgsTmp: (index: number) => void;
+}
+
+export function ListFiles({ children, files, handleDeleteImgsTmp }: IProps) {
+  return (
+    <div className="grid grid-cols-2 gap-4 max-h-[350px] w-full overflow-y-auto overflow-x-hidden my-4">
+      <div className="aspect-[1/1]">{children}</div>
+      {files.map((file, index) => {
+        return (
+          <Img
+            blob_url={URL.createObjectURL(file)}
+            handleClick={() => handleDeleteImgsTmp(index)}
+            name={file.name}
+            key={index}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+interface Props {
+  blob_url: any;
+  name: string;
+  handleClick: () => void;
+}
+
+export function Img({ blob_url, name, handleClick }: Props) {
+  const [isActive, setIsActive] = useState<boolean>(false);
+  const parentElement = useRef<HTMLDivElement>(null);
+  const childElement = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const parent = parentElement?.current;
+    const child = childElement?.current;
+
+    if (parent && child) {
+      const rect = parent.getBoundingClientRect();
+      const leftPosition = rect.left;
+      const topPosisiton = rect.top;
+
+      child.style.transformOrigin = `${topPosisiton}px ${leftPosition}px`;
+    }
+  }, []);
+
+  const showPopup = () => {
+    setIsActive(true);
+  };
+
+  const hiddenPopup = () => {
+    setIsActive(false);
+  };
+
+  return (
+    <div
+      ref={parentElement}
+      className="relative aspect-[1/1] rounded-lg flex items-center justify-center border-[1px] border-solid border-[#cfcfcf] bg-[#f8f8f8] group cursor-pointer"
+    >
+      <Image
+        src={blob_url}
+        alt="img data"
+        fill
+        className="object-cover rounded-lg p-2 "
+      />
+
+      <div className="bg-[#0000004d] invisible opacity-0 absolute w-full h-full left-0 top-0 flex items-center justify-center gap-2 transition-all group-hover:visible group-hover:opacity-100">
+        <Image
+          src="/bin.svg"
+          alt="bin icon"
+          width={30}
+          height={30}
+          className="transition-all opacity-80 hover:opacity-100 hover:scale-105"
+          onClick={handleClick}
+        />
+        <Image
+          src="/eye.svg"
+          alt="eye icon"
+          width={30}
+          height={30}
+          className="transition-all opacity-80 hover:opacity-100 hover:scale-105"
+          onClick={showPopup}
+        />
+      </div>
+
+      <div
+        className={`fixed bg-[#0003] z-[1000] top-0 left-0 right-0 bottom-0 flex items-center justify-center transition-all ${
+          isActive ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+      >
+        <div
+          ref={childElement}
+          className={`bg-white rounded-lg w-[540px] min-w-[400px] transition-all p-5 ${
+            isActive ? "opacity-100 scale-100" : "opacity-0 scale-0 "
+          }`}
+        >
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-txt-primary text-base font-bold">{name}</h2>
+            <Image
+              width={34}
+              height={34}
+              src="/close_black.svg"
+              alt="icon close"
+              onClick={hiddenPopup}
+            />
+          </div>
+          <div className="aspect-[3/2] relative">
+            <Image
+              src={blob_url}
+              alt="img large"
+              fill
+              className="object-contain"
+            />
           </div>
         </div>
       </div>
