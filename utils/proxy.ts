@@ -182,6 +182,10 @@ export const createApartmentComment = async (comment: IApartCommentCreate) =>
   await axiosServer.post("/apartmentComment", comment);
 
 // chat
+export const getRoomUsers = async (sender_id: string, receiver_id: string) =>
+  await axiosAuth.get(
+    `/rooms/users?sender_id=${sender_id}&receiver_id=${receiver_id}`
+  );
 
 export const getConversationsByUser = async (userId: string) =>
   await axiosAuth.get(`/rooms?type_query=USER_ID&id=${userId}`);
@@ -189,5 +193,5 @@ export const getConversationsByUser = async (userId: string) =>
 export const getMessageRoom = async (roomId: string) =>
   await axiosAuth.get(`/rooms?type_query=ROOM_ID&id=${roomId}`);
 
-  export const createMessage = async (comment: IMessageCreate) =>
+export const createMessage = async (comment: IMessageCreate) =>
   await axiosAuth.post("/messages", comment);

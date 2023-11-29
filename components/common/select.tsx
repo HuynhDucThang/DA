@@ -12,12 +12,14 @@ interface IProps {
     value: string;
   }[];
   selected: IOption[];
+  theme?: "dark" | "light";
   handleOnSelected: (optionsSelected: IOption[]) => void;
 }
 
 export default function SelectC({
   title,
   selected,
+  theme,
   handleOnSelected,
   options,
 }: IProps) {
@@ -67,15 +69,21 @@ export default function SelectC({
   return (
     <div ref={dropdownRef} className="relative w-full my-[10px]">
       <div
-        className="bg-[#151c2c] text-white rounded-[5px] h-[64px] border-2 border-[#2e374a] p-5 hover:border-white"
+        className={` rounded-[5px] h-[64px] border-2 p-5 ${
+          theme === "dark"
+            ? "hover:border-white text-white bg-[#151c2c] border-[#2e374a]"
+            : "text-txt-primary border-c-grey"
+        }`}
         onClick={() => !menuIsOpen && setMenuIsOpen(true)}
       >
         {selected.length} {title}
       </div>
       <div
-        className={`absolute w-full h-[170px] top-[110%] bg-[#151c2c] text-white border border-white left-0 transition-all origin-top-left duration-300 ${
-          menuIsOpen ? "scale-100 opacity-100" : "scale-0 opacity-0"
-        }`}
+        className={`absolute w-full shadow-lg h-[170px] top-[110%] left-0 transition-all origin-top-left duration-300 ${
+          theme === "dark"
+            ? "bg-[#151c2c] text-white border border-white"
+            : "bg-white text-txt-primary"
+        } ${menuIsOpen ? "scale-100 opacity-100" : "scale-0 opacity-0"}`}
       >
         {options?.map((option) => (
           <div

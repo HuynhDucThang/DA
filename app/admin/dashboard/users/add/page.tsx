@@ -24,7 +24,7 @@ const AddUserPage = () => {
           <option value={""}>Choose permission</option>
           <option value={"RENTER"}>Renter</option>
           <option value={"MANAGER"}>Manager</option>
-          <option value={"ADMIN"}>Manager</option>
+          <option value={"ADMIN"}>ADMIN</option>
         </select>
 
         {/* <textarea

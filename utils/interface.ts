@@ -63,6 +63,7 @@ export interface IApartmentDetail extends IApartmentRead {
     apartment_id: string;
     tag: ITagRead;
   }[];
+  owner : IUser;
 }
 
 export interface IImagesApartment {

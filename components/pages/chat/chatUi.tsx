@@ -14,9 +14,9 @@ import { handleConvertDate, showToast } from "@/utils/helpers/common";
 interface IProps {}
 
 export default function ChatUI({}: IProps) {
-  const [messages, setMessages] = useState<{ text: string; sender: string }[]>(
-    []
-  );
+  const [messages, setMessages] = useState<
+    { text: string; sender: string; avatar: string }[]
+  >([]);
   const [message, setMessage] = useState("");
   const [client, setClient] = useState<WebSocket | null>(null);
 
@@ -39,10 +39,6 @@ export default function ChatUI({}: IProps) {
       `ws://localhost:8000/ws/private/${userId}/${receiver_id}/${room}`
     );
     setClient(client);
-
-    return () => {
-      client.close();
-    };
   }, [userId, receiver_id, room]);
 
   useEffect(() => {
@@ -55,6 +51,10 @@ export default function ChatUI({}: IProps) {
     client.onmessage = (message: any) => {
       const data = JSON.parse(message.data);
       setMessages((pre) => [...pre, data]);
+    };
+
+    return () => {
+      client.close();
     };
   }, [client]);
 
@@ -80,7 +80,10 @@ export default function ChatUI({}: IProps) {
       const messageObject = { text: message, sender: currentUser.id };
       const jsonString = JSON.stringify(messageObject);
       client.send(jsonString);
-      setMessages([...messages, { text: message, sender: currentUser.id }]);
+      setMessages([
+        ...messages,
+        { text: message, sender: currentUser.id, avatar: currentUser.avatar },
+      ]);
       setMessage("");
     }
   };
@@ -122,7 +125,7 @@ export default function ChatUI({}: IProps) {
                   avatar={message?.user.avatar}
                   create_at={handleConvertDate(new Date(message.created_at))}
                   userType={
-                    currentUser.id === message.user.id ? "sender" : "receiver"
+                    currentUser.id === message.sender_id ? "sender" : "receiver"
                   }
                 />
               ))
@@ -135,7 +138,7 @@ export default function ChatUI({}: IProps) {
                 key={index}
                 senderID={message.sender}
                 content={message.text}
-                avatar={currentUser.avatar}
+                avatar={message.avatar}
                 create_at={handleConvertDate(new Date())}
                 userType={
                   currentUser.id === message.sender ? "sender" : "receiver"

@@ -18,7 +18,12 @@ const SingleUserPage = async ({ params }: any) => {
           <label>Username</label>
           <input type="text" name="username" placeholder={user.username} />
           <label>Email</label>
-          <input type="email" name="email" readOnly={true} placeholder={user.email} />
+          <input
+            type="email"
+            name="email"
+            readOnly={true}
+            placeholder={user.email}
+          />
           {/* <label>Password</label>
           <input type="password" name="password" /> */}
           <label>Phone</label>
@@ -26,12 +31,10 @@ const SingleUserPage = async ({ params }: any) => {
           {/* <label>Address</label>
           <input type="text" name="address" placeholder={user.phonenumber} /> */}
           <label>System role</label>
-          <select
-            name="system_role"
-            id="system_role"
-          >
+          <select name="system_role" id="system_role">
             <option value={"RENTER"}>Renter</option>
             <option value={"MANAGER"}>Manager</option>
+            <option value={"ADMIN"}>ADMIN</option>
           </select>
 
           <button>Update</button>

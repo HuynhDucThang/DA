@@ -16,7 +16,7 @@ interface IProps {
 }
 
 export default function Details({ apartment }: IProps) {
-  const { amenities, apartment_contract, apartment_tags, ...apartmentDetail } =
+  const { owner,amenities, apartment_contract, apartment_tags, ...apartmentDetail } =
     apartment;
 
   const dispatch = useAppDispatch();
@@ -28,7 +28,7 @@ export default function Details({ apartment }: IProps) {
   return (
     <div className="flex gap-16 pb-8">
       <div className="w-[65%]">
-        <TitleDetail apartmentDetail={apartmentDetail} />
+        <TitleDetail apartmentDetail={apartmentDetail} owner={owner} />
         <Desc text={apartmentDetail.desc} />
         <NumbRoom />
         <Amenities amenities={amenities} />

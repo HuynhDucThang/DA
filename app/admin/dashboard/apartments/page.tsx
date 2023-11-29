@@ -69,11 +69,16 @@ const ApartmentsPage = async ({ searchParams }: any) => {
               </td>
               <td>
                 <div className={styles.buttons}>
-                  <Link href={`/admin/dashboard/apartments/${apartment.id}`}>
+                <form action={deleteApartment}>
+                    <input
+                      type="hidden"
+                      name="apartmentId"
+                      value={apartment.id}
+                    />
                     <button className={`${styles.button} ${styles.view}`}>
-                      View
+                      Approved
                     </button>
-                  </Link>
+                  </form>
                   <form action={deleteApartment}>
                     <input
                       type="hidden"

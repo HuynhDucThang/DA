@@ -27,12 +27,7 @@ export default function Conversations() {
     };
 
     getConversations();
-  }, []);
-
-  if (!currentUser.id) {
-    showToast("Bạn cần đăng nhập để sử dụng chức năng này", "error");
-    router.push("/");
-  }
+  }, [currentUser.id]);
 
   return (
     <div className="bg-white w-[20%] border">
