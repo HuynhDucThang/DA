@@ -10,23 +10,20 @@ import { setDates } from "@/redux/slices/booking";
 import { useEffect } from "react";
 import TimeBooking from "./TimeBooking";
 import Amenities from "./Amenities";
+import { getContractsByApartment } from "@/utils/proxy";
 
 interface IProps {
   apartment: IApartmentDetail;
 }
 
 export default function Details({ apartment }: IProps) {
-  const { owner,amenities, apartment_contract, apartment_tags, ...apartmentDetail } =
-    apartment;
-
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(setDates(apartment_contract));
-  }, []);
-
-  console.log("apartment : " , apartment);
-  
+  const {
+    owner,
+    amenities,
+    apartment_contract,
+    apartment_tags,
+    ...apartmentDetail
+  } = apartment;
 
   return (
     <div className="flex gap-16 pb-8">

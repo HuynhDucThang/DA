@@ -107,6 +107,7 @@ export interface IContractCreate {
   end_date: Date;
   total_amount: number;
   num_of_people: number;
+  status?: string;
 }
 
 export interface IContractsTrip extends IContractCreate {

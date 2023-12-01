@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { useSearchParams } from "next/navigation";
 
@@ -13,24 +13,31 @@ import { handleConvertDate, showToast } from "@/utils/helpers/common";
 import { Loading } from "@/components/common";
 
 interface IProps {
-  client : WebSocket | null
+  client: WebSocket | null;
 }
 
-export default function ChatUI({client }: IProps) {
+export default function ChatUI({ client }: IProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<
     { text: string; sender: string; avatar: string }[]
   >([]);
   const [message, setMessage] = useState("");
-  
+
   const [conversationMessage, setConversationsMessage] = useState<IMessage[]>(
     []
   );
 
   const searchParams = useSearchParams();
   const room = searchParams.get("room");
-  
+
   const { currentUser } = useAppSelector((state) => state.user);
+
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!chatContainerRef.current) return;
+    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+  }, [conversationMessage, messages]);
 
   useEffect(() => {
     if (!client) return;
@@ -41,11 +48,9 @@ export default function ChatUI({client }: IProps) {
 
     client.onmessage = (message: any) => {
       const data = JSON.parse(message.data);
-      alert("data")
+      alert("data");
       setMessages((pre) => [...pre, data]);
     };
-
-    
   }, [client]);
 
   useEffect(() => {
@@ -112,7 +117,7 @@ export default function ChatUI({client }: IProps) {
         </div>
 
         {/* chat */}
-        <div className="p-4 flex-1 overflow-y-auto">
+        <div ref={chatContainerRef} className="p-4 flex-1 overflow-y-auto">
           <div className="h-full flex flex-col">
             <div className="flex-1 flex flex-col ">
               {conversationMessage?.length < 1 && messages.length < 1 ? (

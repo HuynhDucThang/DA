@@ -58,7 +58,7 @@ export default function Trip() {
       {isLoading ? <Loading /> : null}
       <div className="px-pd-main py-8">
         <h2 className="text-center text-3xl font-semibold">
-          Danh sách căn hộ yêu thích
+          Danh sách các chuyến đi của bạn
         </h2>
 
         <div className="py-10">

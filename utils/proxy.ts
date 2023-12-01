@@ -155,10 +155,8 @@ export const getContractsTrip = async (userId: string) =>
 export const createContract = async (contract: IContractCreate) =>
   await axiosAuth.post("/contracts", contract);
 
-export const updateContract = async (
-  contractId: string,
-  contract: IContractCreate
-) => await axiosAuth.patch(`/contracts/${contractId}`, contract);
+export const updateContract = async (contractId: string, contract: any) =>
+  await axiosAuth.patch(`/contracts/${contractId}`, contract);
 
 export const deleteContract = async (contractId: string) =>
   await axiosAuth.delete(`/contracts/${contractId}`);
@@ -200,3 +198,17 @@ export const createMessage = async (comment: IMessageCreate) =>
 
 export const createRoomChat = async (roomData: IRoomCreate) =>
   await axiosAuth.post("/rooms", roomData);
+
+export const redirectToVnPay = async (
+  amount: number,
+  redirect_return: string,
+  contractId: string
+) =>
+  await axiosAuth.post("/payments/redirect_to_vn_pay", {
+    amount,
+    redirect_return,
+    order_id: contractId,
+  });
+
+export const getContractsByApartment = async (apartmentId: string) =>
+  await axiosAuth.get(`/contracts/apartment/${apartmentId}`);
