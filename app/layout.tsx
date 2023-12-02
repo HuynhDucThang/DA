@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../styles/index.css";
+
 import ReduxProvider from "@/components/layouts/ReduxProvider";
 import LayoutMain from "@/components/layouts/LayoutMain";
 import ModalProvider from "@/components/layouts/modal/ModalProvider";

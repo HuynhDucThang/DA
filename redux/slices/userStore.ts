@@ -1,19 +1,30 @@
-import { IApartmentRead } from "@/utils/interface";
+import { IApartmentRead, IUser } from "@/utils/interface";
 import { createSlice } from "@reduxjs/toolkit";
 import { list } from "postcss";
 
 interface IInitstates {
   whiteList: IApartmentRead[];
+  receiverUser: IUser | null;
 }
 
 const initialState: IInitstates = {
   whiteList: [],
+  receiverUser: null,
 };
 
 const userStoreSlice = createSlice({
   name: "userStore",
   initialState: initialState,
   reducers: {
+    addReceiverUser: (
+      state,
+      action: { type: string; payload: IUser | null }
+    ) => {
+      state.receiverUser = action.payload;
+    },
+    removeReceiverUser: (state) => {
+      state.receiverUser = null;
+    },
     addToWhiteList: (
       state,
       action: {
@@ -39,5 +50,10 @@ const userStoreSlice = createSlice({
   },
 });
 
-export const { deleteWhiteListItem, addToWhiteList } = userStoreSlice.actions;
+export const {
+  deleteWhiteListItem,
+  addToWhiteList,
+  addReceiverUser,
+  removeReceiverUser,
+} = userStoreSlice.actions;
 export default userStoreSlice.reducer;

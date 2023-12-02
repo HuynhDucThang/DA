@@ -4,15 +4,18 @@ import React, { useState, useEffect } from "react";
 import "./chat.css"; // Tạo file Chat.css cho thiết kế đặc trưng của Chat component
 
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Conversations from "@/components/pages/chat/conversations";
 import ChatUI from "@/components/pages/chat/chatUi";
 import Infor from "@/components/pages/chat/infor";
 import { useAppSelector } from "@/redux/hooks";
+import { getCookie, showToast } from "@/utils/helpers/common";
 
 const Chat = () => {
   const [client, setClient] = useState<WebSocket | null>(null);
   const searchParams = useSearchParams();
+  const { currentUser } = useAppSelector((state) => state.user);
+  const router = useRouter();
 
   const userId = searchParams.get("uid");
   const receiver_id = searchParams.get("ruid");
@@ -27,6 +30,12 @@ const Chat = () => {
       client.close();
     };
   }, []);
+
+  if (!currentUser && !getCookie("access_token")) {
+    showToast("Bạn chưa đăng nhập", "error");
+    router.replace("/");
+    return;
+  }
 
   return (
     <div className="flex h-[calc(100vh-100px)] overflow-hidden">

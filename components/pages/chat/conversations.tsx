@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { URL } from "@/utils/api";
 import {
   showToast,
@@ -8,13 +8,21 @@ import {
 } from "@/utils/helpers/common";
 import { IConversation } from "@/utils/interface";
 import { getConversationsByUser } from "@/utils/proxy";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { addReceiverUser, removeReceiverUser } from "@/redux/slices/userStore";
 
 export default function Conversations() {
   const [conversations, setConversations] = useState<IConversation[]>([]);
   const { currentUser } = useAppSelector((state) => state.user);
+  const { receiverUser } = useAppSelector((state) => state.userStore);
+
   const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  const searchParams = useSearchParams();
+  const room = searchParams.get("room");
+  const receiver_id = searchParams.get("ruid");
 
   useEffect(() => {
     const getConversations = async () => {
@@ -29,6 +37,25 @@ export default function Conversations() {
     getConversations();
   }, [currentUser.id]);
 
+  useEffect(() => {
+    if (!room && !receiver_id && conversations) {
+      dispatch(removeReceiverUser());
+    }
+  }, [room, receiver_id, receiverUser]);
+
+  useEffect(() => {
+    if (!room || !receiver_id || conversations.length < 1) return;
+    const chatRoomContainReceiver = conversations.find(
+      (conversation) => conversation.id === room
+    );
+    if (chatRoomContainReceiver) {
+      const receiverUserInCurrentChat = chatRoomContainReceiver.members.find(
+        (member) => member.user_id !== currentUser.id
+      );
+      dispatch(addReceiverUser(receiverUserInCurrentChat?.user ?? null));
+    }
+  }, [room, receiver_id]);
+
   return (
     <div className="bg-white w-[20%] border">
       {/* search */}
@@ -40,7 +67,7 @@ export default function Conversations() {
       {/* conversations */}
       <div>
         <div className="p-4 border-y">
-          <h2>All conversations</h2>
+          <h2>Tất cả cuộc trò chuyện</h2>
         </div>
 
         {/* list */}
