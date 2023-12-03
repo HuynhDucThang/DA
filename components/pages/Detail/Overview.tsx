@@ -84,7 +84,7 @@ export default function OverView({
       {/* imges */}
       <div className="spacing_between_cpn_detail">
         <div className="grid grid-cols-4 w-full aspect-[3/1] gap-3">
-          {apartmentDetail?.images.slice(0, 5).map((imageApartment, index) => (
+           {apartmentDetail?.images.slice(0, 5).map((imageApartment, index) => (
             <div
               className={`relative ${
                 index === 0

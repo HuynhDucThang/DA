@@ -9,14 +9,11 @@ import { APARTMENT_TYPE, CITY } from "@/utils/enum";
 import { showToast } from "@/utils/helpers/common";
 import { IApartmentCreate } from "@/utils/interface";
 import {
-  createApartment,
   createApartmentAdmin,
   getAmenities,
   getTagsFilter,
-  updateImagesApartment,
 } from "@/utils/proxy";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const SingleApartmentPage = () => {
@@ -71,8 +68,6 @@ const SingleApartmentPage = () => {
 
     getValuesCreate();
   }, []);
-
-  const router = useRouter();
 
   const handleOnchange = (
     e: React.ChangeEvent<

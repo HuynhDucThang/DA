@@ -32,7 +32,7 @@ const ApartmentsPage = async ({ searchParams }: any) => {
         <thead>
           <tr>
             <td>Title</td>
-            <td>Description</td>
+            <td>approved</td>
             <td>Price</td>
             <td>Create At</td>
             <td>Type</td>
@@ -58,8 +58,8 @@ const ApartmentsPage = async ({ searchParams }: any) => {
                   {apartment.name}
                 </div>
               </td>
-              <td className="flex items-center line-clamp-3 overflow-y-auto max-h-20 max-w-[200px]">
-                {apartment.desc}
+              <td>
+                {apartment.is_approved ? "TRUE" : "FALSE"}
               </td>
               <td>${apartment.price_per_day}</td>
               <td>{handleConvertDate(new Date(apartment.created_at))}</td>

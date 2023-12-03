@@ -154,7 +154,7 @@ export default function ModalSearch() {
       commonStyles="max-w-[760px]"
       title="Tìm kiếm căn hộ"
     >
-      <div className="h-[60vh] overflow-y-auto -mr-4 px-2">
+      <div className="h-[80vh] overflow-y-auto -mr-4 px-2">
         <Container title="Thành phố" desc="Tên thành phố mà bạn muốn đến.">
           <label
             htmlFor="city"

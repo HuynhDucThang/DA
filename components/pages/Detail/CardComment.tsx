@@ -30,7 +30,7 @@ export default function CardComment({ comment }: IProps) {
             className="rounded-full shadow-md"
           />
         </Link>
-        <div className="mt-2 flex_center gap-2 p-1 border border-c-border rounded-lg cursor-pointer">
+        <div className="mt-2 flex_center gap-2 p-1 border border-c-grey rounded-lg cursor-pointer">
           <Image
             src="/edit_second.svg"
             alt="edit icon"
@@ -43,7 +43,7 @@ export default function CardComment({ comment }: IProps) {
       {/* comment */}
       <div className="bg-[#f5f5f7] p-4 flex-1 rounded-xl">
         {/* heading */}
-        <div className="flex items-center justify-between border-b border-c-border">
+        <div className="flex items-center justify-between border-b border-c-grey">
           <div className="pb-2">
             <h3 className="flex items-center text-primary text-xl gap-2">
               {comment.user.username}
@@ -99,9 +99,9 @@ export default function CardComment({ comment }: IProps) {
         </div>
 
         {/* body */}
-        <div className="pt-4">
+        <div className="">
           <Desc text={comment.text} />
-          <span>🌸☕️🌵</span>
+          <span className="pt-4 block">🌸☕️🌵</span>
         </div>
       </div>
     </div>

@@ -102,7 +102,7 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
 
         {/* comments */}
         <div className="p-4">
-          <div className="border-t border-c-border grid grid-cols-1 gap-4 pt-4">
+          <div className="border-t border-c-grey grid grid-cols-1 gap-4 pt-4">
             {comments.length ? (
               comments.map((comment) => (
                 <CardComment key={comment.id} comment={comment} />

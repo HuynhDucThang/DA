@@ -3,6 +3,7 @@
 import { BtnCommon } from "@/components/common";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addToWhiteList, deleteWhiteListItem } from "@/redux/slices/userStore";
+import { APARTMENT_TYPE } from "@/utils/data";
 import { handleConvertDate, showToast } from "@/utils/helpers/common";
 import { IApartmentRead } from "@/utils/interface";
 import Image from "next/image";
@@ -101,7 +102,7 @@ export default function CardApartment({ apartment }: IProps) {
                 height={20}
               />
               <span className="text_card_heading">
-                {apartment.apartment_type}
+                {APARTMENT_TYPE[apartment.apartment_type]}
               </span>
             </div>
           </div>

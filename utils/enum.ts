@@ -5,6 +5,7 @@ export enum CITY {
   "HA" = "Hội An",
   "HUE" = "Huế",
   "DL" = "Đà Lạt",
+  "SAPA" = "SAPA",
 }
 
 export enum APARTMENT_TYPE {

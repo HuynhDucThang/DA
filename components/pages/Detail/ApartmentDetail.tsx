@@ -30,7 +30,7 @@ export default function Details({ apartment }: IProps) {
       <div className="w-[65%]">
         <TitleDetail apartmentDetail={apartmentDetail} owner={owner} />
         <Desc text={apartmentDetail.desc} />
-        <NumbRoom />
+        <NumbRoom apartment={apartmentDetail} />
         <Amenities amenities={amenities} />
         <TimeBooking />
       </div>

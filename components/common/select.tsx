@@ -79,7 +79,7 @@ export default function SelectC({
         {selected.length} {title}
       </div>
       <div
-        className={`absolute w-full shadow-lg h-[170px] top-[110%] left-0 transition-all origin-top-left duration-300 ${
+        className={`absolute w-full shadow-lg h-[170px] overflow-y-auto top-[110%] left-0 transition-all origin-top-left duration-300 ${
           theme === "dark"
             ? "bg-[#151c2c] text-white border border-white"
             : "bg-white text-txt-primary"
