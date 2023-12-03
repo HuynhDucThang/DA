@@ -62,6 +62,7 @@ export default function ModalSearch() {
         const objectChecked = checkValuesIsExistInObject({
           ...searchParams,
           tag_id: tagId,
+          is_approved: true,
         });
 
         const { data } = await getApartmentsLocal(objectChecked);
@@ -208,7 +209,7 @@ export default function ModalSearch() {
         {/*  */}
         <Container title="Tiện nghi " desc="Đồ dùng thiết yếu và vật dụng khác">
           <div className="mt-6 grid grid-cols-2 gap-4">
-            {amenities.map((amenity, index) => (
+            {amenities?.map((amenity, index) => (
               <label
                 className="flex item-center gap-3 cursor-pointer"
                 key={index}
@@ -217,7 +218,7 @@ export default function ModalSearch() {
                   type="checkbox"
                   name={`item2-${index}`}
                   value={amenity.name}
-                  checked={searchParams.amenities.includes(amenity.name)}
+                  checked={searchParams?.amenities?.includes(amenity.name)}
                   onChange={() => handleCheckboxChange(amenity.name)}
                   className="w-6 h-6"
                 />

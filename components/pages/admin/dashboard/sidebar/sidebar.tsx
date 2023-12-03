@@ -16,6 +16,9 @@ import {
   MdLogout,
 } from "react-icons/md";
 import MenuLink from "./menuLink";
+import { IUser } from "@/utils/interface";
+import { getCurrentUserServer } from "@/utils/proxyServer";
+import { showToast } from "@/utils/helpers/common";
 // import { auth, signOut } from "@/app/auth";
 
 const menuItems = [
@@ -81,8 +84,16 @@ const menuItems = [
   },
 ];
 
-const Sidebar = () => {
-  //   const { user } = await auth();
+const Sidebar = async () => {
+  const data = await getCurrentUserServer();
+
+  if (!data) {
+    showToast("Bạn đã hết phiên đăng nhập", "error")
+    redirect("/admin/login");
+  }
+
+  const user = data.data as IUser;
+
   return (
     <div className={styles.container}>
       <div className={styles.user}>
@@ -94,8 +105,8 @@ const Sidebar = () => {
           height="50"
         />
         <div className={styles.userDetail}>
-          <span className={styles.username}>{"user.username"}</span>
-          <span className={styles.userTitle}>Administrator</span>
+          <span className={styles.username}>{user.username}</span>
+          <span className={styles.userTitle}>{user.system_role}</span>
         </div>
       </div>
       <ul className={styles.list}>

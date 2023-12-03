@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { handleConvertDate } from "@/utils/helpers/common";
 import { URL } from "@/utils/api";
+import { deleteContractAction } from "@/utils/actions";
 
 const UsersPage = async ({ searchParams }: any) => {
   const q = searchParams?.q || "";
@@ -14,6 +15,7 @@ const UsersPage = async ({ searchParams }: any) => {
   const { data } = await getContractsServer(q, page);
 
   const contracts: IContractLatest[] = data.data;
+  const totalRecord = data.total_record;
 
   return (
     <div className={styles.container}>
@@ -24,18 +26,20 @@ const UsersPage = async ({ searchParams }: any) => {
         </Link>
       </div>
       <table className={styles.table} style={{ marginTop: "1rem" }}>
-      <thead>
+        <thead>
           <tr>
             <td>Căn hộ</td>
             <td>Người thuê</td>
+            <td>Người sở hữu</td>
             <td>Tổng tiền</td>
-            <td>Nội dung</td>
+            <td>trạng thái</td>
             <td>Ngày bắt đầu</td>
             <td>Ngày kết thúc</td>
+            <td>actions</td>
           </tr>
         </thead>
         <tbody>
-        {contracts.map((contract) => (
+          {contracts.map((contract) => (
             <tr>
               <td>
                 <div className={styles.user}>
@@ -54,11 +58,12 @@ const UsersPage = async ({ searchParams }: any) => {
               </td>
               <td>
                 <span className={`${styles.status} ${styles.pending}`}>
-                  {contract.user.username}
+                  {contract.user.email}
                 </span>
               </td>
+              <td>{contract.apartment.owner?.email}</td>
               <td>${contract.total_amount}</td>
-              <td>${contract.content}</td>
+              <td>{contract.status}</td>
               <td>
                 14h,{" "}
                 {handleConvertDate(new Date(contract.start_date), "dd/MM/yyyy")}
@@ -67,11 +72,25 @@ const UsersPage = async ({ searchParams }: any) => {
                 12h,{" "}
                 {handleConvertDate(new Date(contract.end_date), "dd/MM/yyyy")}
               </td>
+              <td>
+                <div className={styles.buttons}>
+                  <form action={deleteContractAction}>
+                    <input
+                      type="hidden"
+                      name="contract_id"
+                      value={contract.id}
+                    />
+                    <button className={`${styles.button} ${styles.delete}`}>
+                      Delete
+                    </button>
+                  </form>
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <Pagination count={10} />
+      <Pagination count={totalRecord} />
     </div>
   );
 };

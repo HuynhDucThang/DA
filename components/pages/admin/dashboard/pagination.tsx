@@ -10,33 +10,40 @@ const Pagination = ({ count }: any) => {
 
   const page = searchParams.get("page") || 1;
 
-  const params = new URLSearchParams(searchParams);
-  const ITEM_PER_PAGE = 2;
+  const ITEM_PER_PAGE = 6;
 
-  //   const hasPrev = ITEM_PER_PAGE * (parseInt(page) - 1) > 0;
-  //   const hasNext = ITEM_PER_PAGE * (parseInt(page) - 1) + ITEM_PER_PAGE < count;
+  const hasPrev = page ? ITEM_PER_PAGE * (+page - 1) > 0 : false;
+
+  console.log("hasPrev123 : ", page);
+
+  console.log("hasPrev : ", hasPrev);
+
+  const hasNext = page
+    ? ITEM_PER_PAGE * (+page - 1) + ITEM_PER_PAGE < count
+    : false;
 
   const handleChangePage = (type: any) => {
-    // const pageCovert = !isNaN(page) && parseInt(page)
+    if (!page) return;
+    const params = new URLSearchParams(searchParams);
 
-    // type === "prev"
-    //   ? params.set("page", parseInt(page) - 1)
-    //   : params.set("page", parseInt(page) + 1);
-    replace(`${pathname}?${params}`);
+    type === "prev"
+      ? params.set("page", `${+page - 1}`)
+      : params.set("page", `${+page + 1}`);
+    replace(`${pathname}?${params.toString()}`);
   };
 
   return (
     <div className={styles.container}>
       <button
-        className={styles.button}
-        disabled={true}
+        className={`${styles.button} ${!hasPrev ? styles.disabled : ""}`}
+        disabled={!hasPrev}
         onClick={() => handleChangePage("prev")}
       >
         Previous
       </button>
       <button
-        className={styles.button}
-        disabled={true}
+        className={`${styles.button} ${!hasNext ? styles.disabled : ""}`}
+        disabled={!hasNext}
         onClick={() => handleChangePage("next")}
       >
         Next

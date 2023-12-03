@@ -20,6 +20,7 @@ const initialState = {
   currentUser: initUser,
   isLoading: false,
   error: null,
+  adminUser: initUser,
 };
 
 const userSlice = createSlice({
@@ -45,6 +46,9 @@ const userSlice = createSlice({
     },
     setUserMe: (state, action) => {
       state.currentUser = action.payload;
+    },
+    setUserAdmin: (state, action) => {
+      state.adminUser = action.payload;
     },
   },
 });

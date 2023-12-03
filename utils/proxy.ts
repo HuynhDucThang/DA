@@ -14,6 +14,9 @@ import {
   IRoomCreate,
   ITagCreate,
 } from "./interface";
+import { getCookie } from "./helpers/common";
+import { revalidateTag } from "next/cache";
+import { redirect } from "next/navigation";
 
 // ----------------------------- users ---------------------------------
 
@@ -91,9 +94,35 @@ export const createApartment = async (
   params.set("address", apartment.address);
   params.set("city", apartment.city);
   params.set("apartment_type", apartment.apartment_type);
-  apartment.user_id && params.set("user_id", apartment.user_id);
 
   return await axiosAuth.post(`/apartments?${params.toString()}`, formData);
+};
+
+export const createApartmentAdmin = async (
+  apartment: IApartmentCreate, // Assuming IApartmentCreate is an interface or type
+  formData: any
+) => {
+  const params = new URLSearchParams();
+  params.set("name", `${apartment.name}`);
+  params.set("desc", `${apartment.desc}`);
+  params.set("room", `${apartment.name}`);
+  params.set("price_per_day", `${apartment.price_per_day}`);
+  params.set("num_bedrooms", `${apartment.num_bedrooms}`);
+  params.set("num_living_rooms", `${apartment.num_living_rooms}`);
+  params.set("num_bathrooms", `${apartment.num_bathrooms}`);
+  params.set("total_people", `${apartment.total_people}`);
+  params.set("address", apartment.address);
+  params.set("city", apartment.city);
+  params.set("apartment_type", apartment.apartment_type);
+  params.set("is_approved", `${true}`);
+
+  const access_token = getCookie("access_token_admin");
+
+  return await axiosAuth.post(`/apartments?${params.toString()}`, formData, {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
 };
 
 export const updateApartment = async (
@@ -104,11 +133,15 @@ export const updateApartment = async (
 export const updateImagesApartment = async (
   apartmentId: string,
   formData: FormData
-) =>
+) => {
   await axiosAuthCookieMultiData.patch(
     `/apartments/upload/${apartmentId}`,
     formData
   );
+
+  revalidateTag("admin-apartments");
+  redirect("/admin/dashboard/apartments");
+};
 
 export const deleteApartment = async (apartmentId: string) =>
   await axiosAuth.delete(`/apartments/${apartmentId}`);

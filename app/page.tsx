@@ -45,7 +45,10 @@ async function getApartments(searchParams: any) {
 }
 
 export default async function Home({ searchParams }: IProps) {
-  const promiseApartment = getApartments(searchParams);
+  const promiseApartment = getApartments({
+    ...searchParams,
+    is_approved: true,
+  });
 
   return (
     <>

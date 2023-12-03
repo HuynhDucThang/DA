@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
-import { axiosServer } from "./api";
+import { URL, axiosServer } from "./api";
+import { redirect } from "next/navigation";
 
 export const userLoginServer = async (
   email: FormDataEntryValue,
@@ -30,12 +31,16 @@ export const getUserServer = async () => {
 
 export const getUsersServer = async (page: number, query: string) => {
   const access_token = cookies().get("access_token_admin")?.value;
-
-  return await axiosServer.get(`/users/all`, {
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
+  
+  const res = await fetch(`${URL}/users/all?page=${page}&email=${query}`, {
+    method: "GET",
+    // headers: {
+    //   Authorization: `Bearer ${access_token}`,
+    // },
+    next: { tags: ["admin-users"] },
   });
+
+  return res.json();
 };
 
 export const deleteUserServer = async (
@@ -79,15 +84,23 @@ export const getApartmentDetailServer = async (apartmentId: string) => {
   });
 };
 
-export const getApartments = async (query: string, page: string) =>
-  await axiosServer.get(`/apartments/all`);
+export const getApartmentsServer = async (query: string, page: string) => {
+  const res = await fetch(`${URL}/apartments/all?name=${query}&page=${page}`, {
+    method: "GET",
+    next: { tags: ["admin-apartments"] },
+  });
+
+  return res.json();
+
+  // return await axiosServer.get(`/apartments/all?name=${query}&page=${page}`);
+};
 
 export const deleteApartmentServer = async (apartmentId: FormDataEntryValue) =>
   await axiosServer.delete(`/apartments/${apartmentId}`);
 
 // contract
 export const getContractsServer = async (query: string, page: number) =>
-  await axiosServer.get(`/contracts/all`);
+  await axiosServer.get(`/contracts/all?page=${page}`);
 
 export const getApartmentComments = async (apartmentId: string) =>
   await axiosServer.get(`/apartmentComment/${apartmentId}`);
@@ -105,3 +118,26 @@ export const getAdminStaticticalsCommon = async () =>
 
 export const getAdminStaticticalsChart = async () =>
   await axiosServer.get(`/statisticals/chart/admin`);
+
+export const getCurrentUserServer = async () => {
+  const access_token = cookies().get("access_token_admin")?.value;
+
+  if (!access_token) redirect("/admin/login");
+
+  const res = await fetch(`http://127.0.0.1:8000/api/users`, {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+    cache: "no-store",
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  return data;
+};
+
+export const deleteContractServer = async (contract_id: string) => {
+  return await axiosServer.delete(`/contracts/${contract_id}`);
+};

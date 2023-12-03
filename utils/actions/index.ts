@@ -2,9 +2,10 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import {
   deleteApartmentServer,
+  deleteContractServer,
   deleteUserServer,
   updateUserById,
   uploadAvatarUser,
@@ -13,6 +14,7 @@ import {
 } from "../proxyServer";
 import { createApartmentComment, updateApartment } from "../proxy";
 import { IApartCommentCreate, IApartmentCreate } from "../interface";
+import { axiosAuthCookieMultiData, axiosServer } from "../api";
 
 export const loginAdmin = async (prevState: any, formData: FormData) => {
   const { email, password } = Object.fromEntries(formData);
@@ -46,6 +48,19 @@ export const deleteUser = async (formData: FormData) => {
   }
 
   revalidatePath("/admin/dashboard/users");
+};
+
+export const deleteContractAction = async (formData: FormData) => {
+  const { contract_id } = Object.fromEntries(formData);
+
+  try {
+    await deleteContractServer(contract_id as string);
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to delete user!");
+  }
+
+  revalidatePath("/admin/dashboard/contracts");
 };
 
 export const updateUser = async (formData: FormData) => {
@@ -94,7 +109,7 @@ export const addUser = async (prevState: any, formData: FormData) => {
     return "Không thể tạo người dùng";
   }
 
-  revalidatePath("/admin/dashboard/users");
+  revalidateTag("admin-users");
   redirect("/admin/dashboard/users");
 };
 
@@ -138,15 +153,14 @@ export const addApartmentAction = async (formData: FormData) => {
 export const updateApartmentAction = async (formData: FormData) => {
   const {
     id,
-    banner,
     desc,
     name,
     num_bathrooms,
     num_bedrooms,
     num_living_rooms,
-    num_toilets,
     price_per_day,
     total_people,
+    is_approved
   } = Object.fromEntries(formData);
 
   const apartmentId = id as string;
@@ -160,6 +174,7 @@ export const updateApartmentAction = async (formData: FormData) => {
     num_living_rooms,
     price_per_day,
     total_people,
+    is_approved
   };
 
   Object.keys(updateFields).forEach(
@@ -170,10 +185,10 @@ export const updateApartmentAction = async (formData: FormData) => {
     await updateApartment(apartmentId, updateFields);
   } catch (err) {
     console.log(err);
-    throw new Error("Failed to create user!");
+    return "Không thể cập nhật"
   }
 
-  revalidatePath(`/admin/dashboard/apartments/[apartmentId]`, "page");
+  revalidateTag("admin-apartments");
   redirect("/admin/dashboard/apartments");
 };
 
@@ -195,7 +210,7 @@ export const updateAvatarUserAction = async (
   formData: FormData
 ) => {
   try {
-   const { data } = await uploadAvatarUser(userId, formData);
+    const { data } = await uploadAvatarUser(userId, formData);
 
     revalidatePath(`/admin/dashboard/users`);
     redirect(`/admin/dashboard/users`);
@@ -217,4 +232,18 @@ export const createApartmentCommentServer = async (
   } catch (error: any) {
     return { errMsg: error.message };
   }
+};
+
+export const updateImagesApartmentAction = async (
+  apartmentId: string,
+  formData: FormData
+) => {
+  await axiosServer.patch(`/apartments/upload/${apartmentId}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  revalidateTag("admin-apartments");
+  redirect("/admin/dashboard/apartments");
 };

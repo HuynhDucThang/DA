@@ -3,6 +3,7 @@
 import { BtnCommon } from "@/components/common";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addToWhiteList, deleteWhiteListItem } from "@/redux/slices/userStore";
+import { handleConvertDate } from "@/utils/helpers/common";
 import { IApartmentRead, IContractsTrip } from "@/utils/interface";
 import { deleteContract } from "@/utils/proxy";
 import Image from "next/image";
@@ -71,12 +72,16 @@ export default function CardTrip({ contract, deteteTrip }: IProps) {
             </h4>
             <div className="flex_center gap-1">
               <Image src="/star.svg" alt="star icon" width={20} height={20} />
-              <span>{contract.apartment.rate}</span>
+              <span>{contract.apartment.apartment_type}</span>
             </div>
           </div>
 
           {/*  */}
-          <p className="text_card_sub_heading">Ngày 23 - Ngày 28 tháng 11</p>
+          <p className="text_card_sub_heading">
+            {handleConvertDate(new Date(contract.start_date), "dd/MM/yyyy")}
+            {` - `}
+            {handleConvertDate(new Date(contract.end_date), "dd/MM/yyyy")}
+          </p>
           {/* price */}
           <div className="flex items-center gap-1">
             <Image src="/dolar.svg" alt="star icon" width={20} height={20} />

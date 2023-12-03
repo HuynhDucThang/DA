@@ -19,7 +19,7 @@ interface IProps {
 export default function SelectC({
   title,
   selected,
-  theme,
+  theme = "dark",
   handleOnSelected,
   options,
 }: IProps) {

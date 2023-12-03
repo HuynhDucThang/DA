@@ -40,6 +40,7 @@ export default function SliderC({ min, max, values, handleChange }: IProps) {
               value={values[0]}
               onChange={(e) => handleOnChange([+e.target.value, values[1]])}
             />
+            $
           </div>
           <div>
             <label htmlFor="maxPrice">Giá tối đa:</label>
@@ -49,6 +50,7 @@ export default function SliderC({ min, max, values, handleChange }: IProps) {
               value={values[1]}
               onChange={(e) => handleOnChange([values[0], +e.target.value])}
             />
+            $
           </div>
         </div>
       </div>

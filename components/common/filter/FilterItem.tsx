@@ -18,8 +18,8 @@ export default function FilterItem({ tag, chooseTag }: IProps) {
     <div
       className={`my-3 py-1 flex-[0_1_auto] cursor-pointer flex_center flex-col transition-all border-b-[3px] border-transparent ${
         chooseTag === tag.id
-          ? "opacity-100 animate-shirk-grow border-b-primary"
-          : "opacity-60"
+          ? "opacity-100 animate-shirk-grow border-b-primary font-medium"
+          : "opacity-80"
       }`}
       onClick={() =>
         router.replace(updateSearchParams("tagId", tag.id), { scroll: false })

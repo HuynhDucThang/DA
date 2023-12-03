@@ -4,11 +4,13 @@ import BtnSubmit from "@/components/common/button/btnSubmit";
 import SelectC, { IOption } from "@/components/common/select";
 import PhotoPreview from "@/components/pages/admin/dashboard/apartments/photoPreview";
 import styles from "@/components/pages/admin/dashboard/apartments/singleApartment.module.css";
+import { updateImagesApartmentAction } from "@/utils/actions";
 import { APARTMENT_TYPE, CITY } from "@/utils/enum";
 import { showToast } from "@/utils/helpers/common";
 import { IApartmentCreate } from "@/utils/interface";
 import {
   createApartment,
+  createApartmentAdmin,
   getAmenities,
   getTagsFilter,
   updateImagesApartment,
@@ -121,14 +123,17 @@ const SingleApartmentPage = () => {
     const amenities_ids = handleCovertToArrIds(selectedAmenities);
 
     try {
-      const { data } = await createApartment(apartmentCreate, {
-        tag_ids,
-        amenities: amenities_ids,
-      });
-      const res = await updateImagesApartment(data?.id, formData);
+      const { data } = await createApartmentAdmin(
+        { ...apartmentCreate },
+        {
+          tag_ids,
+          amenities: amenities_ids,
+        }
+      );
+      await updateImagesApartmentAction(data?.id, formData);
 
       showToast("Thành công");
-      router.push("/admin/dashboard/apartments");
+      // router.push("");
     } catch (error) {
       console.log(error);
       showToast("Lỗi", "error");
@@ -139,7 +144,10 @@ const SingleApartmentPage = () => {
     <div className={styles.container}>
       {/* left */}
       <div className={styles.infoContainer}>
-        <label htmlFor="images" className={`${styles.imgContainer} block cursor-pointer`}>
+        <label
+          htmlFor="images"
+          className={`${styles.imgContainer} block cursor-pointer`}
+        >
           <Image src={`/img-upload.png`} alt="" fill />
         </label>
         <div className="flex">

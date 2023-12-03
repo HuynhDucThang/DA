@@ -49,9 +49,11 @@ export interface IApartmentRead {
   address: string;
   total_people: number;
   apartment_type: string;
+  is_approved: boolean;
   images: IImagesApartment[];
   comments: IComment[];
   total_rating?: number;
+  owner?: IUser;
 }
 
 export interface IApartmentDetail extends IApartmentRead {
@@ -83,6 +85,7 @@ export interface IApartmentContract {
   user_id: string;
   total_amount: number;
   num_of_people: number;
+  status: string;
 }
 
 // tags

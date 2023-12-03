@@ -12,14 +12,15 @@ import { URL } from "@/utils/api";
 const UsersPage = async ({ searchParams }: any) => {
   const q = searchParams?.q || "";
   const page = searchParams?.page || 1;
-  const { data } = await getUsersServer(q, page);
+  const data = await getUsersServer(page, q);
 
   const users: IUser[] = data.data;
+  const totalRecord = data.total_record;
 
   return (
     <div className={styles.container}>
       <div className={styles.top}>
-        <Search placeholder="Search for a user..." />
+        <Search placeholder="Search for a user email ..." />
         <Link href="/admin/dashboard/users/add">
           <button className={styles.addButton}>Add New</button>
         </Link>
@@ -83,7 +84,7 @@ const UsersPage = async ({ searchParams }: any) => {
           ))}
         </tbody>
       </table>
-      <Pagination count={10} />
+      <Pagination count={totalRecord} />
     </div>
   );
 };

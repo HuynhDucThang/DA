@@ -1,10 +1,13 @@
+import { useAppDispatch } from "@/redux/hooks";
+import { setModalType } from "@/redux/slices/modalSlice";
 import Image from "next/image";
 
 const menuFilter = ["Địa điểm bất kỳ", "Tuần bất kỳ", "Thêm khách"];
 
 export default function FilterHeader() {
+  const dispatch = useAppDispatch();
   return (
-    <div className="px-4">
+    <div className="px-4" onClick={() => dispatch(setModalType("SEARCH"))}>
       <div className="min-w-[350px] flex-[0_1_auto] flex h-[var(--height-input)] p-2 rounded-3xl cursor-pointer shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] transition-shadow hover:shadow-[rgba(0,_0,_0,_0.24)_0px_3px_12px]">
         {menuFilter.map((menu, index) => (
           <div

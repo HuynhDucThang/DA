@@ -8,6 +8,7 @@ import ModalSignUp from "./modalSignUp";
 import ModalHouseRole from "./modalHouseRole";
 import ModalUpdateAvatar from "./modalUpdateAvatar";
 import ModalSearch from "./modalSearch";
+import ModalConfirm from "./modalConfirm";
 
 export default function ModalProvider() {
   const { typeModal } = useAppSelector((state) => state.modal);
@@ -20,6 +21,7 @@ export default function ModalProvider() {
     SAFETY_AND_ACCOMMONDATION: <ModalHouseRole />,
     UPDATE_AVATAR: <ModalUpdateAvatar />,
     SEARCH: <ModalSearch />,
+    CONFIRM: <ModalConfirm />,
   };
 
   return typeModal ? <Portal>{modalComponents[typeModal]}</Portal> : null;
