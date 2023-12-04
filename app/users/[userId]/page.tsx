@@ -8,7 +8,12 @@ import { setUserMe } from "@/redux/slices/userSlice";
 import { URL } from "@/utils/api";
 import { showToast } from "@/utils/helpers/common";
 import { IUser } from "@/utils/interface";
-import { getUserById, updateUser } from "@/utils/proxy";
+import {
+  createRoomChat,
+  getRoomUsers,
+  getUserById,
+  updateUser,
+} from "@/utils/proxy";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState, ChangeEvent } from "react";
@@ -102,6 +107,36 @@ export default function ProfileUser() {
     });
   };
 
+  const handleContact = async () => {
+    if (!currentUser.id) {
+      showToast("Bạn hãy đăng nhập để xử dụng tính năng này ", "error");
+      return;
+    }
+
+    if (!user) return;
+
+    setIsLoading(true);
+    try {
+      const { data } = await getRoomUsers(currentUser.id, user!.id);
+      let roomId = data?.data?.id ?? "";
+      if (!data.data) {
+        const { data: dataRoom } = await createRoomChat({
+          key: `${currentUser.id}-${user.id}`,
+          name: `${currentUser.username}-${user.username}`,
+          users_id: [currentUser.id, user.id],
+        });
+
+        roomId = dataRoom.data.id;
+      }
+
+      router.push(`/chat?room=${roomId}&uid=${currentUser.id}&ruid=${user.id}`);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const allowEdit = currentUser.id === userId;
 
   return (
@@ -183,10 +218,18 @@ export default function ProfileUser() {
 
           {/* right */}
           <div className="w-[70%]">
-            <div>
+            <div className="flex justify-between items-center">
               <h2 className="text-primary text-4xl mt-4 font-bold">
                 Thông tin về {user?.username}
               </h2>
+
+              {currentUser.id !== user?.id ? (
+                <div className="text-white py-4 px-6 bg-[#222222] hover:bg-black hover:shadow-lg transition-all duration-500 rounded-xl w-fit text-xl font-medium cursor-pointer"
+                  onClick={handleContact}
+                >
+                  Nhắn tin
+                </div>
+              ) : null}
             </div>
 
             {/* userName */}

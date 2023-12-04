@@ -42,17 +42,18 @@ const UsersPage = async ({ searchParams }: any) => {
             <tr key={user.id}>
               <td>
                 <div className={styles.user}>
-                  <Image
-                    src={
-                      user.avatar
-                        ? `${URL}/${user.avatar}`
-                        : "/avatar_none_user.svg"
-                    }
-                    alt="avatar"
-                    width={40}
-                    height={40}
-                    className={styles.userImage}
-                  />
+                  <div className="relative w-[40px] h-[40px]">
+                    <Image
+                      src={
+                        user.avatar
+                          ? `${URL}/${user.avatar}`
+                          : "/avatar_none_user.svg"
+                      }
+                      alt="avatar"
+                      fill
+                      className={`${styles.userImage} object-cover`}
+                    />
+                  </div>
                   {user.username}
                 </div>
               </td>

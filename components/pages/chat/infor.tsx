@@ -7,7 +7,7 @@ export default function Infor() {
   return (
     <>
       {receiverUser ? (
-        <div className="bg-white w-[30%] border p-4 ml-auto">
+        <div className="bg-white w-[25%] border p-4 ml-auto">
           <div className="flex flex-col justify-center items-center gap-3 mt-8">
             {/* avatar */}
             <div className="w-[150px] h-[150px] shadow-lg rounded-full overflow-hidden relative">
@@ -44,20 +44,20 @@ export default function Infor() {
 
           <div className="mt-8 flex items-center justify-center gap-3">
             <Image src="/person.svg" width={35} height={35} alt="phone" />
-            <p>Add to friend</p>
+            <p>Thêm vào bạn bè</p>
           </div>
           <div className="mt-2 flex items-center justify-center gap-3">
             <Image
-              src="/heart/empty_heart.svg"
+              src="/heart/heart_red.svg"
               width={35}
               height={35}
               alt="phone"
             />
-            <p>Add to favorites</p>
+            <p>Đã vào danh sách yêu thích</p>
           </div>
 
-          <div className="mt-8 text-xl font-semibold">attackments</div>
-          <div className="grid grid-cols-4 gap-2 mt-4">
+          <div className="mt-8 text-xl font-semibold">Tệp đính kèm</div>
+          <div className="grid grid-cols-4 gap-6 mt-4">
             <div className="rounded-lg bg-[#477ef8] text-white text-center flex items-center justify-center text-lg aspect-[1/1]">
               PDF
             </div>
@@ -73,7 +73,7 @@ export default function Infor() {
           </div>
         </div>
       ) : (
-        <div className="bg-white w-[30%] border text-2xl text-center font-semibold flex items-center justify-center">
+        <div className="bg-white w-[25%] border text-2xl text-center font-semibold flex items-center justify-center">
           Bạn hãy một cuộc trò chuyện
         </div>
       )}

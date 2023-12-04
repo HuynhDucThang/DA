@@ -31,6 +31,7 @@ export default function ChatUI({ client }: IProps) {
   const room = searchParams.get("room");
 
   const { currentUser } = useAppSelector((state) => state.user);
+  const { receiverUser } = useAppSelector((state) => state.userStore);
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -112,7 +113,7 @@ export default function ChatUI({ client }: IProps) {
       <div className="flex-1 flex flex-col bg-[#f8f9fd]">
         {/* heading */}
         <div className="p-4 flex items-center justify-between border-y bg-white shadow-lg">
-          <h2>To : Alexandra</h2>
+          <h2>To : <span className="text-xl">{receiverUser?.username}</span></h2>
           <Image src="/search/search_black.svg" alt="" width={24} height={24} />
         </div>
 

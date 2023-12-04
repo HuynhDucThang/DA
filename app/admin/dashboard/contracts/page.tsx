@@ -17,6 +17,12 @@ const UsersPage = async ({ searchParams }: any) => {
   const contracts: IContractLatest[] = data.data;
   const totalRecord = data.total_record;
 
+  const colorStatus: Record<string, string> = {
+    success: "done",
+    fail: "cancelled",
+    pending: "pending",
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.top}>
@@ -63,7 +69,9 @@ const UsersPage = async ({ searchParams }: any) => {
               </td>
               <td>{contract.apartment.owner?.email}</td>
               <td>${contract.total_amount}</td>
-              <td>{contract.status}</td>
+              <td className={`status ${colorStatus[contract.status]}`}>
+                {contract.status}
+              </td>
               <td>
                 14h,{" "}
                 {handleConvertDate(new Date(contract.start_date), "dd/MM/yyyy")}

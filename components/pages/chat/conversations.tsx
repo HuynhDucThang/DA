@@ -48,13 +48,16 @@ export default function Conversations() {
     const chatRoomContainReceiver = conversations.find(
       (conversation) => conversation.id === room
     );
+
+    console.log("chatRoomContainReceiver : ", chatRoomContainReceiver);
+
     if (chatRoomContainReceiver) {
       const receiverUserInCurrentChat = chatRoomContainReceiver.members.find(
         (member) => member.user_id !== currentUser.id
       );
       dispatch(addReceiverUser(receiverUserInCurrentChat?.user ?? null));
     }
-  }, [room, receiver_id]);
+  }, [room, receiver_id, conversations]);
 
   return (
     <div className="bg-white w-[20%] border">
@@ -114,15 +117,17 @@ function Conversation({ conversation }: IConversationProps) {
       className="flex gap-4 items-center border-y p-4 cursor-pointer hover:bg-slate-100"
       onClick={handleChooseConversation}
     >
-      <Image
-        src={avatar ? `${URL}/${avatar}` : "/avatar_none_user.svg"}
-        alt="avatar"
-        width={40}
-        height={40}
-      />
+      <div className="relative w-[50px] h-[50px] overflow-hidden rounded-full">
+        <Image
+          src={avatar ? `${URL}/${avatar}` : "/avatar_none_user.svg"}
+          alt="avatar"
+          fill
+          className="object-cover"
+        />
+      </div>
       <div>
         <h2>{receiverUsers?.[0].user.username}</h2>
-        <p>Helllo</p>
+        <p>Online</p>
       </div>
     </div>
   );

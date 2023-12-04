@@ -27,7 +27,9 @@ const Chat = () => {
     );
     setClient(client);
     return () => {
-      client.close();
+      if (client) {
+        client.close();
+      }
     };
   }, []);
 

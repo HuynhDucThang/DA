@@ -45,22 +45,22 @@ const ApartmentsPage = async ({ searchParams }: any) => {
             <tr key={apartment.id}>
               <td>
                 <div className={styles.product}>
-                  <Image
-                    src={
-                      `${URL}/${apartment?.images?.[0]?.image_url}` ||
-                      "/avatar.png"
-                    }
-                    alt="banner"
-                    width={40}
-                    height={40}
-                    className={styles.productImage}
-                  />
+                  <div className="relative w-[40px] h-[40px]">
+                    <Image
+                      src={
+                        `${URL}/${apartment?.images?.[0]?.image_url}` ||
+                        "/avatar.png"
+                      }
+                      alt="banner"
+                      fill
+                      className={styles.productImage}
+                    />
+                  </div>
+
                   {apartment.name}
                 </div>
               </td>
-              <td>
-                {apartment.is_approved ? "TRUE" : "FALSE"}
-              </td>
+              <td>{apartment.is_approved ? "TRUE" : "FALSE"}</td>
               <td>${apartment.price_per_day}</td>
               <td>{handleConvertDate(new Date(apartment.created_at))}</td>
               <td>{apartment.apartment_type}</td>
@@ -83,11 +83,7 @@ const ApartmentsPage = async ({ searchParams }: any) => {
                     </Link>
                   ) : (
                     <form action={updateApartmentAction}>
-                      <input
-                        type="hidden"
-                        name="id"
-                        value={apartment.id}
-                      />
+                      <input type="hidden" name="id" value={apartment.id} />
                       <input
                         type="hidden"
                         name="is_approved"
