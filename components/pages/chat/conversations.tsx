@@ -101,7 +101,7 @@ function Conversation({ conversation }: IConversationProps) {
 
   const router = useRouter();
 
-  const avatar = receiverUsers?.[0].user.avatar;
+  const avatar = receiverUsers?.[0]?.user?.avatar;
 
   const handleChooseConversation = () => {
     const url = updateMutilpleSearchParams({
@@ -126,7 +126,7 @@ function Conversation({ conversation }: IConversationProps) {
         />
       </div>
       <div>
-        <h2>{receiverUsers?.[0].user.username}</h2>
+        <h2>{receiverUsers?.[0]?.user?.username}</h2>
         <p>Online</p>
       </div>
     </div>

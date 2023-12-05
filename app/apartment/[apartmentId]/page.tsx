@@ -17,7 +17,10 @@ interface IProps {
 async function getApartmentById(apartmentId: string) {
   const res = await fetch(
     `http://127.0.0.1:8000/api/apartments/${apartmentId}/apartment`,
-    { cache: "no-store" }
+    {
+      method: "GET",
+      next: { tags: ["apartment-detail"] },
+    }
   );
   const data = await res.json();
 

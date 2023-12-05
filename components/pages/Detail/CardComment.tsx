@@ -37,7 +37,7 @@ export default function CardComment({ comment }: IProps) {
             width={16}
             height={16}
           />
-          <span className="block text-second">2</span>
+          <span className="block text-second">1</span>
         </div>
       </div>
       {/* comment */}

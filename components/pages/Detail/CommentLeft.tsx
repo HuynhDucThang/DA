@@ -13,6 +13,7 @@ import { setModalType } from "@/redux/slices/modalSlice";
 import { Loading } from "@/components/common";
 import Stars from "./comment/stars";
 import { showToast } from "@/utils/helpers/common";
+import { useRouter } from "next/navigation";
 
 interface IProps {
   comments: IComment[];
@@ -28,10 +29,15 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
     rate_interior: 5,
     rate_price: 5,
   });
+
+  console.log("comments : ", comments);
+  
   const [commentContent, setCommentContent] = useState({
     title: "",
     content: "",
   });
+  const router = useRouter()
+
   const dispatch = useAppDispatch();
   const { currentUser } = useAppSelector((state) => state.user);
 
@@ -48,7 +54,7 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
       apartment_id: apartmentId,
       user_id: currentUser.id,
     });
-
+    
     dispatch(setModalType(null));
     setIsLoading(false);
 

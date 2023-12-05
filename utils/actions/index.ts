@@ -64,16 +64,17 @@ export const deleteContractAction = async (formData: FormData) => {
 };
 
 export const updateUser = async (formData: FormData) => {
-  const { id, username, email, password, phone, system_role } =
+  const { id, username, email, password, phone, system_role, address } =
     Object.fromEntries(formData);
 
   try {
     const updateFields: any = {
       username,
       email,
-      // password,
+      password,
       phone,
       system_role,
+      address,
     };
 
     Object.keys(updateFields).forEach(
@@ -82,13 +83,13 @@ export const updateUser = async (formData: FormData) => {
     );
 
     await updateUserById(id, updateFields);
-    revalidatePath(`/admin/dashboard/users/[userId]`, "page");
   } catch (err: any) {
     console.log(err);
     throw new Error("Failed to update user!");
   }
 
-  // redirect("/admin/dashboard/users");
+  revalidateTag("admin-users");
+  redirect("/admin/dashboard/users");
 };
 
 export const addUser = async (prevState: any, formData: FormData) => {
@@ -160,7 +161,7 @@ export const updateApartmentAction = async (formData: FormData) => {
     num_living_rooms,
     price_per_day,
     total_people,
-    is_approved
+    is_approved,
   } = Object.fromEntries(formData);
 
   const apartmentId = id as string;
@@ -174,7 +175,7 @@ export const updateApartmentAction = async (formData: FormData) => {
     num_living_rooms,
     price_per_day,
     total_people,
-    is_approved
+    is_approved,
   };
 
   Object.keys(updateFields).forEach(
@@ -185,7 +186,7 @@ export const updateApartmentAction = async (formData: FormData) => {
     await updateApartment(apartmentId, updateFields);
   } catch (err) {
     console.log(err);
-    return "Không thể cập nhật"
+    return "Không thể cập nhật";
   }
 
   revalidateTag("admin-apartments");
@@ -228,7 +229,6 @@ export const createApartmentCommentServer = async (
         throw new Error("Unauthorization")
       */
     await createApartmentComment(apartmentComment);
-    revalidatePath(`/apartment/[apartmentId]`, "page");
   } catch (error: any) {
     return { errMsg: error.message };
   }

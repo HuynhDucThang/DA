@@ -26,7 +26,7 @@ export default function Desc({ text }: IProps) {
   };
 
   return (
-    <div className="spacing_between_cpn_detail">
+    <div className="py-5 border-b">
       <p className="heading__detail_apartment">Mô tả</p>
       <p className={`${!isShowAll && "line-clamp-2"} text-xl`} ref={textRef}>
         {text}

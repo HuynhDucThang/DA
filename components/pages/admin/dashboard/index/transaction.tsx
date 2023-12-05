@@ -38,16 +38,16 @@ const Transactions = async () => {
                     height={40}
                     className={styles.userImage}
                   />
-                  {contract.apartment.name}
+                  {contract?.apartment?.name}
                 </div>
               </td>
               <td>
                 <span className={`${styles.status} ${styles.pending}`}>
-                  {contract.user.username}
+                  {contract?.user?.username}
                 </span>
               </td>
-              <td>${contract.total_amount}</td>
-              <td>${contract.content}</td>
+              <td>${contract?.total_amount}</td>
+              <td>${contract?.content}</td>
               <td>
                 14h,{" "}
                 {handleConvertDate(new Date(contract.start_date), "dd/MM/yyyy")}

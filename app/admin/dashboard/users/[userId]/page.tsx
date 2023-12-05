@@ -24,6 +24,13 @@ const SingleUserPage = async ({ params }: any) => {
             readOnly={true}
             placeholder={user.email}
           />
+          <label>Address</label>
+          <input
+            type="address"
+            name="address"
+            readOnly={true}
+            placeholder={user.address}
+          />
           {/* <label>Password</label>
           <input type="password" name="password" /> */}
           <label>Phone</label>
