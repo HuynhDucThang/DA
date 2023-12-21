@@ -64,7 +64,7 @@ export default function Conversations() {
       {/* search */}
       <div className="p-4 flex items-center">
         <Image src="/search/search_black.svg" alt="" width={24} height={24} />
-        <input type="text" name="" placeholder="Search" />
+        <input type="text" name="" placeholder="Tìm kiếm" />
       </div>
 
       {/* conversations */}

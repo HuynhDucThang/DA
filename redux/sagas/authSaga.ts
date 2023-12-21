@@ -27,14 +27,15 @@ function* workUserLogin(action: PayloadAction<IUser>): any {
 
     yield put(userLoginFulfill(data.data.access_token));
     yield call(showToast, "Đăng nhập thành công");
-
   } catch (error: any) {
     yield put(
       userLoginReject(error.response?.data?.detail?.message ?? "Server Error")
     );
+
     yield call(
       showToast,
-      `Đăng nhập thất bại ${error.response?.data?.detail?.message}`
+      `Đăng nhập thất bại ${error.response?.data?.detail?.message}`,
+      "error"
     );
   }
 }

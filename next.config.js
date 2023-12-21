@@ -3,7 +3,7 @@ const nextConfig = {
   experimental: {
 		serverActions: {
 			allowedForwardedHosts: ['localhost'],
-			allowedOrigins: ['http://localhost']
+			allowedOrigins: ['http://localhost', "127.0.0.1:3000"]
 		},
 	},
   images: {

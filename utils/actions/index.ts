@@ -229,6 +229,8 @@ export const createApartmentCommentServer = async (
         throw new Error("Unauthorization")
       */
     await createApartmentComment(apartmentComment);
+    revalidateTag("apartment-comment");
+    
   } catch (error: any) {
     return { errMsg: error.message };
   }

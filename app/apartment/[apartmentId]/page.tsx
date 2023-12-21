@@ -2,7 +2,6 @@ import FooterDetail from "@/components/layouts/FooterDetail";
 import { Details, InforNeeded, Map, OverView } from "@/components/pages/Detail";
 import Comment from "@/components/pages/Detail/Comment";
 import { IApartmentDetail } from "@/utils/interface";
-import { getApartmentComments } from "@/utils/proxyServer";
 
 interface IProps {
   searchParams: {
@@ -22,6 +21,24 @@ async function getApartmentById(apartmentId: string) {
       next: { tags: ["apartment-detail"] },
     }
   );
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  return data;
+}
+
+async function getApartmentComments(apartmentId: string) {
+  const res = await fetch(
+    `http://127.0.0.1:8000/api/apartmentComment/${apartmentId}`,
+    {
+      method: "GET",
+      next: { tags: ["apartment-comment"] },
+    }
+  );
+
   const data = await res.json();
 
   if (!res.ok) {
@@ -53,7 +70,7 @@ export default async function ApartmentDetail({ params }: IProps) {
       {/* heading */}
       <OverView
         apartmentDetail={apartmentDetail}
-        totalComment={commentData.data.data.comments.length}
+        totalComment={commentData.data.comments.length}
         total_rating={total_rating}
       />
       {/* body */}
@@ -61,7 +78,7 @@ export default async function ApartmentDetail({ params }: IProps) {
 
       <Comment
         apartmentId={params.apartmentId}
-        commentApartment={commentData.data.data}
+        commentApartment={commentData.data}
       />
       {/* Map */}
       <Map />

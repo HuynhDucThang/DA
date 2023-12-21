@@ -17,14 +17,10 @@ const Chat = () => {
   const { currentUser } = useAppSelector((state) => state.user);
   const router = useRouter();
 
-  const userId = searchParams.get("uid");
-  const receiver_id = searchParams.get("ruid");
   const room = searchParams.get("room");
 
   useEffect(() => {
-    const client = new W3CWebSocket(
-      `ws://localhost:8000/ws/private/${userId}/${receiver_id}/${room}`
-    );
+    const client = new W3CWebSocket(`ws://localhost:8000/ws/private/${currentUser.id}`);
     setClient(client);
     return () => {
       if (client) {

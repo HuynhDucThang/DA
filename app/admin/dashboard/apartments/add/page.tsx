@@ -143,17 +143,27 @@ const SingleApartmentPage = () => {
           htmlFor="images"
           className={`${styles.imgContainer} block cursor-pointer`}
         >
-          <Image src={`/img-upload.png`} alt="" fill />
+          {images.length > 0 ? (
+            <PhotoPreview
+              full={true}
+              url={URL.createObjectURL(images[0])}
+              onDelete={() => handleDelete(0)}
+            />
+          ) : (
+            <Image src={`/img-upload.png`} alt="" fill />
+          )}
         </label>
         <div className="flex">
           {images.length &&
-            images.map((img, index) => (
-              <PhotoPreview
-                key={index}
-                url={URL.createObjectURL(img)}
-                onDelete={() => handleDelete(index)}
-              />
-            ))}
+            images
+              .slice(1, 7)
+              .map((img, index) => (
+                <PhotoPreview
+                  key={index + 1}
+                  url={URL.createObjectURL(img)}
+                  onDelete={() => handleDelete(index)}
+                />
+              ))}
         </div>
         <input
           id="images"

@@ -78,8 +78,9 @@ export default function ChatUI({ client }: IProps) {
     if (message.trim() !== "" && client) {
       const messageObject = {
         text: message,
-        sender: currentUser.id,
+        sender_id: currentUser.id,
         avatar: currentUser.avatar,
+        receiver_id: receiverUser?.id ?? "",
       };
       const jsonString = JSON.stringify(messageObject);
       client.send(jsonString);
@@ -92,7 +93,10 @@ export default function ChatUI({ client }: IProps) {
   };
 
   const handleSendMessage = async () => {
-    if (!room) return;
+    if (!room || !receiverUser?.id) {
+      showToast("Không tìm thấy người d", "error");
+      return;
+    }
 
     try {
       await createMessage({
@@ -100,6 +104,7 @@ export default function ChatUI({ client }: IProps) {
         content: message,
         room_id: room,
       });
+
       handleMessageRealTime();
       showToast("Gửi thành công");
     } catch (error) {
@@ -113,7 +118,9 @@ export default function ChatUI({ client }: IProps) {
       <div className="flex-1 flex flex-col bg-[#f8f9fd]">
         {/* heading */}
         <div className="p-4 flex items-center justify-between border-y bg-white shadow-lg">
-          <h2>To : <span className="text-xl">{receiverUser?.username}</span></h2>
+          <h2>
+            To : <span className="text-xl">{receiverUser?.username}</span>
+          </h2>
           <Image src="/search/search_black.svg" alt="" width={24} height={24} />
         </div>
 

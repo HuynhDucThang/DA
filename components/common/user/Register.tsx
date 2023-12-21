@@ -31,7 +31,7 @@ export default function Register() {
       dispatch(removeModalType());
       dispatch(setModalType("LOGIN"));
     } catch (error: any) {
-      showToast(`Đăng ký không thành công , ${error?.response?.data?.detail}`, "error");
+      showToast(`Đăng ký không thành công , ${error?.response?.data?.detail?.message}`, "error");
     }
   };
 
