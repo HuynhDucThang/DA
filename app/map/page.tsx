@@ -1,27 +1,25 @@
-"use client";
+"use client"
 
 import * as React from "react";
-import { Component } from "react";
-import { render } from "react-dom";
-import MapGL from "@goongmaps/goong-map-react";
+import ReactMapGL from "@goongmaps/goong-map-react";
+import '@goongmaps/goong-js/dist/goong-js.css';
 
-const GOONG_MAPTILES_KEY = "1bq6oz96Inqc2vCctL8lSHK9I2jQdeJ25WgB3p9A"; // Set your goong maptiles key here
+export default function Map() {
+  const [viewport, setViewport] = React.useState({
+    latitude: 21.03072,
+    longitude: 105.85239,
+    zoom: 12,
+  });
 
-export default function Mapa() {
   return (
-    <MapGL
-      viewState={{
-        latitude: 37.8,
-        longitude: -122.4,
-        zoom: 14,
-        bearing: 0,
-        pitch: 0,
-      }}
-      width="100vw"
-      height="100vh"
-      mapStyle="https://tiles.goong.io/assets/goong_map_dark.json"
-      //   onViewportChange={(viewport: any) => this.setState({ viewport })}
-      goongApiAccessToken={GOONG_MAPTILES_KEY}
+   <div className="w-screen h-screen">
+     <ReactMapGL
+      {...viewport}
+      width="100%"
+      height="100%"
+      goongApiAccessToken="bSRWNuVyXVNDD0FvVOYhBSAbVt3PioUobBTOmicV"
+      onViewportChange={(viewport: any) => setViewport(viewport)}
     />
+   </div>
   );
 }

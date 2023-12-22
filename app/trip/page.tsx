@@ -3,6 +3,7 @@
 import { Loading } from "@/components/common";
 import { CardTrip } from "@/components/pages/Home";
 import CardApartment from "@/components/pages/Home/CardApartment";
+import Table from "@/components/pages/trip/table";
 import { useAppSelector } from "@/redux/hooks";
 import { showToast } from "@/utils/helpers/common";
 import { IContractsTrip } from "@/utils/interface";
@@ -16,12 +17,19 @@ export default function Trip() {
   const [contractsTrip, setContractsTrip] = useState<IContractsTrip[]>([]);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [changePage, setChangePage] = useState<number>(1);
 
   useEffect(() => {
     const getTrip = async () => {
+      if (!currentUser.id) {
+        showToast("Hãy đăng nhập để sử dụng chức năng này", "error");
+        router.push("/");
+        return;
+      }
       setIsLoading(true);
       try {
         const { data } = await getContractsTrip(currentUser.id);
+
         setContractsTrip(data.data);
       } catch (error) {
         showToast("Xảy ra lỗi trong quá trình xử lý");
@@ -45,7 +53,8 @@ export default function Trip() {
     try {
       await deleteContract(contractId);
       deleteStateContracts(contractId);
-      router.refresh();
+      showToast("Xoá thành công")
+      // router.refresh();
     } catch (error) {
       showToast("Xảy ra lỗi trong quá trình xử lý.", "error");
     } finally {
@@ -61,38 +70,13 @@ export default function Trip() {
           Danh sách các chuyến đi của bạn
         </h2>
 
-        <div className="py-10">
-          {contractsTrip.length ? (
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
-              {contractsTrip.map((contract, index) => (
-                <CardTrip
-                  contract={contract}
-                  key={index}
-                  deteteTrip={deteteTrip}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="flex justify-center">
-              <div className="flex flex-col gap-4 w-fit mt-6">
-                <h4 className="text-2xl text-primary font-medium">
-                  Chưa có chuyến đi nào được đặt... vẫn chưa!
-                </h4>
-                <p className="text-lg">
-                  Đã đến lúc phủi bụi hành lý và bắt đầu chuẩn bị cho chuyến
-                  phiêu lưu tiếp theo của bạn rồi.
-                </p>
-
-                <Link
-                  href={"/#apartments"}
-                  className="text-white py-4 px-6 bg-[#222222] hover:bg-black hover:shadow-lg transition-all duration-500 rounded-xl w-fit text-xl font-medium cursor-pointer"
-                >
-                  Bắt đầu tìm kiếm
-                </Link>
-              </div>
-            </div>
-          )}
-        </div>
+        <Table
+          data={contractsTrip}
+          changePage={changePage}
+          totalPage={Math.ceil(contractsTrip.length / 6)}
+          setChangePage={setChangePage}
+          onDelete={deteteTrip}
+        />
       </div>
     </>
   );
