@@ -12,6 +12,7 @@ import {
   createRoomChat,
   getRoomUsers,
   getUserById,
+  updatePassword,
   updateUser,
 } from "@/utils/proxy";
 import Image from "next/image";
@@ -79,10 +80,31 @@ export default function ProfileUser() {
           delete userUpdate[key as keyof typeof userUpdate];
         }
       });
-
       const { data } = await updateUser(userId, userUpdate);
       setUser(data.data);
       data?.data?.id === currentUser?.id && dispatch(setUserMe(data.data));
+      setFieldEdit(null);
+      setUserUpdate(initUserUpdate);
+      showToast("Thành công");
+    } catch (error) {
+      showToast("Lỗi");
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    if (!currentUser?.id) {
+      showToast("Bạn chưa đăng nhập", "error");
+      dispatch(setModalType("LOGIN"));
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      await updatePassword(currentUser.email, userUpdate.password);
       setFieldEdit(null);
       setUserUpdate(initUserUpdate);
       showToast("Thành công");
@@ -224,7 +246,8 @@ export default function ProfileUser() {
               </h2>
 
               {currentUser.id !== user?.id ? (
-                <div className="text-white py-4 px-6 bg-[#222222] hover:bg-black hover:shadow-lg transition-all duration-500 rounded-xl w-fit text-xl font-medium cursor-pointer"
+                <div
+                  className="text-white py-4 px-6 bg-[#222222] hover:bg-black hover:shadow-lg transition-all duration-500 rounded-xl w-fit text-xl font-medium cursor-pointer"
                   onClick={handleContact}
                 >
                   Nhắn tin
@@ -366,7 +389,7 @@ export default function ProfileUser() {
                 </div>
               ) : null}
               {fieldEdit === "password" ? (
-                <BtnUpdate onClick={handleSubmit} />
+                <BtnUpdate onClick={handleUpdatePassword} />
               ) : null}
             </div>
 

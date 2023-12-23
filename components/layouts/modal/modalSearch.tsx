@@ -103,7 +103,7 @@ export default function ModalSearch() {
 
   const handleCheckboxChange = (amenityValue: string) => {
     setSearchParams((prevCheckboxState) => {
-      const find = prevCheckboxState.amenities.findIndex(
+      const find = prevCheckboxState?.amenities?.findIndex(
         (amenity) => amenity === amenityValue
       );
 

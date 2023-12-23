@@ -9,6 +9,7 @@ import {
   getAmenities,
   getTagsFilter,
   updateImagesApartment,
+  updateImagesApartmentUser,
 } from "@/utils/proxy";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -142,7 +143,7 @@ export default function AddApartment() {
           amenities: amenities_ids,
         }
       );
-      await updateImagesApartment(data?.id, formData);
+      await updateImagesApartmentUser(data?.id, formData);
 
       showToast("Thành công");
       router.push("/");

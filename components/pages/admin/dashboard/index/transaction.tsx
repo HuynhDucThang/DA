@@ -36,7 +36,7 @@ const Transactions = async () => {
                     alt="ảnh"
                     width={40}
                     height={40}
-                    className={styles.userImage}
+                    className={`${styles.userImage} object-cover`}
                   />
                   {contract?.apartment?.name}
                 </div>

@@ -64,6 +64,12 @@ export const userRefreshToken = async (refresh_token: string) =>
 export const updateUser = async (userId: string, body: any) =>
   await axiosAuth.patch(`/users/update_user/${userId}`, body);
 
+export const updatePassword = async (email: string, password: any) =>
+  await axiosAuth.put(`/users/change-password/`, {
+    email,
+    password,
+  });
+
 export const uploadAvatar = async (userId: string, formData: FormData) =>
   await axiosAuthCookieMultiData.patch(
     `/users/update_avatar/${userId}`,
@@ -93,6 +99,7 @@ export const createApartment = async (
   params.set("total_people", `${apartment.total_people}`);
   params.set("address", apartment.address);
   params.set("city", apartment.city);
+  params.set("is_approved", `${false}`);
   params.set("apartment_type", apartment.apartment_type);
 
   return await axiosAuth.post(`/apartments?${params.toString()}`, formData);
@@ -141,6 +148,16 @@ export const updateImagesApartment = async (
 
   revalidateTag("admin-apartments");
   redirect("/admin/dashboard/apartments");
+};
+
+export const updateImagesApartmentUser = async (
+  apartmentId: string,
+  formData: FormData
+) => {
+  await axiosAuthCookieMultiData.patch(
+    `/apartments/upload/${apartmentId}`,
+    formData
+  );
 };
 
 export const deleteApartment = async (apartmentId: string) =>

@@ -8,8 +8,9 @@ import WrapProjectsTable from "./wrapTable";
 import { Loading } from "@/components/common";
 import Confirm from "@/components/layouts/modal/comfirm";
 import useModal from "@/utils/hook/useModal";
-import { handleConvertDate } from "@/utils/helpers/common";
+import { handleConvertDate, showToast } from "@/utils/helpers/common";
 import { IContractsTrip } from "@/utils/interface";
+import { useRouter } from "next/navigation";
 
 interface IProps {
   data: IContractsTrip[];
@@ -28,11 +29,17 @@ export default function Table({
 }: IProps) {
   const { isOpen, closePopup, openPopup } = useModal();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [typeAction, setTypeAction] = useState<"delete">();
+  const [typeAction, setTypeAction] = useState<"delete" | "redirect">();
   const [projectDashboard, setProjectDashboard] = useState<IContractsTrip>();
   const { currentUser } = useAppSelector((state) => state.user);
+  const router = useRouter();
 
-  const handleOpenPopup = (action: "delete", project: any) => {
+  const handleOpenPopup = (action: "delete" | "redirect", project: any) => {
+    const isTripCompleted = new Date() > new Date(project.start_date);
+    if (isTripCompleted) {
+      showToast("Chuyến đi của bạn đã bắt đầu không thể xoá", "error");
+      return;
+    }
     setTypeAction(action);
     setProjectDashboard(project);
     openPopup();
@@ -40,7 +47,11 @@ export default function Table({
 
   const handleClickAction = async () => {
     if (!projectDashboard) return;
-    onDelete(projectDashboard.id);
+    if (typeAction === "delete") {
+      onDelete(projectDashboard.id);
+    } else if (typeAction === "redirect") {
+      router.push(`/apartment/${projectDashboard.apartment_id}`);
+    }
     closePopup();
   };
 
@@ -176,6 +187,19 @@ export default function Table({
                               alt="Lock icon"
                             />
                           </div>
+
+                          <div
+                            className="group p-1 rounded-full"
+                            onClick={() => handleOpenPopup("redirect", project)}
+                          >
+                            <Image
+                              className="cursor-pointer group-hover:-translate-y-2 transition-transform"
+                              src={"/redirect.svg"}
+                              width={24}
+                              height={24}
+                              alt="Lock icon"
+                            />
+                          </div>
                         </div>
                       </td>
                     </tr>
@@ -191,7 +215,11 @@ export default function Table({
       {isOpen ? (
         <Confirm
           isOpen={isOpen}
-          message={"Bạn có muốn xoá chuyển đi này này."}
+          message={
+            typeAction === "delete"
+              ? "Bạn có muốn xoá chuyển đi này này."
+              : "Bạn có muốn di chuyển đến căn hộ này."
+          }
           onCancel={closePopup}
           onOk={handleClickAction}
           onClickOutSide={closePopup}

@@ -53,7 +53,7 @@ export default function Trip() {
     try {
       await deleteContract(contractId);
       deleteStateContracts(contractId);
-      showToast("Xoá thành công")
+      showToast("Xoá thành công");
       // router.refresh();
     } catch (error) {
       showToast("Xảy ra lỗi trong quá trình xử lý.", "error");
@@ -70,13 +70,36 @@ export default function Trip() {
           Danh sách các chuyến đi của bạn
         </h2>
 
-        <Table
-          data={contractsTrip}
-          changePage={changePage}
-          totalPage={Math.ceil(contractsTrip.length / 6)}
-          setChangePage={setChangePage}
-          onDelete={deteteTrip}
-        />
+        <div className="py-10">
+          {contractsTrip.length ? (
+            <Table
+              data={contractsTrip}
+              changePage={changePage}
+              totalPage={Math.ceil(contractsTrip.length / 6)}
+              setChangePage={setChangePage}
+              onDelete={deteteTrip}
+            />
+          ) : (
+            <div className="flex justify-center">
+              <div className="flex flex-col gap-4 w-fit mt-6">
+                <h4 className="text-2xl text-primary font-medium">
+                  Chưa có chuyến đi nào được đặt... vẫn chưa!
+                </h4>
+                <p className="text-lg">
+                  Đã đến lúc phủi bụi hành lý và bắt đầu chuẩn bị cho chuyến
+                  phiêu lưu tiếp theo của bạn rồi.
+                </p>
+
+                <Link
+                  href={"/#apartments"}
+                  className="text-white py-4 px-6 bg-[#222222] hover:bg-black hover:shadow-lg transition-all duration-500 rounded-xl w-fit text-xl font-medium cursor-pointer"
+                >
+                  Bắt đầu tìm kiếm
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </>
   );

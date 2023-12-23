@@ -22,7 +22,7 @@ export default function NumbRoom({ apartment }: IProps) {
   };
 
   const handlePre = () => {
-    alert((nextLayout - 1) * 100);
+    // alert((nextLayout - 1) * 100);
 
     if (nextLayout - 1 <= 0) {
       setNextLayout(totalLayout);
@@ -82,7 +82,7 @@ export default function NumbRoom({ apartment }: IProps) {
                       src={`http://127.0.0.1:8000/api/${img.image_url}`}
                       alt="img room"
                       fill
-                      className="object-cover"
+                      className="object-cover rounded-lg shadow-lg"
                     />
                   </div>
                 </div>
