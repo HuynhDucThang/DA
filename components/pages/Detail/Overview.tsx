@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addToWhiteList, deleteWhiteListItem } from "@/redux/slices/userStore";
 import { IApartmentRead } from "@/utils/interface";
 import Image from "next/image";
+import { Img } from "../user/img";
 
 interface IProps {
   apartmentDetail: IApartmentRead;
@@ -93,11 +94,10 @@ export default function OverView({
               } object-cover cursor-pointer transition-all hover:opacity-90 overflow-hidden shadow-md`}
               key={index}
             >
-              <Image
-                src={`http://127.0.0.1:8000/api/${imageApartment?.image_url}`}
-                alt={imageApartment.id}
-                fill
-                className="object-cover"
+              <Img
+                blob_url={`http://127.0.0.1:8000/api/${imageApartment?.image_url}`}
+                handleClick={()=>{}}
+                name={`ảnh thứ ${index}`}
               />
             </div>
           ))}

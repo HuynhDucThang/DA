@@ -33,7 +33,7 @@ export const loginAdmin = async (prevState: any, formData: FormData) => {
 
     return "Success";
   } catch (err: any) {
-    return err?.response?.data?.detail ?? "Đăng nhập thất bại!";
+    return  "Đăng nhập thất bại!";
   }
 };
 

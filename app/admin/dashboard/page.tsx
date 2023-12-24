@@ -31,6 +31,11 @@ const Dashboard = async () => {
   const commonData: IStatisticalsCommon[] = statisticalsCommon.data;
   const chartData : IStatisticalsChart[] = statisticalChart.data;
 
+  console.log("commonData : ", commonData);
+  console.log("chartData : ", chartData);
+
+  
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.main}>

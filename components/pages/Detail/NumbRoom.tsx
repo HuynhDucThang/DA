@@ -3,6 +3,7 @@
 import { IApartmentRead } from "@/utils/interface";
 import Image from "next/image";
 import { useState } from "react";
+import { Img } from "../user/img";
 
 interface IProps {
   apartment: IApartmentRead;
@@ -68,21 +69,21 @@ export default function NumbRoom({ apartment }: IProps) {
           </div>
 
           {/* laylout list */}
-          <div className="mt-2 overflow-x-hidden">
+          <div className="mt-2 overflow-x-auto">
             <div
-              className="flex gap-4"
+              className="flex flex-row gap-4"
               style={{
-                transform: `translateX(-${(nextLayout - 1) * 100}%)`,
+                width: `${imagesSlice.length * 50}%`, // Đặt chiều rộng tổng cộng là số lượng ảnh nhân 50%
+                transform: `translateX(-${(nextLayout - 1) * 50}%)`, // Dịch chuyển theo nextLayout
               }}
             >
               {imagesSlice.map((img, ind) => (
-                <div className="flex-[0_1_50%] " key={ind}>
-                  <div className="w-full aspect-[1.5] relative">
-                    <Image
-                      src={`http://127.0.0.1:8000/api/${img.image_url}`}
-                      alt="img room"
-                      fill
-                      className="object-cover rounded-lg shadow-lg"
+                <div className="w-1/4" key={ind}>
+                  <div className="w-full aspect-[1/1] relative">
+                    <Img
+                      blob_url={`http://127.0.0.1:8000/api/${img.image_url}`}
+                      handleClick={() => {}}
+                      name="zxc"
                     />
                   </div>
                 </div>

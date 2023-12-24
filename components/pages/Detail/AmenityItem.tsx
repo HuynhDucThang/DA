@@ -11,7 +11,7 @@ export default function AmenityItem({ amenity }: IProps) {
     <div className="flex-[1_1_50%]">
       <div className="flex items-center gap-4">
         <Image
-          src={iconAmenities[amenity.name]}
+          src={iconAmenities[amenity.desc]}
           alt={amenity.name}
           height={24}
           width={24}
