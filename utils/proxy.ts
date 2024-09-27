@@ -9,6 +9,7 @@ import {
   IAmenityCreate,
   IApartCommentCreate,
   IApartmentCreate,
+  IApartmentRead,
   IContractCreate,
   IMessageCreate,
   IRoomCreate,
@@ -17,6 +18,7 @@ import {
 import { getCookie } from "./helpers/common";
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import { apartmentData } from "./data";
 
 // ----------------------------- users ---------------------------------
 
@@ -79,10 +81,12 @@ export const uploadAvatar = async (userId: string, formData: FormData) =>
 // ------------------------------ apartment ---------------------------------
 
 export const getApartmentByTagId = async (tagId: string) =>
-  await axiosAuth.get(`/apartments/tag${tagId ? `?tag_id=${tagId}` : ""}`);
+  await axiosAuth.get(
+    `/apartment/?isApproved=false${tagId ? `&tag=${tagId}` : ""}`
+  );
 
 export const getApartmentDetail = async (apartmentId: string) =>
-  await axiosAuth.get(`/apartments/${apartmentId}/apartment`);
+  await axiosAuth.get(`/apartment/${apartmentId}`);
 
 export const createApartment = async (
   apartment: IApartmentCreate, // Assuming IApartmentCreate is an interface or type
@@ -183,7 +187,7 @@ export async function getApartmentsLocal(searchParams: any) {
 
 // ------------------------------- tags -------------------------------
 
-export const getTagsFilter = async () => await axiosAuth.get(`/tags/all`);
+export const getTagsFilter = async () => await axiosAuth.get(`/apartment-tag`);
 
 export const createTag = async (apartment: ITagCreate) =>
   await axiosAuth.post("/tags", apartment);
@@ -227,6 +231,8 @@ export const deleteAmenity = async (AmenityId: string) =>
   await axiosAuth.delete(`/amenities/${AmenityId}`);
 
 // comment
+export const getCommentByApartment = async (apartmentId: string) =>
+  await axiosAuth.get(`/comment/?apartmentId=${apartmentId}`);
 
 export const createApartmentComment = async (comment: IApartCommentCreate) =>
   await axiosServer.post("/apartmentComment", comment);

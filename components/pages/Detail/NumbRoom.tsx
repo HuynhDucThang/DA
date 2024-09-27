@@ -4,9 +4,10 @@ import { IApartmentRead } from "@/utils/interface";
 import Image from "next/image";
 import { useState } from "react";
 import { Img } from "../user/img";
+import { IResponseApartment } from "@/utils/interface.v2";
 
 interface IProps {
-  apartment: IApartmentRead;
+  apartment: IResponseApartment;
 }
 
 export default function NumbRoom({ apartment }: IProps) {
@@ -81,9 +82,9 @@ export default function NumbRoom({ apartment }: IProps) {
                 <div className="w-1/4" key={ind}>
                   <div className="w-full aspect-[1/1] relative">
                     <Img
-                      blob_url={`http://127.0.0.1:8000/api/${img.image_url}`}
+                      blob_url={img}
                       handleClick={() => {}}
-                      name="zxc"
+                      name=""
                     />
                   </div>
                 </div>

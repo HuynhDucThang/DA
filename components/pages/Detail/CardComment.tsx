@@ -5,9 +5,10 @@ import Image from "next/image";
 import Stars from "./comment/stars";
 import Link from "next/link";
 import Desc from "./Desc";
+import { IResponseApartmentComment } from "@/utils/interface.v2";
 
 interface IProps {
-  comment: IComment;
+  comment: IResponseApartmentComment;
 }
 
 export default function CardComment({ comment }: IProps) {
@@ -16,15 +17,11 @@ export default function CardComment({ comment }: IProps) {
       {/* avatar */}
       <div className="">
         <Link
-          href={`/users/${comment.user_id}`}
+          href={`/users/${123}`}
           className="block w-20 h-20 relative"
         >
           <Image
-            src={
-              comment.user?.avatar
-                ? `${URL}/${comment.user?.avatar}`
-                : "/avatar.png"
-            }
+            src={"/avatar.png"}
             alt="avatar"
             fill
             className="rounded-full shadow-md"
@@ -46,7 +43,7 @@ export default function CardComment({ comment }: IProps) {
         <div className="flex items-center justify-between border-b border-c-grey">
           <div className="pb-2">
             <h3 className="flex items-center text-primary text-xl gap-2">
-              {comment.user.username}
+              {"comment.user.username"}
               <Image
                 src="/tick_blue.svg"
                 alt="tick icon"
@@ -60,12 +57,12 @@ export default function CardComment({ comment }: IProps) {
             </p>
           </div>
           <div className="flex_center relative group text-white font-medium text-base w-10 h-10 rounded-full bg-c-logo">
-            {comment.total_rate}
+            {comment.raing.totalScope}
             <div className="shadow_common z-10 absolute w-[300px] -top-[400%] left-0 p-6 transition-all hidden group-hover:block text-black bg-white rounded-md">
               <div className="flex items-center gap-4">
                 <span className="flex-[0_1_100px]">Vị trí</span>
                 <Stars
-                  rating={comment.rate_location}
+                  rating={comment.raing.location}
                   commonStyles="gap-1"
                   stylesStar="w-6 h-6"
                 />
@@ -73,7 +70,7 @@ export default function CardComment({ comment }: IProps) {
               <div className="flex items-center gap-4 mt-2">
                 <span className="flex-[0_1_100px]">Tiện nghi</span>
                 <Stars
-                  rating={comment.rate_amenities}
+                  rating={comment.raing.check_in}
                   commonStyles="gap-1"
                   stylesStar="w-6 h-6"
                 />
@@ -81,7 +78,7 @@ export default function CardComment({ comment }: IProps) {
               <div className="flex items-center gap-4 mt-2">
                 <span className="flex-[0_1_100px]">Nội thất</span>
                 <Stars
-                  rating={comment.rate_interior}
+                  rating={comment.raing.accuracy}
                   commonStyles="gap-1"
                   stylesStar="w-6 h-6"
                 />
@@ -89,7 +86,7 @@ export default function CardComment({ comment }: IProps) {
               <div className="flex items-center gap-4 mt-2">
                 <span className="flex-[0_1_100px]">Giá cả</span>
                 <Stars
-                  rating={comment.rate_price}
+                  rating={comment.raing.communication}
                   commonStyles="gap-1"
                   stylesStar="w-6 h-6"
                 />
@@ -100,7 +97,7 @@ export default function CardComment({ comment }: IProps) {
 
         {/* body */}
         <div className="">
-          <Desc text={comment.text} />
+          <Desc text={comment.content} />
           <span className="pt-4 block">🌸☕️🌵</span>
         </div>
       </div>

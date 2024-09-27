@@ -51,9 +51,7 @@ export interface IApartmentRead {
   apartment_type: string;
   is_approved: boolean;
   images: IImagesApartment[];
-  comments: IComment[];
   total_rating?: number;
-  owner?: IUser;
 }
 
 export interface IApartmentDetail extends IApartmentRead {

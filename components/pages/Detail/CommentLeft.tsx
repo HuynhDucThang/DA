@@ -14,9 +14,10 @@ import { Loading } from "@/components/common";
 import Stars from "./comment/stars";
 import { showToast } from "@/utils/helpers/common";
 import { useRouter } from "next/navigation";
+import { IResponseApartmentComment } from "@/utils/interface.v2";
 
 interface IProps {
-  comments: IComment[];
+  comments: IResponseApartmentComment[];
   apartmentId: string;
 }
 
@@ -107,7 +108,7 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
           <div className="border-t border-c-grey grid grid-cols-1 gap-4 pt-4">
             {comments.length ? (
               comments.map((comment) => (
-                <CardComment key={comment.id} comment={comment} />
+                <CardComment key={comment._id} comment={comment} />
               ))
             ) : (
               <div className="text-primary text-2xl font-medium text-center p-8">

@@ -1,9 +1,11 @@
-import { FilterApartment } from "@/components/common";
-import Toastify from "@/components/common/toastify";
-import { ListApartment } from "@/components/pages/Home";
+"use client";
+
+import { useEffect, useState } from "react";
+import { FilterApartment, Loading } from "@/components/common";
 import BannerMain from "@/components/pages/Home/bannerMain";
-import { baseURL } from "@/utils/api";
-import { Suspense } from "react";
+import CardApartment from "@/components/pages/Home/CardApartment";
+import { getApartmentByTagId } from "@/utils/proxy";
+import { IResponseApartment } from "@/utils/interface.v2";
 
 interface IProps {
   searchParams: {
@@ -17,49 +19,41 @@ interface IProps {
   };
 }
 
-async function getApartments(searchParams: any) {
-  const params = new URLSearchParams();
-  const addParamIfExist = (key: string, value: any) => {
-    if (value) {
-      params.set(key, value);
-    }
-  };
+export default function Home({ searchParams }: IProps) {
+  const [apartments, setApartments] = useState<IResponseApartment[]>([]);
+  const [isFetching, setIsFetching] = useState<boolean>(true);
 
-  Object.keys(searchParams).forEach((key) => {
-    if (searchParams[key]) {
-      const keyName = key === "tagId" ? "tag_id" : key;
-      addParamIfExist(keyName, searchParams[key]);
-    }
-  });
+  const tagId = searchParams.tagId;
 
-  const res = await fetch(
-    `http://127.0.0.1:8000/api/apartments/tag?${params.toString()}`,
-    { cache: "no-store" }
-  );
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-
-  return data;
-}
-
-export default async function Home({ searchParams }: IProps) {
-  const promiseApartment = getApartments({
-    ...searchParams,
-    is_approved: true,
-  });
+  useEffect(() => {
+    const fetchApartments = async () => {
+      try {
+        const { data } = await getApartmentByTagId(tagId);
+        if (data?.payload) setApartments(data?.payload);
+      } catch (error) {
+        console.error("fetchApartments error : ", error);
+      } finally {
+        setIsFetching(false);
+      }
+    };
+    if (tagId) fetchApartments();
+  }, [tagId]);
 
   return (
     <>
+      {isFetching ? <Loading /> : null}
       <BannerMain />
       <div className="px-pd-main pt-8">
         <FilterApartment />
         {/* layout carrd */}
 
-        <Suspense fallback={<div>...loading....</div>}>
-          <ListApartment promise={promiseApartment} />
-        </Suspense>
+        <div id="apartments">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8 spacing_between_cpn_detail">
+            {apartments.map((apartment, index) => (
+              <CardApartment key={index} apartment={apartment} />
+            ))}
+          </div>
+        </div>
       </div>
     </>
   );

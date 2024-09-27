@@ -117,3 +117,14 @@ export const showToast = (message: string, type = "success" as TOAST_TYPE) => {
   }
 };
 
+export const convertStringToFloat = (value: string): number | null => {
+  const number = parseFloat(value);
+
+  // Check if the conversion is successful and not NaN
+  if (!isNaN(number)) {
+    return number;
+  }
+
+  // Return null if the conversion failed
+  return null;
+};

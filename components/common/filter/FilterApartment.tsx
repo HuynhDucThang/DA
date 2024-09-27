@@ -11,7 +11,6 @@ import {
   clearAllSearchParams,
   updateSearchParams,
 } from "@/utils/helpers/common";
-import SelectC from "../select";
 
 interface IProps {}
 
@@ -26,7 +25,7 @@ export default function FilterApartment({}: IProps) {
     (async () => {
       try {
         const { data } = await getTagsFilter();
-        const search = updateSearchParams("tagId", data.data?.[0]?.id ?? "");
+        const search = updateSearchParams("tagId", data.data?.[0]?._id ?? "");
         router.replace(search);
         setTags(data.data);
       } catch (error) {
@@ -34,7 +33,6 @@ export default function FilterApartment({}: IProps) {
       }
     })();
   }, []);
-
 
   const handleReset = () => {
     router.replace(clearAllSearchParams(), { scroll: false });

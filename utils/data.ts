@@ -1,3 +1,5 @@
+import { IApartmentRead } from "./interface";
+
 export const iconsFilterApartment: Record<string, string> = {
   villa: "/filter/villa.svg",
   Beach: "/filter/beach.svg",
@@ -36,3 +38,38 @@ export const APARTMENT_TYPE: Record<string, string> = {
   HOUSE: "Nhà",
   CONDO: "Biệt Thự",
 };
+
+export const apartmentData: IApartmentRead[] = [
+  {
+    id: "apt_123456",
+    desc: "A modern apartment located in the city center, close to major attractions.",
+    img_room: "https://example.com/images/room1.jpg",
+    price_per_day: 150,
+    num_bedrooms: 2,
+    num_bathrooms: 1,
+    num_living_rooms: 1,
+    name: "City Center Apartment",
+    room: "Room A1",
+    created_at: "2024-01-15T10:00:00Z",
+    updated_at: "2024-06-10T12:00:00Z",
+    address: "123 Main St, City Center",
+    total_people: 4,
+    apartment_type: "Luxury",
+    is_approved: true,
+    images: [
+      {
+        id: "img_001",
+        image_url: "https://example.com/images/livingroom.jpg",
+        apartment_id: "123",
+        created_at: new Date().toDateString(),
+      },
+      {
+        id: "img_002",
+        image_url: "https://example.com/images/kitchen.jpg",
+        apartment_id: "123",
+        created_at: new Date().toDateString(),
+      },
+    ],
+    total_rating: 4.5,
+  },
+];

@@ -1,8 +1,9 @@
 import { IAmenityRead } from "@/utils/interface";
 import AmenityItem from "./AmenityItem";
+import { IResponseApartmentAmenity } from "@/utils/interface.v2";
 
 interface IProps {
-  amenities: IAmenityRead[];
+  amenities: IResponseApartmentAmenity[];
 }
 
 export default function Amenities({ amenities }: IProps) {

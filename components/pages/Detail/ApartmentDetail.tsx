@@ -4,38 +4,31 @@ import TitleDetail from "./TitleDetail";
 import Desc from "./Desc";
 import PayDetail from "./PayDetail";
 import NumbRoom from "./NumbRoom";
-import { IApartmentDetail } from "@/utils/interface";
-import { useAppDispatch } from "@/redux/hooks";
-import { setDates } from "@/redux/slices/booking";
-import { useEffect } from "react";
 import TimeBooking from "./TimeBooking";
 import Amenities from "./Amenities";
-import { getContractsByApartment } from "@/utils/proxy";
+import {
+  IResponseApartment,
+  IResponseApartmentAmenity,
+} from "@/utils/interface.v2";
 
 interface IProps {
-  apartment: IApartmentDetail;
+  apartment: IResponseApartment;
 }
 
 export default function Details({ apartment }: IProps) {
-  const {
-    owner,
-    amenities,
-    apartment_contract,
-    apartment_tags,
-    ...apartmentDetail
-  } = apartment;
-
   return (
     <div className="flex gap-16 pb-8">
       <div className="w-[65%]">
-        <TitleDetail apartmentDetail={apartmentDetail} owner={owner} />
-        <Desc text={apartmentDetail.desc} />
-        <NumbRoom apartment={apartmentDetail} />
-        <Amenities amenities={amenities} />
+        <TitleDetail apartmentDetail={apartment} />
+        <Desc text={apartment.description} />
+        <NumbRoom apartment={apartment} />
+        <Amenities
+          amenities={apartment.amentities as IResponseApartmentAmenity[]}
+        />
         <TimeBooking />
       </div>
 
-      <PayDetail apartmentDetail={apartmentDetail} />
+      <PayDetail apartmentDetail={apartment} />
     </div>
   );
 }

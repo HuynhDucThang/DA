@@ -4,16 +4,18 @@ import { BtnCommon, Loading } from "@/components/common";
 import RangeCalendar from "@/components/common/calendar/rangeCalendar";
 import ModalAbs from "@/components/common/modal/ModalAbs";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { removeDate, setDate, setDates } from "@/redux/slices/booking";
+import { removeDate, setDates } from "@/redux/slices/booking";
 import { setModalType } from "@/redux/slices/modalSlice";
 import { RootState } from "@/redux/store";
 import {
   clearAllSearchParams,
+  convertStringToFloat,
   handleConvertDate,
   showToast,
 } from "@/utils/helpers/common";
 import useModal from "@/utils/hook/useModal";
 import { IApartmentRead } from "@/utils/interface";
+import { IResponseApartment } from "@/utils/interface.v2";
 import {
   createContract,
   getContractsByApartment,
@@ -56,7 +58,7 @@ const dataNumberEnteredHouse = [
 type TYPE_ENTERD_HOUSE = "adult" | "young" | "baby" | "pet";
 
 interface IProps {
-  apartmentDetail: IApartmentRead;
+  apartmentDetail: IResponseApartment;
 }
 
 export default function PayDetail({ apartmentDetail }: IProps) {
@@ -90,7 +92,7 @@ export default function PayDetail({ apartmentDetail }: IProps) {
     const getContractsApartment = async () => {
       setIsLoading(true);
       try {
-        const { data } = await getContractsByApartment(apartmentDetail.id);
+        const { data } = await getContractsByApartment(apartmentDetail._id);
         dispatch(setDates(data.data));
       } catch (error) {
         console.log("errpr");
@@ -125,7 +127,9 @@ export default function PayDetail({ apartmentDetail }: IProps) {
       ? new Date(end_date).getDate() - new Date(start_date).getDate() ?? null
       : 0;
 
-  const totalAmount = 45 + 30 + totalDay * apartmentDetail.price_per_day;
+  const pricePerNight = convertStringToFloat(apartmentDetail.pricePerNight);
+
+  const totalAmount = 45 + 30 + totalDay * (pricePerNight ?? 0);
 
   const totalPeople = useMemo(() => {
     let total = 0;
@@ -216,7 +220,7 @@ export default function PayDetail({ apartmentDetail }: IProps) {
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <h4 className="text-3xl font-semibold text-primary">
-                  ${apartmentDetail.price_per_day}
+                  ${apartmentDetail.pricePerNight}
                 </h4>
                 <span className="text-second text-xl">/đêm</span>
               </div>
@@ -228,7 +232,7 @@ export default function PayDetail({ apartmentDetail }: IProps) {
                   width={20}
                   height={20}
                 />
-                <span>{apartmentDetail.total_rating}</span>
+                <span>{apartmentDetail.rating?.totalScope}</span>
                 <Image
                   src="/dot.svg"
                   alt="arrow_bottom"
@@ -390,10 +394,13 @@ export default function PayDetail({ apartmentDetail }: IProps) {
                   </div>
                   <div className="flex justify-between mt-2">
                     <p className="text-primary text-lg underline">
-                      ${apartmentDetail.price_per_day} x {totalDay} đêm
+                      ${apartmentDetail.pricePerNight} x {totalDay} đêm
                     </p>
                     <p className="text-primary text-lg">
-                      ${totalDay * apartmentDetail.price_per_day}
+                      $
+                      {totalDay *
+                        (convertStringToFloat(apartmentDetail.pricePerNight) ??
+                          0)}
                     </p>
                   </div>
                   <div className="flex justify-between mt-2">

@@ -1,51 +1,48 @@
 import { Loading } from "@/components/common";
 import { useAppSelector } from "@/redux/hooks";
-import { URL } from "@/utils/api";
-import { handleConvertDate, showToast } from "@/utils/helpers/common";
-import { IApartmentRead, IUser } from "@/utils/interface";
-import { createRoomChat, getRoomUsers } from "@/utils/proxy";
+import { handleConvertDate } from "@/utils/helpers/common";
+import { IResponseApartment } from "@/utils/interface.v2";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface IProps {
-  apartmentDetail: IApartmentRead;
-  owner: IUser;
+  apartmentDetail: IResponseApartment;
 }
 
-export default function TitleDetail({ apartmentDetail, owner }: IProps) {
+export default function TitleDetail({ apartmentDetail }: IProps) {
   const { currentUser } = useAppSelector((state) => state.user);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleContact = async () => {
-    if (!currentUser.id) {
-      showToast("Bạn hãy đăng nhập để xử dụng tính năng này ", "error");
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const { data } = await getRoomUsers(currentUser.id, owner.id);
-      let roomId = data?.data?.id ?? "";
-      if (!data.data) {
-        const { data: dataRoom } = await createRoomChat({
-          key: `${currentUser.id}-${owner.id}`,
-          name: `${currentUser.username}-${owner.username}`,
-          users_id: [currentUser.id, owner.id],
-        });
-          
-        roomId = dataRoom.data.id;
-      }
+  // const handleContact = async () => {
+  //   if (!currentUser.id) {
+  //     showToast("Bạn hãy đăng nhập để xử dụng tính năng này ", "error");
+  //     return;
+  //   }
+  //   setIsLoading(true);
+  //   try {
+  //     const { data } = await getRoomUsers(currentUser.id, owner.id);
+  //     let roomId = data?.data?.id ?? "";
+  //     if (!data.data) {
+  //       const { data: dataRoom } = await createRoomChat({
+  //         key: `${currentUser.id}-${owner.id}`,
+  //         name: `${currentUser.username}-${owner.username}`,
+  //         users_id: [currentUser.id, owner.id],
+  //       });
 
-      router.push(
-        `/chat?room=${roomId}&uid=${currentUser.id}&ruid=${owner.id}`
-      );
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //       roomId = dataRoom.data.id;
+  //     }
+
+  //     router.push(
+  //       `/chat?room=${roomId}&uid=${currentUser.id}&ruid=${owner.id}`
+  //     );
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   return (
     <>
@@ -59,15 +56,15 @@ export default function TitleDetail({ apartmentDetail, owner }: IProps) {
             <p className="text_apartment_detail font-normal">4 khách</p>
             <Image src="/dot.svg" alt="dot icon" width={10} height={10} />
             <p className="text_apartment_detail font-normal">
-              {apartmentDetail.num_bedrooms} phòng ngủ
+              {apartmentDetail.rooms.bedRoom} phòng ngủ
             </p>
             <Image src="/dot.svg" alt="dot icon" width={10} height={10} />
             <p className="text_apartment_detail font-normal">
-              {apartmentDetail.num_living_rooms} phòng khách
+              {apartmentDetail.rooms.livingRoom} phòng khách
             </p>
             <Image src="/dot.svg" alt="dot icon" width={10} height={10} />
             <p className="text_apartment_detail font-normal">
-              {apartmentDetail.num_bathrooms} phòng tắm
+              {apartmentDetail.rooms.bathRoom} phòng tắm
             </p>
           </div>
         </div>
@@ -76,8 +73,8 @@ export default function TitleDetail({ apartmentDetail, owner }: IProps) {
           <div className="relative w-[10%] aspect-[1/1] overflow-hidden rounded-full">
             <Image
               src={
-                owner?.avatar
-                  ? `${URL}/${owner?.avatar}`
+                apartmentDetail.owner?.avatar
+                  ? apartmentDetail.owner?.avatar
                   : "/avatar_none_user.svg"
               }
               alt="avatar"
@@ -87,19 +84,19 @@ export default function TitleDetail({ apartmentDetail, owner }: IProps) {
           </div>
           <div className="flex-1">
             <h2 className="text-2xl text-txt-primary font-medium">
-              Chủ nhà {owner?.username}
+              Chủ nhà {apartmentDetail.owner?.username}
             </h2>
             <p className="text-txt-second text-xl">
               Đã tham gia vào{" "}
-              {owner?.created_at &&
-                handleConvertDate(new Date(owner?.created_at))}
+              {apartmentDetail?.owner?.created_at &&
+                handleConvertDate(new Date(apartmentDetail?.owner?.created_at))}
             </p>
           </div>
 
-          {currentUser.id !== owner?.id ? (
+          {currentUser.id !== apartmentDetail?.owner?.id ? (
             <div
               className="w-[20%] border-2 border-black rounded-xl h-full p-4 text-xl font-medium cursor-pointer transition-all hover:bg-black hover:text-white"
-              onClick={handleContact}
+              // onClick={handleContact}
             >
               Liên hệ chủ nhà
             </div>

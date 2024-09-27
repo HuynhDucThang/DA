@@ -2,12 +2,12 @@
 
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addToWhiteList, deleteWhiteListItem } from "@/redux/slices/userStore";
-import { IApartmentRead } from "@/utils/interface";
 import Image from "next/image";
 import { Img } from "../user/img";
+import { IResponseApartment } from "@/utils/interface.v2";
 
 interface IProps {
-  apartmentDetail: IApartmentRead;
+  apartmentDetail: IResponseApartment | null;
   totalComment: number;
   total_rating: number;
 }
@@ -21,7 +21,7 @@ export default function OverView({
   const dispatch = useAppDispatch();
 
   const apartmentInWhiteList = whiteList.findIndex(
-    (item) => item.id === apartmentDetail.id
+    (item) => item._id === apartmentDetail?._id
   );
 
   return (
@@ -61,11 +61,13 @@ export default function OverView({
           </div>
           <div
             className="flex_center gap-2 p-2 transition-all rounded-lg cursor-pointer hover:bg-c-grey-blur hover:shadow-sm"
-            onClick={() =>
+            onClick={() => {
+              if (!apartmentDetail) return;
+
               apartmentInWhiteList !== -1
-                ? dispatch(deleteWhiteListItem(apartmentDetail.id))
-                : dispatch(addToWhiteList(apartmentDetail))
-            }
+                ? dispatch(deleteWhiteListItem(apartmentDetail._id))
+                : dispatch(addToWhiteList(apartmentDetail));
+            }}
           >
             <Image
               src={
@@ -95,8 +97,8 @@ export default function OverView({
               key={index}
             >
               <Img
-                blob_url={`http://127.0.0.1:8000/api/${imageApartment?.image_url}`}
-                handleClick={()=>{}}
+                blob_url={imageApartment}
+                handleClick={() => {}}
                 name={`ảnh thứ ${index}`}
               />
             </div>

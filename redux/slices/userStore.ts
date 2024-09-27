@@ -1,9 +1,9 @@
-import { IApartmentRead, IUser } from "@/utils/interface";
+import {  IUser } from "@/utils/interface";
+import { IResponseApartment } from "@/utils/interface.v2";
 import { createSlice } from "@reduxjs/toolkit";
-import { list } from "postcss";
 
 interface IInitstates {
-  whiteList: IApartmentRead[];
+  whiteList: IResponseApartment[];
   receiverUser: IUser | null;
 }
 
@@ -29,7 +29,7 @@ const userStoreSlice = createSlice({
       state,
       action: {
         type: string;
-        payload: IApartmentRead;
+        payload: IResponseApartment;
       }
     ) => {
       //
@@ -44,7 +44,7 @@ const userStoreSlice = createSlice({
     ) => {
       const whiteListItemId = action.payload;
       state.whiteList = state.whiteList.filter(
-        (list) => list.id !== whiteListItemId
+        (list) => list._id !== whiteListItemId
       );
     },
   },

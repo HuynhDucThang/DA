@@ -1,26 +1,28 @@
-import { getApartmentComments } from "@/utils/proxyServer";
+import { IResponseApartmentComment } from "@/utils/interface.v2";
 import CommentLeft from "./CommentLeft";
 import CommentRight from "./CommentRight";
-import { IApartmentComment } from "@/utils/interface";
 
 interface IProps {
-  commentApartment: IApartmentComment;
+  commentApartment: IResponseApartmentComment[];
   apartmentId: string;
 }
 
-export default async function Comment({
+export default function Comment({
   commentApartment,
   apartmentId,
 }: IProps) {
-  const { comments, ...statisticalComments } = commentApartment;
-
   return (
     <div className="spacing_between_cpn_detail">
       <div className="flex gap-16 pb-8">
-        <CommentLeft comments={comments} apartmentId={apartmentId} />
+        <CommentLeft comments={commentApartment} apartmentId={apartmentId} />
         <CommentRight
-          statisticalComments={statisticalComments}
-          totalCommens={comments.length}
+          statisticalComments={{
+            total_rate_amenities: 2,
+            total_rate_interior: 3,
+            total_rate_location: 4,
+            total_rate_price: 65,
+          }}
+          totalCommens={20}
         />
       </div>
     </div>

@@ -1,7 +1,16 @@
-import FooterDetail from "@/components/layouts/FooterDetail";
-import { Details, InforNeeded, Map, OverView } from "@/components/pages/Detail";
+"use client";
+
+import { useEffect, useState } from "react";
+import { apartmentData } from "@/utils/data";
 import Comment from "@/components/pages/Detail/Comment";
-import { IApartmentDetail } from "@/utils/interface";
+import FooterDetail from "@/components/layouts/FooterDetail";
+import { getApartmentDetail, getCommentByApartment } from "@/utils/proxy";
+import { Details, InforNeeded, Map, OverView } from "@/components/pages/Detail";
+import {
+  IResponseApartment,
+  IResponseApartmentComment,
+} from "@/utils/interface.v2";
+import { Loading } from "@/components/common";
 
 interface IProps {
   searchParams: {
@@ -13,80 +22,67 @@ interface IProps {
   };
 }
 
-async function getApartmentById(apartmentId: string) {
-  const res = await fetch(
-    `http://127.0.0.1:8000/api/apartments/${apartmentId}/apartment`,
-    {
-      method: "GET",
-      next: { tags: ["apartment-detail"] },
-    }
-  );
-  const data = await res.json();
+export default function ApartmentDetail({ params }: IProps) {
+  const [comments, setComments] = useState<IResponseApartmentComment[]>([]);
+  const [apartment, setApartment] = useState<IResponseApartment | null>(null);
+  const [isFetching, setIsFetching] = useState<boolean>(true);
+  const apartmentId = params.apartmentId;
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const apartmentPromise = getApartmentDetail(apartmentId);
+        const commentPromise = getCommentByApartment(apartmentId);
 
-  return data;
-}
+        const [apartmentData, commentData] = await Promise.allSettled([
+          apartmentPromise,
+          commentPromise,
+        ]);
+        if (apartmentData.status === "fulfilled") {
+          setApartment(apartmentData.value.data.payload);
+        }
 
-async function getApartmentComments(apartmentId: string) {
-  const res = await fetch(
-    `http://127.0.0.1:8000/api/apartmentComment/${apartmentId}`,
-    {
-      method: "GET",
-      next: { tags: ["apartment-comment"] },
-    }
-  );
+        if (commentData.status === "fulfilled") {
+          setComments(commentData.value.data.payload);
+        }
+      } catch (error) {
+        console.log("error ApartmentDetail : ", error);
+      } finally {
+        setIsFetching(false);
+      }
+    };
 
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-
-  return data;
-}
-
-export default async function ApartmentDetail({ params }: IProps) {
-  const getApartment = getApartmentById(params.apartmentId);
-  const getComment = getApartmentComments(params.apartmentId);
-
-  const [apartmentData, commentData] = await Promise.all([
-    getApartment,
-    getComment,
-  ]);
-
-  const {
-    total_rating,
-    amenities,
-    apartment_contract,
-    apartment_tags,
-    ...apartmentDetail
-  } = apartmentData.data as IApartmentDetail;
+    fetchData();
+  }, []);
 
   return (
-    <div className="px-pd-detail pt-10">
-      {/* heading */}
-      <OverView
-        apartmentDetail={apartmentDetail}
-        totalComment={commentData.data.comments.length}
-        total_rating={total_rating}
-      />
-      {/* body */}
-      <Details apartment={apartmentData.data} />
+    <>
+      {isFetching ? <Loading /> : null}
+      <div className="px-pd-detail pt-10">
+        {/* heading */}
+        <OverView
+          apartmentDetail={apartment}
+          totalComment={comments?.length ?? 0}
+          total_rating={50}
+        />
+        {/* body */}
+        {apartment ? <Details apartment={apartment} /> : null}
 
-      <Comment
-        apartmentId={params.apartmentId}
-        commentApartment={commentData.data}
-      />
-      {/* Map */}
-      <Map />
-      {/* infor */}
-      <InforNeeded />
+        {comments ? (
+          <Comment
+            apartmentId={params.apartmentId}
+            commentApartment={comments}
+          />
+        ) : null}
 
-      {/* footer */}
-      <FooterDetail />
-    </div>
+        {/* Map */}
+        <Map />
+        {/* infor */}
+        <InforNeeded />
+
+        {/* footer */}
+        <FooterDetail />
+      </div>
+    </>
   );
 }

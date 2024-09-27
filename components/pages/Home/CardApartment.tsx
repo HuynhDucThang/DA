@@ -5,13 +5,13 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addToWhiteList, deleteWhiteListItem } from "@/redux/slices/userStore";
 import { APARTMENT_TYPE } from "@/utils/data";
 import { handleConvertDate, showToast } from "@/utils/helpers/common";
-import { IApartmentRead } from "@/utils/interface";
+import { IResponseApartment } from "@/utils/interface.v2";
 import Image from "next/image";
 import Link from "next/link";
 import { MouseEvent } from "react";
 
 interface IProps {
-  apartment: IApartmentRead;
+  apartment: IResponseApartment;
 }
 
 export default function CardApartment({ apartment }: IProps) {
@@ -19,7 +19,7 @@ export default function CardApartment({ apartment }: IProps) {
   const dispatch = useAppDispatch();
 
   const checkApartmentInWhiteList = whiteList.findIndex(
-    (list) => list.id === apartment.id
+    (list) => list._id === apartment._id
   );
 
   const handleAddOrRemoveWhiteListItem = (e: MouseEvent<HTMLDivElement>) => {
@@ -28,20 +28,20 @@ export default function CardApartment({ apartment }: IProps) {
       dispatch(addToWhiteList(apartment));
       showToast("Đã vào danh sách yêu thích");
     } else {
-      dispatch(deleteWhiteListItem(apartment.id));
+      dispatch(deleteWhiteListItem(apartment._id));
       showToast("Đã xoá khỏi danh sách yêu thích");
     }
   };
 
   return (
     <Link
-      href={`/apartment/${apartment.id}`}
+      href={`/apartment/${apartment._id}`}
       className="flex-[1_1_300px] group"
     >
       <div className="shadow-sm rounded-xl">
         <div className="w-full aspect-[1/1] relative rounded-2xl overflow-hidden mb-3">
           <Image
-            src={`http://127.0.0.1:8000/api/${apartment.images?.[0]?.image_url}`}
+            src={apartment.images[0]}
             alt="banner apartment"
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -66,12 +66,14 @@ export default function CardApartment({ apartment }: IProps) {
           <div className="flex justify-between items-center gap-2">
             <h4 className="text_card_heading line-clamp-1">{apartment.name}</h4>
             <div className="flex_center gap-1">
-              <span>{apartment.total_rating}</span>
+              <span>{apartment?.rating?.totalScope}</span>
               <Image src="/star.svg" alt="star icon" width={20} height={20} />
             </div>
           </div>
 
-          <p className="text_card_sub_heading line-clamp-1">{apartment.desc}</p>
+          <p className="text_card_sub_heading line-clamp-1">
+            {apartment.description}
+          </p>
 
           {/*  */}
           <div className="flex items-center gap-2">
@@ -82,7 +84,7 @@ export default function CardApartment({ apartment }: IProps) {
               alt="clock"
             />
             <p className="text_card_sub_heading">
-              {handleConvertDate(new Date(apartment.created_at))}
+              {apartment?.createAt && handleConvertDate(new Date(apartment.createAt))}
             </p>
           </div>
           {/* price */}
@@ -90,7 +92,7 @@ export default function CardApartment({ apartment }: IProps) {
             <div className="flex items-center gap-1">
               <Image src="/dolar.svg" alt="star icon" width={20} height={20} />
               <span className="text_card_heading">
-                {apartment.price_per_day}
+                {apartment.pricePerNight}
               </span>
               /<span>đêm</span>
             </div>
@@ -101,9 +103,7 @@ export default function CardApartment({ apartment }: IProps) {
                 width={20}
                 height={20}
               />
-              <span className="text_card_heading">
-                {APARTMENT_TYPE[apartment.apartment_type]}
-              </span>
+              <span className="text_card_heading">{apartment?.type}</span>
             </div>
           </div>
         </div>

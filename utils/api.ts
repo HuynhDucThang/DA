@@ -5,8 +5,8 @@ import { setToken, userLogout } from "@/redux/slices/authSlice";
 import { getCookie, setCookie } from "./helpers/common";
 import { userRefreshToken } from "./proxy";
 
-export const baseURL = "http://localhost:8000/api";
-export const URL = "http://127.0.0.1:8000/api";
+export const baseURL = "http://localhost:4000/api";
+export const URL = "http://127.0.0.1:4000/api";
 
 let isRefreshing: boolean = false;
 let refreshSubscribers: any[] = [];
