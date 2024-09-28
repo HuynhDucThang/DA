@@ -2,18 +2,14 @@ import { IUser } from "@/utils/interface";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initUser: IUser | null = {
-  id: "",
+  _id: "",
   email: "",
-  system_role: "",
-  username: "",
+  role: "",
+  name: "",
   avatar: "",
   password: "",
-  phonenumber: "",
-  created_at: "",
-  isVerify: false,
+  phoneNumber: "",
   address: "",
-  updated_at: "",
-  verification_code: "",
 };
 
 const initialState = {

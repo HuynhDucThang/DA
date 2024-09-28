@@ -48,14 +48,21 @@ export interface IResponseApartmentComment {
   apartment: string | IResponseApartment;
   author: IUser;
   content: string;
-  raing: {
-    cleanliness: number;
-    accuracy: number;
-    check_in: number;
-    communication: number;
-    location: number;
-    value: number;
-    totalScope: number;
-  };
+  rating: IResponseRatingApartment;
   created_at: Date;
 }
+
+export interface IResponseApartmentComment {
+  _id: string;
+  apartmentId: string;
+  content: string;
+  author: IUser;
+  rating: IResponseRatingApartment;
+  children: IResponseApartmentComment[];
+}
+
+export interface IRequestApartmentComment
+  extends Pick<
+    IResponseApartmentComment,
+    "apartmentId" | "content" | "rating"
+  > {}

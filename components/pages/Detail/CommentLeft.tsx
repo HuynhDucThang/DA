@@ -14,7 +14,12 @@ import { Loading } from "@/components/common";
 import Stars from "./comment/stars";
 import { showToast } from "@/utils/helpers/common";
 import { useRouter } from "next/navigation";
-import { IResponseApartmentComment } from "@/utils/interface.v2";
+import {
+  IResponseApartmentComment,
+  IResponseRatingApartment,
+} from "@/utils/interface.v2";
+import { createApartmentComment } from "@/utils/proxy";
+import { toast } from "react-toastify";
 
 interface IProps {
   comments: IResponseApartmentComment[];
@@ -24,17 +29,17 @@ interface IProps {
 export default function CommentLeft({ comments, apartmentId }: IProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { isOpen, closePopup, openPopup } = useModal();
-  const [ratings, setRatings] = useState({
-    rate_location: 5,
-    rate_amenities: 5,
-    rate_interior: 5,
-    rate_price: 5,
+  const [ratings, setRatings] = useState<IResponseRatingApartment>({
+    accuracy: 0,
+    check_in: 0,
+    cleanliness: 0,
+    communication: 0,
+    location: 0,
+    totalScope: 0,
+    value: 0,
   });
-  
-  const [commentContent, setCommentContent] = useState({
-    title: "",
-    content: "",
-  });
+
+  const [commentContent, setCommentContent] = useState("");
 
   const dispatch = useAppDispatch();
   const { currentUser } = useAppSelector((state) => state.user);
@@ -44,19 +49,25 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
   };
 
   const handleOnRating = async () => {
+    if (!ratings) return;
     setIsLoading(true);
 
-    const res = await createApartmentCommentServer({
-      ...ratings,
-      text: `${commentContent.title} - ${commentContent.content}`,
-      apartment_id: apartmentId,
-      user_id: currentUser.id,
-    });
-    
-    setIsLoading(false);
-
-    if (res?.errMsg) {
-      showToast(`Lỗi 13 ${res?.errMsg}`, "error");
+    try {
+      await createApartmentComment({
+        apartmentId,
+        content: commentContent,
+        rating: {
+          ...ratings,
+          totalScope: Object.values(ratings).reduce(
+            (preValue, value) => preValue + value
+          ),
+        },
+      });
+      toast.success("Tạo bình luận thành công");
+    } catch (error) {
+      toast.error("Tạo bình luận thất bại");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -66,12 +77,12 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
       <div className="w-[65%] shadow-[rgba(0,0,0,0.12)_0px_6px_16px] rounded-2xl">
         <div className="p-4">
           <div className="flex items-center justify-between py-4">
-            <h2 className="heading__detail_apartment text-3xl">
+            <h2 className="heading__detail_apartment text-2xl">
               Đánh giá từ cộng đồng <span>({comments.length})</span>
             </h2>
             <button
               onClick={() => {
-                if (!currentUser.id) {
+                if (!currentUser._id) {
                   showToast("Hãy đăng nhập để sử dụng tính năng này", "error");
                   dispatch(setModalType("LOGIN"));
                   return;
@@ -134,14 +145,14 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
               </span>
               <Stars
                 isEdit={true}
-                rating={ratings.rate_location}
+                rating={ratings.accuracy}
                 handleOnChangeRating={(point: number) => {
-                  handleUpdateRatings("rate_location", point);
+                  handleUpdateRatings("accuracy", point);
                 }}
               />
               <div className="max-w-[150px] w-full text-center px-3 py-2 bg-c-logo">
                 <span className="text-white font-medium text-lg">
-                  {ratingsDefined[Math.floor(ratings.rate_location)]}
+                  {ratingsDefined[Math.floor(ratings.accuracy)]}
                 </span>
               </div>
             </div>
@@ -152,14 +163,14 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
               </span>
               <Stars
                 isEdit={true}
-                rating={ratings.rate_interior}
+                rating={ratings.check_in}
                 handleOnChangeRating={(point: number) => {
-                  handleUpdateRatings("rate_interior", point);
+                  handleUpdateRatings("check_in", point);
                 }}
               />
               <div className="max-w-[150px] w-full text-center px-3 py-2 bg-c-logo">
                 <span className="text-white font-medium text-lg">
-                  {ratingsDefined[Math.floor(ratings.rate_interior)]}
+                  {ratingsDefined[Math.floor(ratings.check_in)]}
                 </span>
               </div>
             </div>
@@ -170,32 +181,68 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
               </span>
               <Stars
                 isEdit={true}
-                rating={ratings.rate_amenities}
+                rating={ratings.cleanliness}
                 handleOnChangeRating={(point: number) => {
-                  handleUpdateRatings("rate_amenities", point);
+                  handleUpdateRatings("cleanliness", point);
                 }}
               />
               <div className="max-w-[150px] w-full text-center px-3 py-2 bg-c-logo">
                 <span className="text-white font-medium text-lg">
-                  {ratingsDefined[Math.floor(ratings.rate_amenities)]}
+                  {ratingsDefined[Math.floor(ratings.cleanliness)]}
                 </span>
               </div>
             </div>
 
             <div className="flex items-center justify-between px-6 mt-4">
               <span className="block min-w-[100px] text-left text-lg text-primary">
-                Giá cả
+                Giao tiếp
               </span>
               <Stars
                 isEdit={true}
-                rating={ratings.rate_price}
+                rating={ratings.communication}
                 handleOnChangeRating={(point: number) => {
-                  handleUpdateRatings("rate_price", point);
+                  handleUpdateRatings("communication", point);
                 }}
               />
               <div className="max-w-[150px] w-full text-center px-3 py-2 bg-c-logo">
                 <span className="text-white font-medium text-lg">
-                  {ratingsDefined[Math.floor(ratings.rate_price)]}
+                  {ratingsDefined[Math.floor(ratings.communication)]}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between px-6 mt-4">
+              <span className="block min-w-[100px] text-left text-lg text-primary">
+                Địa điểm
+              </span>
+              <Stars
+                isEdit={true}
+                rating={ratings.location}
+                handleOnChangeRating={(point: number) => {
+                  handleUpdateRatings("location", point);
+                }}
+              />
+              <div className="max-w-[150px] w-full text-center px-3 py-2 bg-c-logo">
+                <span className="text-white font-medium text-lg">
+                  {ratingsDefined[Math.floor(ratings.location)]}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between px-6 mt-4">
+              <span className="block min-w-[100px] text-left text-lg text-primary">
+                Giá trị
+              </span>
+              <Stars
+                isEdit={true}
+                rating={ratings.value}
+                handleOnChangeRating={(point: number) => {
+                  handleUpdateRatings("value", point);
+                }}
+              />
+              <div className="max-w-[150px] w-full text-center px-3 py-2 bg-c-logo">
+                <span className="text-white font-medium text-lg">
+                  {ratingsDefined[Math.floor(ratings.value)]}
                 </span>
               </div>
             </div>
@@ -205,28 +252,14 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
         <form className="mt-6">
           <div className="flex flex-col gap-2 pb-4">
             <h2 className="sub_heading__detail_apartment">Đánh giá của bạn</h2>
-            <input
-              type="text"
-              placeholder="Nhập tiêu đề đánh giá"
-              className="border border-c-grey hover:border-c-logo transition shadow-md p-3 rounded-lg outline-none"
-              value={commentContent.title}
-              onChange={(e) =>
-                setCommentContent((pre) => ({ ...pre, title: e.target.value }))
-              }
-            />
             <textarea
               name=""
               id=""
               rows={5}
               className="border border-c-grey hover:border-c-logo transition shadow-md p-3 rounded-lg mt-2 outline-none resize-none min-h-[120px] max-h[220px] overflow-y-hidden"
               placeholder="Nội dung đánh giá"
-              value={commentContent.content}
-              onChange={(e) =>
-                setCommentContent((pre) => ({
-                  ...pre,
-                  content: e.target.value,
-                }))
-              }
+              value={commentContent}
+              onChange={(e) => setCommentContent(e.target.value)}
             ></textarea>
           </div>
 
@@ -235,7 +268,7 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
               className="text-white bg-c-logo py-2 px-3 rounded-lg text-lg font-semibold"
               onClick={handleOnRating}
             >
-              {isLoading ? "Đang xử lý" : "Viết đánh giá"}
+              {isLoading ? "Đang xử lý" : "Đánh giá"}
             </button>
           </div>
         </form>

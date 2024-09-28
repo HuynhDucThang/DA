@@ -68,12 +68,7 @@ export default function ApartmentDetail({ params }: IProps) {
         {/* body */}
         {apartment ? <Details apartment={apartment} /> : null}
 
-        {comments ? (
-          <Comment
-            apartmentId={params.apartmentId}
-            commentApartment={comments}
-          />
-        ) : null}
+        <Comment apartmentId={params.apartmentId} commentApartment={comments} />
 
         {/* Map */}
         <Map />

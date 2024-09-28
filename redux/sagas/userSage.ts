@@ -13,9 +13,7 @@ function* workGetCurrentUser(): any {
   } catch (error: any) {
     removeCookie("access_token");
     yield put(
-      getCurrentUserReject(
-        error.response?.data?.detail?.message ?? "Server Error"
-      )
+      getCurrentUserReject(error.response?.data?.error ?? "Server Error")
     );
   }
 }

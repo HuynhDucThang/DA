@@ -85,9 +85,6 @@ export default function Register() {
         <div className="mt-5">
           <BtnCommon title="Đăng ký" handleClick={handleSubmit} />
         </div>
-        <div className="text-center py-2 text-lg font-bold text-black">
-          -- OR --
-        </div>
       </form>
       {/* <SocialAuth /> */}
     </div>

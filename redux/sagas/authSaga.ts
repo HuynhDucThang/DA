@@ -21,20 +21,17 @@ function* workUserLogin(action: PayloadAction<IUser>): any {
       action.payload.email,
       action.payload.password
     );
+    yield call(saveAuthToken, "access_token", data.token);
+    // yield call(saveAuthToken, "refresh_token", data.data.refresh_token);
 
-    yield call(saveAuthToken, "access_token", data.data.access_token);
-    yield call(saveAuthToken, "refresh_token", data.data.refresh_token);
-
-    yield put(userLoginFulfill(data.data.access_token));
+    yield put(userLoginFulfill(data.token));
     yield call(showToast, "Đăng nhập thành công");
   } catch (error: any) {
-    yield put(
-      userLoginReject(error.response?.data?.detail?.message ?? "Server Error")
-    );
+    yield put(userLoginReject(error.response?.data?.error ?? "Server Error"));
 
     yield call(
       showToast,
-      `Đăng nhập thất bại ${error.response?.data?.detail?.message}`,
+      `Đăng nhập thất bại ${error.response?.data?.error}`,
       "error"
     );
   }

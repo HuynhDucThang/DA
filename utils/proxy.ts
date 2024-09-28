@@ -7,9 +7,7 @@ import {
 } from "./api";
 import {
   IAmenityCreate,
-  IApartCommentCreate,
   IApartmentCreate,
-  IApartmentRead,
   IContractCreate,
   IMessageCreate,
   IRoomCreate,
@@ -18,7 +16,7 @@ import {
 import { getCookie } from "./helpers/common";
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { apartmentData } from "./data";
+import { IRequestApartmentComment } from "./interface.v2";
 
 // ----------------------------- users ---------------------------------
 
@@ -26,12 +24,12 @@ export const userLogin = async (
   email: FormDataEntryValue,
   password: FormDataEntryValue
 ) =>
-  await axiosServer.post("/users/login", {
+  await axiosNonAuth.post("/users/sign-in", {
     email,
     password,
   });
 
-export const getUser = async () => await axiosAuth.get("/users/");
+export const getUser = async () => await axiosAuth.get("/users/me");
 
 export const getUsers = async () => await axiosAuth.get("/users/all");
 
@@ -44,7 +42,7 @@ export const userSignUp = async (
   username: string,
   phonenumber: string
 ) =>
-  await axiosNonAuth.post("/users/sign_up", {
+  await axiosNonAuth.post("/users/sign-up", {
     username,
     phonenumber,
     email,
@@ -234,7 +232,7 @@ export const deleteAmenity = async (AmenityId: string) =>
 export const getCommentByApartment = async (apartmentId: string) =>
   await axiosAuth.get(`/comment/?apartmentId=${apartmentId}`);
 
-export const createApartmentComment = async (comment: IApartCommentCreate) =>
+export const createApartmentComment = async (comment: IRequestApartmentComment) =>
   await axiosServer.post("/apartmentComment", comment);
 
 // chat

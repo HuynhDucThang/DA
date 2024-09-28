@@ -56,6 +56,8 @@ export default function CommentRight({
               <RateItem title="Tiện Nghi" point={total_rate_amenities} />
               <RateItem title="Nội thất" point={total_rate_interior} />
               <RateItem title="Giá cả" point={total_rate_price} />
+              <RateItem title="Giá cả" point={total_rate_price} />
+              <RateItem title="Giá cả" point={total_rate_price} />
             </div>
           </div>
         </div>

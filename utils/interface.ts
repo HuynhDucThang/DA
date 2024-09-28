@@ -4,17 +4,13 @@ export interface ITypeApartment {
 }
 
 export interface IUser {
-  id: string;
+  _id: string;
   avatar: string;
-  username: string;
-  phonenumber: string;
+  name: string;
+  phoneNumber: string;
   password: string;
   email: string;
-  system_role: string;
-  isVerify: boolean;
-  created_at: string;
-  updated_at: string;
-  verification_code: string;
+  role: string;
   address: string;
 }
 
@@ -127,17 +123,6 @@ export interface IAmenityRead {
   id: string;
   name: string;
   desc: string;
-}
-
-//
-export interface IApartCommentCreate {
-  user_id: string;
-  apartment_id: string;
-  text: string;
-  rate_location: number;
-  rate_interior: number;
-  rate_amenities: number;
-  rate_price: number;
 }
 
 export interface IComment {
