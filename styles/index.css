@@ -82,7 +82,7 @@ body {
   }
 
   .text_card_sub_heading {
-    @apply text-lg font-normal text-second;
+    @apply text-base font-medium text-second;
   }
 
   .text_apartment_detail {

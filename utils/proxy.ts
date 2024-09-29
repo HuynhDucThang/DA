@@ -81,10 +81,22 @@ export const uploadAvatar = async (userId: string, formData: FormData) =>
 
 // ------------------------------ apartment ---------------------------------
 
-export const getApartmentByTagId = async (tagId: string) =>
-  await axiosAuth.get(
-    `/apartment/?isApproved=false${tagId ? `&tag=${tagId}` : ""}`
-  );
+export const getApartments = async (searchParams: any) => {
+  const params = new URLSearchParams();
+  const addParamIfExist = (key: string, value: any) => {
+    if (value) {
+      params.set(key, value);
+    }
+  };
+
+  Object.keys(searchParams).forEach((key) => {
+    if (searchParams[key]) {
+      addParamIfExist(key, searchParams[key]);
+    }
+  });
+
+  return await axiosAuth.get(`/apartment/?${params.toString()}`);
+};
 
 export const getApartmentDetail = async (apartmentId: string) =>
   await axiosAuth.get(`/apartment/${apartmentId}`);
@@ -178,8 +190,7 @@ export async function getApartmentsLocal(searchParams: any) {
 
   Object.keys(searchParams).forEach((key) => {
     if (searchParams[key]) {
-      const keyName = key === "tagId" ? "tag_id" : key;
-      addParamIfExist(keyName, searchParams[key]);
+      addParamIfExist(key, searchParams[key]);
     }
   });
 
@@ -218,7 +229,8 @@ export const deleteContract = async (contractId: string) =>
 
 // ------------------------------- amenities -------------------------------
 
-export const getAmenities = async () => await axiosAuth.get(`/amenities/all`);
+export const getAmenities = async () =>
+  await axiosAuth.get(`/apartment-amenity`);
 
 export const createAmenity = async (apartment: IAmenityCreate) =>
   await axiosAuth.post("/amenities", apartment);

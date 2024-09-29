@@ -7,12 +7,11 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { removeModalType } from "@/redux/slices/modalSlice";
 import { CITY } from "@/utils/enum";
 import {
-  clearAllSearchParams,
+  clearSearchParams,
   updateMutilpleSearchParams,
-  updateSearchParams,
 } from "@/utils/helpers/common";
 import { IAmenityRead } from "@/utils/interface";
-import { getAmenities, getApartmentsLocal } from "@/utils/proxy";
+import { getAmenities, getApartments, getApartmentsLocal } from "@/utils/proxy";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -53,7 +52,7 @@ export default function ModalSearch() {
   const router = useRouter();
 
   const params = useSearchParams();
-  const tagId = params.get("tagId");
+  const tagId = params.get("tag");
 
   useEffect(() => {
     const getApartmentFilter = async () => {
@@ -61,12 +60,14 @@ export default function ModalSearch() {
       try {
         const objectChecked = checkValuesIsExistInObject({
           ...searchParams,
-          tag_id: tagId,
-          is_approved: true,
+          tag: tagId,
+          isApproved: true,
         });
 
-        const { data } = await getApartmentsLocal(objectChecked);
-        setTotalApartment(data?.data?.length);
+        const { data } = await getApartments(objectChecked);
+        console.log("data?.payload?.length: ", data?.payload?.length);
+
+        if (data?.payload) setTotalApartment(data?.payload?.length);
       } catch (error) {
         console.log(error);
       } finally {
@@ -143,8 +144,9 @@ export default function ModalSearch() {
   };
 
   const handleClearAllSearchParams = () => {
-    const params = clearAllSearchParams();
-    router.replace(params, { scroll: false });
+    router.replace(clearSearchParams(Object.keys(searchParams)), {
+      scroll: false,
+    });
   };
 
   return (

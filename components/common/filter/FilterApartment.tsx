@@ -1,31 +1,31 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ITagCreate, ITagRead } from "@/utils/interface";
 import FilterItem from "./FilterItem";
 import Image from "next/image";
-import CheckBox from "../checkbox/CheckBox";
 import { getTagsFilter } from "@/utils/proxy";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   clearAllSearchParams,
+  clearSearchParams,
   updateSearchParams,
 } from "@/utils/helpers/common";
+import { IResponseApartmentTag } from "@/utils/interface.v2";
 
 interface IProps {}
 
 export default function FilterApartment({}: IProps) {
-  const [tags, setTags] = useState<ITagRead[]>([]);
+  const [tags, setTags] = useState<IResponseApartmentTag[]>([]);
 
   const searchParams = useSearchParams();
-  const tagId = searchParams.get("tagId") ?? tags[0]?.id ?? "";
+  const tagId = searchParams.get("tag") ?? tags[0]?._id ?? "";
   const router = useRouter();
 
   useEffect(() => {
     (async () => {
       try {
         const { data } = await getTagsFilter();
-        const search = updateSearchParams("tagId", data.data?.[0]?._id ?? "");
+        const search = updateSearchParams("tag", data.data?.[0]?._id ?? "");
         router.replace(search);
         setTags(data.data);
       } catch (error) {
@@ -35,7 +35,9 @@ export default function FilterApartment({}: IProps) {
   }, []);
 
   const handleReset = () => {
-    router.replace(clearAllSearchParams(), { scroll: false });
+    router.replace(clearSearchParams(Object.keys(searchParams)), {
+      scroll: false,
+    });
   };
 
   return (
@@ -43,7 +45,7 @@ export default function FilterApartment({}: IProps) {
       <div className="flex-1 overflow-x-hidden">
         <div className="flex flex-nowrap gap-10">
           {tags.map((tag, index) => (
-            <FilterItem key={index} chooseTag={tagId} tag={tag} />
+            <FilterItem key={index} tag={tag} chooseTagId={tagId} />
           ))}
         </div>
       </div>

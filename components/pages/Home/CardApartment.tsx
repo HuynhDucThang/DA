@@ -39,7 +39,7 @@ export default function CardApartment({ apartment }: IProps) {
       className="flex-[1_1_300px] group"
     >
       <div className="shadow-sm rounded-xl">
-        <div className="w-full aspect-[1/1] relative rounded-2xl overflow-hidden mb-3">
+        <div className="w-full aspect-[1/1] relative rounded-2xl overflow-hidden">
           <Image
             src={apartment.images[0]}
             alt="banner apartment"
@@ -66,7 +66,7 @@ export default function CardApartment({ apartment }: IProps) {
           <div className="flex justify-between items-center gap-2">
             <h4 className="text_card_heading line-clamp-1">{apartment.name}</h4>
             <div className="flex_center gap-1">
-              <span>{apartment?.rating?.totalScope}</span>
+              <span>{apartment?.rating?.totalScope ?? 0}</span>
               <Image src="/star.svg" alt="star icon" width={20} height={20} />
             </div>
           </div>
@@ -84,17 +84,18 @@ export default function CardApartment({ apartment }: IProps) {
               alt="clock"
             />
             <p className="text_card_sub_heading">
-              {apartment?.createAt && handleConvertDate(new Date(apartment.createAt))}
+              {handleConvertDate(
+                apartment.createAt ? new Date(apartment.createAt) : new Date()
+              )}
             </p>
           </div>
           {/* price */}
           <div className="flex justify-between items-center gap-2">
             <div className="flex items-center gap-1">
-              <Image src="/dolar.svg" alt="star icon" width={20} height={20} />
               <span className="text_card_heading">
-                {apartment.pricePerNight}
+                {apartment.pricePerNight ?? 0}
               </span>
-              /<span>đêm</span>
+              Vnđ /<span>đêm</span>
             </div>
             <div className="flex items-center gap-1">
               <Image

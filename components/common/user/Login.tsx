@@ -47,9 +47,6 @@ export default function Login() {
         <div className="mt-5">
           <BtnCommon title="Đăng nhập" handleClick={handleSubmit} />
         </div>
-        <div className="text-center py-2 text-lg font-bold text-black">
-          -- OR --
-        </div>
       </form>
       {/* <SocialAuth /> */}
     </div>

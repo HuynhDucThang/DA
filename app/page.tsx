@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { FilterApartment, Loading } from "@/components/common";
 import BannerMain from "@/components/pages/Home/bannerMain";
 import CardApartment from "@/components/pages/Home/CardApartment";
-import { getApartmentByTagId } from "@/utils/proxy";
+import { getApartments } from "@/utils/proxy";
 import { IResponseApartment } from "@/utils/interface.v2";
 
 interface IProps {
@@ -12,7 +12,7 @@ interface IProps {
     city: string;
     skip: string;
     limit: string;
-    tagId: string;
+    tag: string;
     lowest_price: number;
     hightest_price: number;
     apartment_type: string;
@@ -23,12 +23,10 @@ export default function Home({ searchParams }: IProps) {
   const [apartments, setApartments] = useState<IResponseApartment[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(true);
 
-  const tagId = searchParams.tagId;
-
   useEffect(() => {
     const fetchApartments = async () => {
       try {
-        const { data } = await getApartmentByTagId(tagId);
+        const { data } = await getApartments({...searchParams, isApproved : true});
         if (data?.payload) setApartments(data?.payload);
       } catch (error) {
         console.error("fetchApartments error : ", error);
@@ -36,8 +34,8 @@ export default function Home({ searchParams }: IProps) {
         setIsFetching(false);
       }
     };
-    if (tagId) fetchApartments();
-  }, [tagId]);
+    fetchApartments();
+  }, [searchParams]);
 
   return (
     <>
