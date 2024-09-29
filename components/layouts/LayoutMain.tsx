@@ -10,7 +10,7 @@ interface IProps {
 export default function LayoutMain({ children }: IProps) {
   const pathName = usePathname();
 
-  return pathName.split("/")[1] === "admin" ? (
+  return ["admin", "auth"].includes(pathName.split("/")[1]) ? (
     <div className="bg-[#151c2c] !text-white">{children}</div>
   ) : (
     <>

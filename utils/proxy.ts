@@ -29,6 +29,9 @@ export const userLogin = async (
     password,
   });
 
+export const verifyUser = async (userId: string, code: string) =>
+  await axiosNonAuth.put(`/users/verify-account?id=${userId}&code=${code}`);
+
 export const getUser = async () => await axiosAuth.get("/users/me");
 
 export const getUsers = async () => await axiosAuth.get("/users/all");
@@ -232,8 +235,9 @@ export const deleteAmenity = async (AmenityId: string) =>
 export const getCommentByApartment = async (apartmentId: string) =>
   await axiosAuth.get(`/comment/?apartmentId=${apartmentId}`);
 
-export const createApartmentComment = async (comment: IRequestApartmentComment) =>
-  await axiosServer.post("/apartmentComment", comment);
+export const createApartmentComment = async (
+  comment: IRequestApartmentComment
+) => await axiosServer.post("/apartmentComment", comment);
 
 // chat
 export const getRoomUsers = async (sender_id: string, receiver_id: string) =>
