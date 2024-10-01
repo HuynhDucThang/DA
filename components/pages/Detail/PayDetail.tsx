@@ -14,7 +14,6 @@ import {
   showToast,
 } from "@/utils/helpers/common";
 import useModal from "@/utils/hook/useModal";
-import { IApartmentRead } from "@/utils/interface";
 import { IResponseApartment } from "@/utils/interface.v2";
 import {
   createContract,
@@ -141,7 +140,7 @@ export default function PayDetail({ apartmentDetail }: IProps) {
   }, [numberEnteredHouse]);
 
   const handleBooking = async () => {
-    if (!currentUser.id) {
+    if (!currentUser._id) {
       showToast(`"Hãy đăng nhập trước nhé`, "error");
       dispatch(setModalType("LOGIN"));
       return;
@@ -156,9 +155,9 @@ export default function PayDetail({ apartmentDetail }: IProps) {
     try {
       const { data } = await createContract({
         apartment_id: params.apartmentId as string,
-        user_id: currentUser.id,
+        user_id: currentUser._id,
         content: `${
-          currentUser.username
+          currentUser.name
         } đặt phòng trong khoảng thời gian ${handleConvertDate(
           start_date
         )} - ${handleConvertDate(end_date)}`,
@@ -188,8 +187,6 @@ export default function PayDetail({ apartmentDetail }: IProps) {
   };
 
   const handlePayment = async (contractId: string) => {
-    console.log("data.id : ", contractId);
-
     setIsLoading(true);
     try {
       const { data } = await redirectToVnPay(totalAmount, pathName, contractId);
@@ -219,8 +216,8 @@ export default function PayDetail({ apartmentDetail }: IProps) {
           <div className="p-6 border rounded-lg shadow_common">
             <div className="flex justify-between items-center">
               <div className="flex items-center">
-                <h4 className="text-3xl font-semibold text-primary">
-                  ${apartmentDetail.pricePerNight}
+                <h4 className="text-2xl font-semibold text-primary">
+                  {apartmentDetail.pricePerNight} <span className="text-base">đ</span>
                 </h4>
                 <span className="text-second text-xl">/đêm</span>
               </div>
@@ -429,7 +426,7 @@ export default function PayDetail({ apartmentDetail }: IProps) {
             <div className="flex gap-6">
               <p className="text-lg">
                 <span className="text-xl text-primary font-semibold">{`Giá tốt  `}</span>
-                . Những ngày bạn chọn có giá thấp hơn $56 so với mức giá trung
+                . Những ngày bạn chọn có giá 500,000 vnđ thấp hơn so với mức giá trung
                 bình theo đêm trong 3 tháng qua.
               </p>
               <div className="relative w-[150px] aspect-[1/1]">

@@ -12,6 +12,7 @@ export interface IUser {
   email: string;
   role: string;
   address: string;
+  createdAt: Date;
 }
 
 // apartmetn

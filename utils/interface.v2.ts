@@ -66,3 +66,17 @@ export interface IRequestApartmentComment
     IResponseApartmentComment,
     "apartmentId" | "content" | "rating"
   > {}
+
+export interface IResponseApartmentContract {
+  apartment: IResponseApartment;
+  payer: IUser;
+  startDate: Date;
+  endDate: Date;
+  information: {
+    totalMember: number;
+    totalPrice: number;
+  };
+  status: string;
+  content: string;
+  created_at: Date;
+}

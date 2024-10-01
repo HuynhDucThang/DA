@@ -22,7 +22,7 @@ export default function FilterItem({ tag, chooseTagId }: IProps) {
           : "opacity-80"
       }`}
       onClick={() =>
-        router.replace(updateSearchParams("tagId", tag._id), { scroll: false })
+        router.replace(updateSearchParams("tag", tag._id), { scroll: false })
       }
     >
       <Image

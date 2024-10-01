@@ -63,7 +63,7 @@ export default function ApartmentDetail({ params }: IProps) {
         <OverView
           apartmentDetail={apartment}
           totalComment={comments?.length ?? 0}
-          total_rating={50}
+          total_rating={apartment?.rating?.totalScope ?? 0}
         />
         {/* body */}
         {apartment ? <Details apartment={apartment} /> : null}

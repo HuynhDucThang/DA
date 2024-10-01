@@ -281,4 +281,4 @@ export const redirectToVnPay = async (
   });
 
 export const getContractsByApartment = async (apartmentId: string) =>
-  await axiosAuth.get(`/contracts/apartment/${apartmentId}`);
+  await axiosAuth.get(`/contract/?apartmentId=${apartmentId}`);

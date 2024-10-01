@@ -33,24 +33,24 @@ export default function SliderC({ min, max, values, handleChange }: IProps) {
       >
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
-            <label htmlFor="minPrice">Giá tối thiểu:</label>
+            <label htmlFor="minPrice">Giá tối thiểu {" : "}</label>
             <input
               type="number"
               id="minPrice"
               value={values[0]}
               onChange={(e) => handleOnChange([+e.target.value, values[1]])}
             />
-            $
+            Vnđ
           </div>
           <div>
-            <label htmlFor="maxPrice">Giá tối đa:</label>
+            <label htmlFor="maxPrice">Giá tối đa {" : "}</label>
             <input
               type="number"
               id="maxPrice"
               value={values[1]}
               onChange={(e) => handleOnChange([values[0], +e.target.value])}
             />
-            $
+            Vnđ
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { IUser } from "@/utils/interface";
 import { createSlice } from "@reduxjs/toolkit";
 
-const initUser: IUser | null = {
+const initUser: Partial<IUser> | null = {
   _id: "",
   email: "",
   role: "",

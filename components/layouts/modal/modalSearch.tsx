@@ -11,6 +11,7 @@ import {
   updateMutilpleSearchParams,
 } from "@/utils/helpers/common";
 import { IAmenityRead } from "@/utils/interface";
+import { IResponseApartmentAmenity } from "@/utils/interface.v2";
 import { getAmenities, getApartments, getApartmentsLocal } from "@/utils/proxy";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -40,12 +41,12 @@ export default function ModalSearch() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useState({
     city: "",
-    lowest_price: 1,
-    hightest_price: 5000,
+    lowest_price: 100000,
+    hightest_price: 5000000,
     apartment_type: "",
     amenities: [] as string[],
   });
-  const [amenities, setAmenities] = useState<IAmenityRead[]>([]);
+  const [amenities, setAmenities] = useState<IResponseApartmentAmenity[]>([]);
 
   const dispatch = useAppDispatch();
 
@@ -56,7 +57,6 @@ export default function ModalSearch() {
 
   useEffect(() => {
     const getApartmentFilter = async () => {
-      setIsLoading(true);
       try {
         const objectChecked = checkValuesIsExistInObject({
           ...searchParams,
@@ -65,13 +65,11 @@ export default function ModalSearch() {
         });
 
         const { data } = await getApartments(objectChecked);
-        console.log("data?.payload?.length: ", data?.payload?.length);
 
         if (data?.payload) setTotalApartment(data?.payload?.length);
       } catch (error) {
         console.log(error);
       } finally {
-        setIsLoading(false);
       }
     };
     getApartmentFilter();
@@ -220,8 +218,8 @@ export default function ModalSearch() {
                   type="checkbox"
                   name={`item2-${index}`}
                   value={amenity.name}
-                  checked={searchParams?.amenities?.includes(amenity.name)}
-                  onChange={() => handleCheckboxChange(amenity.name)}
+                  checked={searchParams?.amenities?.includes(amenity._id)}
+                  onChange={() => handleCheckboxChange(amenity._id)}
                   className="w-6 h-6"
                 />
                 <span className="text-lg">{amenity.name}</span>
@@ -236,8 +234,8 @@ export default function ModalSearch() {
           desc="Giá theo đêm chưa bao gồm phí và thuế"
         >
           <SliderC
-            min={1}
-            max={5000}
+            min={100000}
+            max={5000000}
             values={[searchParams.lowest_price, searchParams.hightest_price]}
             handleChange={(newValue: number[]) =>
               setSearchParams((pre) => ({

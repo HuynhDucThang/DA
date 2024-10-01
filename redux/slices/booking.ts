@@ -1,4 +1,4 @@
-import { IApartmentContract } from "@/utils/interface";
+import { IResponseApartmentContract } from "@/utils/interface.v2";
 import { createSlice } from "@reduxjs/toolkit";
 
 interface ISetBooking {
@@ -7,7 +7,7 @@ interface ISetBooking {
 }
 
 interface IInitstates extends ISetBooking {
-  dates: IApartmentContract[];
+  dates: IResponseApartmentContract[];
 }
 
 const initialState: IInitstates = {
@@ -24,7 +24,7 @@ const bookingSlice = createSlice({
       state,
       action: {
         type: string;
-        payload: IApartmentContract;
+        payload: IResponseApartmentContract;
       }
     ) => {
       state.dates = [...state.dates, { ...action.payload }];
@@ -36,7 +36,7 @@ const bookingSlice = createSlice({
       state,
       action: {
         type: string;
-        payload: IApartmentContract[];
+        payload: IResponseApartmentContract[];
       }
     ) => {
       state.dates = action.payload;

@@ -84,16 +84,16 @@ export default function TitleDetail({ apartmentDetail }: IProps) {
           </div>
           <div className="flex-1">
             <h2 className="text-2xl text-txt-primary font-medium">
-              Chủ nhà {apartmentDetail.owner?.username}
+              Chủ nhà {apartmentDetail.owner?.name}
             </h2>
             <p className="text-txt-second text-xl">
               Đã tham gia vào{" "}
-              {apartmentDetail?.owner?.created_at &&
-                handleConvertDate(new Date(apartmentDetail?.owner?.created_at))}
+              {apartmentDetail?.owner?.createdAt &&
+                handleConvertDate(new Date(apartmentDetail?.owner?.createdAt))}
             </p>
           </div>
 
-          {currentUser.id !== apartmentDetail?.owner?.id ? (
+          {currentUser._id !== apartmentDetail?.owner?._id ? (
             <div
               className="w-[20%] border-2 border-black rounded-xl h-full p-4 text-xl font-medium cursor-pointer transition-all hover:bg-black hover:text-white"
               // onClick={handleContact}
