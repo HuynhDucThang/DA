@@ -1,6 +1,5 @@
 "use client";
 
-import { IApartmentRead } from "@/utils/interface";
 import Image from "next/image";
 import { useState } from "react";
 import { Img } from "../user/img";
@@ -11,7 +10,7 @@ interface IProps {
 }
 
 export default function NumbRoom({ apartment }: IProps) {
-  const imagesSlice = apartment?.images.slice(5);
+  const imagesSlice = apartment?.images;
   const [nextLayout, setNextLayout] = useState<number>(1);
   const totalLayout = Math.ceil(imagesSlice.length / 2);
 
@@ -24,14 +23,13 @@ export default function NumbRoom({ apartment }: IProps) {
   };
 
   const handlePre = () => {
-    // alert((nextLayout - 1) * 100);
-
     if (nextLayout - 1 <= 0) {
       setNextLayout(totalLayout);
     } else {
       setNextLayout((pre) => pre - 1);
     }
   };
+
   return (
     <>
       {imagesSlice.length ? (
@@ -72,7 +70,7 @@ export default function NumbRoom({ apartment }: IProps) {
           {/* laylout list */}
           <div className="mt-2 overflow-x-auto">
             <div
-              className="flex flex-row gap-4"
+              className="flex flex-row gap-4 transition-all"
               style={{
                 width: `${imagesSlice.length * 50}%`, // Đặt chiều rộng tổng cộng là số lượng ảnh nhân 50%
                 transform: `translateX(-${(nextLayout - 1) * 50}%)`, // Dịch chuyển theo nextLayout

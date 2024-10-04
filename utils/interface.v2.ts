@@ -62,10 +62,7 @@ export interface IResponseApartmentComment {
 }
 
 export interface IRequestApartmentComment
-  extends Pick<
-    IResponseApartmentComment,
-    "apartmentId" | "content" | "rating"
-  > {}
+  extends Pick<IResponseApartmentComment, "content" | "rating"> {}
 
 export interface IResponseApartmentContract {
   apartment: IResponseApartment;
@@ -79,4 +76,15 @@ export interface IResponseApartmentContract {
   status: string;
   content: string;
   created_at: Date;
+}
+
+export interface IRequestCreateContract {
+  content?: string;
+  startDate: Date;
+  endDate: Date;
+  status?: string;
+  information: {
+    totalMember: number;
+    totalPrice: number;
+  };
 }

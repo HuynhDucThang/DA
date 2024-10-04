@@ -21,8 +21,8 @@ export default function RangeCalendar({}: IProps) {
     const datesDiable: Date[] = [];
 
     dates?.forEach((contract) => {
-      const startDate = new Date(contract.start_date);
-      const endDate = new Date(contract.end_date);
+      const startDate = new Date(contract.startDate);
+      const endDate = new Date(contract.endDate);
 
       // if (endDate < now) return;
 

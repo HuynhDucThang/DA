@@ -94,7 +94,7 @@ axiosAuth.interceptors.response.use(
 
     if (!refresh_token) {
       console.log("!refresh_token");
-      if (store?.getState()?.user?.currentUser?.id) {
+      if (store?.getState()?.user?.currentUser?._id) {
         store.dispatch(userLogout());
         store.dispatch(currentUserLogout());
       }

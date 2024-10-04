@@ -12,14 +12,13 @@ interface IProps {
 }
 
 export default function CardComment({ comment }: IProps) {
+  console.log(comment.author);
+  
   return (
     <div className="card flex gap-6">
       {/* avatar */}
       <div className="">
-        <Link
-          href={`/users/${123}`}
-          className="block w-20 h-20 relative"
-        >
+        <Link href={`/users/${comment.author._id}`} className="block w-20 h-20 relative">
           <Image
             src={"/avatar.png"}
             alt="avatar"
@@ -43,7 +42,7 @@ export default function CardComment({ comment }: IProps) {
         <div className="flex items-center justify-between border-b border-c-grey">
           <div className="pb-2">
             <h3 className="flex items-center text-primary text-xl gap-2">
-              {"comment.user.username"}
+              {"comment.author"}
               <Image
                 src="/tick_blue.svg"
                 alt="tick icon"
@@ -57,36 +56,57 @@ export default function CardComment({ comment }: IProps) {
             </p>
           </div>
           <div className="flex_center relative group text-white font-medium text-base w-10 h-10 rounded-full bg-c-logo">
-            {comment.raing.totalScope}
-            <div className="shadow_common z-10 absolute w-[300px] -top-[400%] left-0 p-6 transition-all hidden group-hover:block text-black bg-white rounded-md">
+            {comment.rating?.totalScope}
+            <div className="shadow_common z-10 absolute w-[300px] -top-[400%] left-0 p-6 transition-all hidden group-hover:flex text-black bg-white rounded-md flex-col gap-2">
+              <div className="flex items-center gap-4">
+                <span className="flex-[0_1_100px]">Vệ sinh</span>
+                <Stars
+                  rating={comment.rating?.cleanliness}
+                  commonStyles="gap-1"
+                  stylesStar="w-6 h-6"
+                />
+              </div>
+
+              <div className="flex items-center gap-4">
+                <span className="flex-[0_1_100px]">Nhận phòng</span>
+                <Stars
+                  rating={comment.rating?.check_in}
+                  commonStyles="gap-1"
+                  stylesStar="w-6 h-6"
+                />
+              </div>
+
               <div className="flex items-center gap-4">
                 <span className="flex-[0_1_100px]">Vị trí</span>
                 <Stars
-                  rating={comment.raing.location}
+                  rating={comment.rating?.location}
                   commonStyles="gap-1"
                   stylesStar="w-6 h-6"
                 />
               </div>
-              <div className="flex items-center gap-4 mt-2">
-                <span className="flex-[0_1_100px]">Tiện nghi</span>
+
+              <div className="flex items-center gap-4">
+                <span className="flex-[0_1_100px]">Giao tiếp</span>
                 <Stars
-                  rating={comment.raing.check_in}
+                  rating={comment.rating?.communication}
                   commonStyles="gap-1"
                   stylesStar="w-6 h-6"
                 />
               </div>
-              <div className="flex items-center gap-4 mt-2">
-                <span className="flex-[0_1_100px]">Nội thất</span>
+
+              <div className="flex items-center gap-4">
+                <span className="flex-[0_1_100px]">Giá trị</span>
                 <Stars
-                  rating={comment.raing.accuracy}
+                  rating={comment.rating?.value}
                   commonStyles="gap-1"
                   stylesStar="w-6 h-6"
                 />
               </div>
-              <div className="flex items-center gap-4 mt-2">
-                <span className="flex-[0_1_100px]">Giá cả</span>
+
+              <div className="flex items-center gap-4">
+                <span className="flex-[0_1_100px]">Độ chính xác</span>
                 <Stars
-                  rating={comment.raing.communication}
+                  rating={comment.rating?.accuracy}
                   commonStyles="gap-1"
                   stylesStar="w-6 h-6"
                 />

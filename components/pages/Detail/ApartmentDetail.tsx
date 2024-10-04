@@ -13,9 +13,10 @@ import {
 
 interface IProps {
   apartment: IResponseApartment;
+  totalComments : number
 }
 
-export default function Details({ apartment }: IProps) {
+export default function Details({ apartment, totalComments }: IProps) {
   return (
     <div className="flex gap-16 pb-8">
       <div className="w-[65%]">
@@ -28,7 +29,7 @@ export default function Details({ apartment }: IProps) {
         <TimeBooking />
       </div>
 
-      <PayDetail apartmentDetail={apartment} />
+      <PayDetail apartmentDetail={apartment} totalComments={totalComments} />
     </div>
   );
 }

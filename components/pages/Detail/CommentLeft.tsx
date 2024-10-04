@@ -5,7 +5,7 @@ import CardComment from "./CardComment";
 import Modal from "@/components/common/modal/Modal";
 import useModal from "@/utils/hook/useModal";
 import { IComment } from "@/utils/interface";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { ratings as ratingsDefined } from "@/utils/constant";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { createApartmentCommentServer } from "@/utils/actions";
@@ -29,14 +29,15 @@ interface IProps {
 export default function CommentLeft({ comments, apartmentId }: IProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { isOpen, closePopup, openPopup } = useModal();
-  const [ratings, setRatings] = useState<IResponseRatingApartment>({
-    accuracy: 0,
-    check_in: 0,
-    cleanliness: 0,
-    communication: 0,
-    location: 0,
-    totalScope: 0,
-    value: 0,
+  const [ratings, setRatings] = useState<
+    Omit<IResponseRatingApartment, "totalScope">
+  >({
+    accuracy: 5,
+    check_in: 5,
+    cleanliness: 5,
+    communication: 5,
+    location: 5,
+    value: 5,
   });
 
   const [commentContent, setCommentContent] = useState("");
@@ -48,22 +49,24 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
     setRatings((pre) => ({ ...pre, [key]: point }));
   };
 
-  const handleOnRating = async () => {
+  const handleOnRating = async (e: FormEvent) => {
+    e.preventDefault();
     if (!ratings) return;
     setIsLoading(true);
 
     try {
-      await createApartmentComment({
-        apartmentId,
+      await createApartmentComment(apartmentId, {
         content: commentContent,
         rating: {
           ...ratings,
-          totalScope: Object.values(ratings).reduce(
-            (preValue, value) => preValue + value
-          ),
+          totalScope:
+            Object.values(ratings).reduce(
+              (preValue, value) => preValue + value
+            ) / 6,
         },
       });
       toast.success("Tạo bình luận thành công");
+      closePopup();
     } catch (error) {
       toast.error("Tạo bình luận thất bại");
     } finally {
@@ -134,10 +137,10 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
         isOpen={isOpen}
         handleCloseModal={closePopup}
         commonStyles="max-w-[700px]"
-        title="Đánh giá Treeland - Coffee, Tea and More."
+        title="Đánh giá nơi này."
       >
         <div>
-          <h2 className="sub_heading__detail_apartment">Xếp hạng của bạn</h2>
+          <h2 className="sub_heading__detail_apartment">Xếp hạng</h2>
           <div>
             <div className="flex items-center justify-between px-6 mt-4">
               <span className="block min-w-[100px] text-left text-lg text-primary">
@@ -251,7 +254,7 @@ export default function CommentLeft({ comments, apartmentId }: IProps) {
 
         <form className="mt-6">
           <div className="flex flex-col gap-2 pb-4">
-            <h2 className="sub_heading__detail_apartment">Đánh giá của bạn</h2>
+            <h2 className="sub_heading__detail_apartment">Đánh giá</h2>
             <textarea
               name=""
               id=""

@@ -1,9 +1,10 @@
 import { ratings } from "@/utils/constant";
 import { IStatisticalComment } from "@/utils/interface";
+import { IResponseRatingApartment } from "@/utils/interface.v2";
 import Image from "next/image";
 
 interface IProps {
-  statisticalComments: IStatisticalComment;
+  statisticalComments: IResponseRatingApartment | undefined;
   totalCommens: number;
 }
 
@@ -11,19 +12,9 @@ export default function CommentRight({
   statisticalComments,
   totalCommens,
 }: IProps) {
-  const {
-    total_rate_amenities,
-    total_rate_location,
-    total_rate_price,
-    total_rate_interior,
-  } = statisticalComments;
 
   const totalRating = Math.floor(
-    (total_rate_amenities +
-      total_rate_location +
-      total_rate_interior +
-      total_rate_price) /
-      4
+    statisticalComments?.totalScope ?? 0
   );
 
   return (
@@ -52,12 +43,12 @@ export default function CommentRight({
             {/* rate */}
 
             <div className="mt-6">
-              <RateItem title="Vị trí" point={total_rate_location} />
-              <RateItem title="Tiện Nghi" point={total_rate_amenities} />
-              <RateItem title="Nội thất" point={total_rate_interior} />
-              <RateItem title="Giá cả" point={total_rate_price} />
-              <RateItem title="Giá cả" point={total_rate_price} />
-              <RateItem title="Giá cả" point={total_rate_price} />
+              <RateItem title="Vệ sinh" point={statisticalComments?.cleanliness ?? 0} />
+              <RateItem title="Nhận phòng" point={statisticalComments?.check_in ?? 0} />
+              <RateItem title="Vị trí" point={statisticalComments?.location ?? 0} />
+              <RateItem title="Giao tiếp" point={statisticalComments?.communication ?? 0} />
+              <RateItem title="Giá trị" point={statisticalComments?.value ?? 0} />
+              <RateItem title="Độ chính xác" point={statisticalComments?.accuracy ?? 0} />
             </div>
           </div>
         </div>

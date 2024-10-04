@@ -1,4 +1,10 @@
 "use client";
+import Image from "next/image";
+import {
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 import { BtnCommon, Loading } from "@/components/common";
 import RangeCalendar from "@/components/common/calendar/rangeCalendar";
@@ -18,18 +24,8 @@ import { IResponseApartment } from "@/utils/interface.v2";
 import {
   createContract,
   getContractsByApartment,
-  redirectToVnPay,
   updateContract,
 } from "@/utils/proxy";
-
-import Image from "next/image";
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
 
 const dataNumberEnteredHouse = [
   {
@@ -58,9 +54,10 @@ type TYPE_ENTERD_HOUSE = "adult" | "young" | "baby" | "pet";
 
 interface IProps {
   apartmentDetail: IResponseApartment;
+  totalComments: number;
 }
 
-export default function PayDetail({ apartmentDetail }: IProps) {
+export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [numberEnteredHouse, setNumberEnteredHouse] = useState<
     Record<TYPE_ENTERD_HOUSE, number>
@@ -78,8 +75,6 @@ export default function PayDetail({ apartmentDetail }: IProps) {
   const { currentUser } = useAppSelector((state: RootState) => state.user);
   const { start_date, end_date } = useAppSelector((state) => state.booking);
   const dispatch = useAppDispatch();
-  const params = useParams();
-  const pathName = usePathname();
   const searchParams = useSearchParams();
 
   const router = useRouter();
@@ -123,12 +118,12 @@ export default function PayDetail({ apartmentDetail }: IProps) {
 
   const totalDay =
     end_date && start_date
-      ? new Date(end_date).getDate() - new Date(start_date).getDate() ?? null
+      ? new Date(end_date).getDate() - new Date(start_date).getDate()
       : 0;
 
   const pricePerNight = convertStringToFloat(apartmentDetail.pricePerNight);
 
-  const totalAmount = 45 + 30 + totalDay * (pricePerNight ?? 0);
+  const totalAmount = 500000 + totalDay * (pricePerNight ?? 0);
 
   const totalPeople = useMemo(() => {
     let total = 0;
@@ -153,19 +148,15 @@ export default function PayDetail({ apartmentDetail }: IProps) {
     }
     setIsLoading(true);
     try {
-      const { data } = await createContract({
-        apartment_id: params.apartmentId as string,
-        user_id: currentUser._id,
-        content: `${
-          currentUser.name
-        } đặt phòng trong khoảng thời gian ${handleConvertDate(
-          start_date
-        )} - ${handleConvertDate(end_date)}`,
-        end_date: end_date,
-        start_date: start_date,
-        total_amount: totalAmount,
-        num_of_people: totalPeople,
+      const { data } = await createContract(apartmentDetail._id, {
+        information: {
+          totalMember: totalPeople,
+          totalPrice: totalAmount,
+        },
+        endDate: end_date,
+        startDate: start_date,
       });
+      console.log("data: ", data.data);
 
       // setNumberEnteredHouse({
       //   adult: 2,
@@ -174,27 +165,10 @@ export default function PayDetail({ apartmentDetail }: IProps) {
       //   pet: 0,
       // });
       // dispatch(setDate(data));
-      console.log("data.id : ", data.id);
-
-      await handlePayment(data.id);
-
       showToast(`Thành công`);
+      window.open(data.data.url, "_blank");
     } catch (error) {
       showToast(`Lỗi`, "error");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handlePayment = async (contractId: string) => {
-    setIsLoading(true);
-    try {
-      const { data } = await redirectToVnPay(totalAmount, pathName, contractId);
-      console.log("data : ", data);
-      if (data) {
-        window.location.replace(data);
-      }
-    } catch (error) {
     } finally {
       setIsLoading(false);
     }
@@ -217,7 +191,8 @@ export default function PayDetail({ apartmentDetail }: IProps) {
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <h4 className="text-2xl font-semibold text-primary">
-                  {apartmentDetail.pricePerNight} <span className="text-base">đ</span>
+                  {apartmentDetail.pricePerNight}{" "}
+                  <span className="text-base">đ</span>
                 </h4>
                 <span className="text-second text-xl">/đêm</span>
               </div>
@@ -236,7 +211,9 @@ export default function PayDetail({ apartmentDetail }: IProps) {
                   width={10}
                   height={10}
                 />
-                <span className="text-second text-base">6 đánh giá</span>
+                <span className="text-second text-base">
+                  {totalComments} đánh giá
+                </span>
               </div>
             </div>
 
@@ -391,32 +368,34 @@ export default function PayDetail({ apartmentDetail }: IProps) {
                   </div>
                   <div className="flex justify-between mt-2">
                     <p className="text-primary text-lg underline">
-                      ${apartmentDetail.pricePerNight} x {totalDay} đêm
+                      {apartmentDetail.pricePerNight} đ x {totalDay} đêm
                     </p>
                     <p className="text-primary text-lg">
-                      $
                       {totalDay *
                         (convertStringToFloat(apartmentDetail.pricePerNight) ??
-                          0)}
+                          0)}{" "}
+                      {" đ"}
                     </p>
                   </div>
                   <div className="flex justify-between mt-2">
                     <p className="text-primary text-lg underline">
                       Phí vệ sinh
                     </p>
-                    <p className="text-primary text-lg">$30</p>
+                    <p className="text-primary text-lg">200,000 đ</p>
                   </div>
                   <div className="flex justify-between mt-2">
                     <p className="text-primary text-lg underline">
                       Phí dịch vụ Airbnb
                     </p>
-                    <p className="text-primary text-lg">$45</p>
+                    <p className="text-primary text-lg">300,000 đ</p>
                   </div>
                 </div>
 
                 <div className="flex justify-between mt-2 pt-3 border-t-2 border-c-border">
                   <p className="text-primary text-xl">Tổng trước thuế</p>
-                  <p className="text-primary text-xl">${totalAmount}</p>
+                  <p className="text-primary text-xl">
+                    {totalAmount} {" đ"}
+                  </p>
                 </div>
               </>
             ) : null}
@@ -426,8 +405,8 @@ export default function PayDetail({ apartmentDetail }: IProps) {
             <div className="flex gap-6">
               <p className="text-lg">
                 <span className="text-xl text-primary font-semibold">{`Giá tốt  `}</span>
-                . Những ngày bạn chọn có giá 500,000 vnđ thấp hơn so với mức giá trung
-                bình theo đêm trong 3 tháng qua.
+                . Những ngày bạn chọn có giá 500,000 vnđ thấp hơn so với mức giá
+                trung bình theo đêm trong 3 tháng qua.
               </p>
               <div className="relative w-[150px] aspect-[1/1]">
                 <Image src="/tag.svg" alt="tag icon" fill />

@@ -16,7 +16,10 @@ import {
 import { getCookie } from "./helpers/common";
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { IRequestApartmentComment } from "./interface.v2";
+import {
+  IRequestApartmentComment,
+  IRequestCreateContract,
+} from "./interface.v2";
 
 // ----------------------------- users ---------------------------------
 
@@ -218,14 +221,19 @@ export const getContracts = async (query: string, page: number) =>
 export const getContractsTrip = async (userId: string) =>
   await axiosAuth.get(`/contracts?id=${userId}&type_id=USER_ID`);
 
-export const createContract = async (contract: IContractCreate) =>
-  await axiosAuth.post("/contracts", contract);
+export const createContract = async (
+  apartmentId: string,
+  contract: IRequestCreateContract
+) => await axiosAuth.post(`/contract/${apartmentId}`, contract);
 
 export const updateContract = async (contractId: string, contract: any) =>
   await axiosAuth.patch(`/contracts/${contractId}`, contract);
 
 export const deleteContract = async (contractId: string) =>
   await axiosAuth.delete(`/contracts/${contractId}`);
+
+export const getContractsByApartment = async (apartmentId: string) =>
+  await axiosAuth.get(`/contract/?apartmentId=${apartmentId}`);
 
 // ------------------------------- amenities -------------------------------
 
@@ -248,8 +256,9 @@ export const getCommentByApartment = async (apartmentId: string) =>
   await axiosAuth.get(`/comment/?apartmentId=${apartmentId}`);
 
 export const createApartmentComment = async (
+  apartmentId: string,
   comment: IRequestApartmentComment
-) => await axiosServer.post("/apartmentComment", comment);
+) => await axiosAuth.post(`/comment/${apartmentId}`, comment);
 
 // chat
 export const getRoomUsers = async (sender_id: string, receiver_id: string) =>
@@ -279,6 +288,3 @@ export const redirectToVnPay = async (
     redirect_return,
     order_id: contractId,
   });
-
-export const getContractsByApartment = async (apartmentId: string) =>
-  await axiosAuth.get(`/contract/?apartmentId=${apartmentId}`);
