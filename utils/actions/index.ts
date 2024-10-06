@@ -13,8 +13,8 @@ import {
   userSignUp,
 } from "../proxyServer";
 import { createApartmentComment, updateApartment } from "../proxy";
-import { IApartCommentCreate, IApartmentCreate } from "../interface";
-import { axiosAuthCookieMultiData, axiosServer } from "../api";
+import { IApartCommentCreate,  } from "../interface";
+import { axiosServer } from "../api";
 
 export const loginAdmin = async (prevState: any, formData: FormData) => {
   const { email, password } = Object.fromEntries(formData);
@@ -22,16 +22,12 @@ export const loginAdmin = async (prevState: any, formData: FormData) => {
   try {
     const { data } = await userLoginServer(email, password);
     const hartTime = 30 * 60 * 1000;
-    const twoDay = 2 * 24 * 60 * 60 * 1000;
-
-    cookies().set("access_token_admin", data?.data?.access_token, {
+    
+    cookies().set("access_token", data?.token, {
       expires: Date.now() + hartTime,
     });
-    cookies().set("refresh_token_admin", data?.data?.refresh_token, {
-      expires: Date.now() + twoDay,
-    });
 
-    return "Success";
+    return "Đăng nhập thành công";
   } catch (err: any) {
     return  "Đăng nhập thất bại!";
   }

@@ -88,3 +88,15 @@ export interface IRequestCreateContract {
     totalPrice: number;
   };
 }
+
+export interface IOverViewStatistics {
+  totalApartment: number;
+  totalContract: number;
+  totalUser: number;
+}
+
+export interface IChartStatistics {
+  title: number;
+  totalContract: number;
+  totalUser: number;
+}

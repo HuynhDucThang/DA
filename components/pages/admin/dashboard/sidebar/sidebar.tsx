@@ -91,9 +91,8 @@ const Sidebar = async () => {
     showToast("Bạn đã hết phiên đăng nhập", "error")
     redirect("/admin/login");
   }
-
   const user = data.data as IUser;
-
+  
   return (
     <div className={styles.container}>
       <div className={styles.user}>
@@ -105,8 +104,8 @@ const Sidebar = async () => {
           height="50"
         />
         <div className={styles.userDetail}>
-          <span className={styles.username}>{user.username}</span>
-          <span className={styles.userTitle}>{user.system_role}</span>
+          <span className={styles.username}>{user.email}</span>
+          <span className={styles.userTitle}>{user.role}</span>
         </div>
       </div>
       <ul className={styles.list}>

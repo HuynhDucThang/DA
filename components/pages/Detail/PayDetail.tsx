@@ -1,9 +1,6 @@
 "use client";
 import Image from "next/image";
-import {
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import { BtnCommon, Loading } from "@/components/common";
@@ -21,11 +18,7 @@ import {
 } from "@/utils/helpers/common";
 import useModal from "@/utils/hook/useModal";
 import { IResponseApartment } from "@/utils/interface.v2";
-import {
-  createContract,
-  getContractsByApartment,
-  updateContract,
-} from "@/utils/proxy";
+import { createContract, getContracts, updateContract } from "@/utils/proxy";
 
 const dataNumberEnteredHouse = [
   {
@@ -86,7 +79,9 @@ export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
     const getContractsApartment = async () => {
       setIsLoading(true);
       try {
-        const { data } = await getContractsByApartment(apartmentDetail._id);
+        const { data } = await getContracts({
+          apartmentId: apartmentDetail._id,
+        });
         dispatch(setDates(data.data));
       } catch (error) {
         console.log("errpr");

@@ -6,7 +6,7 @@ export const userLoginServer = async (
   email: FormDataEntryValue,
   password: FormDataEntryValue
 ) =>
-  await axiosServer.post("/users/login", {
+  await axiosServer.post("/users/sign-in", {
     email,
     password,
   });
@@ -120,11 +120,11 @@ export const getAdminStaticticalsChart = async () =>
   await axiosServer.get(`/statisticals/chart/admin`);
 
 export const getCurrentUserServer = async () => {
-  const access_token = cookies().get("access_token_admin")?.value;
-
+  const access_token = cookies().get("access_token")?.value;
+  
   if (!access_token) redirect("/admin/login");
 
-  const res = await fetch(`http://127.0.0.1:8000/api/users`, {
+  const res = await fetch(`http://127.0.0.1:4000/api/users/me`, {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },

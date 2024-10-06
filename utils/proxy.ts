@@ -37,8 +37,6 @@ export const verifyUser = async (userId: string, code: string) =>
 
 export const getUser = async () => await axiosAuth.get("/users/me");
 
-export const getUsers = async () => await axiosAuth.get("/users/all");
-
 export const getUserById = async (userId: string) =>
   await axiosAuth.get(`/users/${userId}`);
 
@@ -81,6 +79,21 @@ export const uploadAvatar = async (userId: string, formData: FormData) =>
     `/users/update_avatar/${userId}`,
     formData
   );
+
+export const getUsers = async (searchParams: { q: string; page: number }) => {
+  const params = new URLSearchParams();
+  Object.keys(searchParams).forEach((key) => {
+    const value = searchParams[key as keyof typeof searchParams];
+    if (value) {
+      params.set(key, value.toString());
+    }
+  });
+
+  return await axiosAuth.get(`/users/?${params.toString()}`);
+};
+
+export const deleteUser = async (userId: string) =>
+  await axiosAuth.delete(`/users/${userId}/`);
 
 // ------------------------------ apartment ---------------------------------
 
@@ -215,9 +228,6 @@ export const deleteTag = async (tagId: string) =>
 
 // ------------------------------- contracts -------------------------------
 
-export const getContracts = async (query: string, page: number) =>
-  await axiosAuth.get(`/contracts/all`);
-
 export const getContractsTrip = async (userId: string) =>
   await axiosAuth.get(`/contracts?id=${userId}&type_id=USER_ID`);
 
@@ -232,8 +242,14 @@ export const updateContract = async (contractId: string, contract: any) =>
 export const deleteContract = async (contractId: string) =>
   await axiosAuth.delete(`/contracts/${contractId}`);
 
-export const getContractsByApartment = async (apartmentId: string) =>
-  await axiosAuth.get(`/contract/?apartmentId=${apartmentId}`);
+export const getContracts = async (params: { apartmentId?: string }) => {
+  const searchParams = new URLSearchParams();
+  Object.keys(params).forEach((key) => {
+    const value = params[key as keyof typeof params];
+    if (value) searchParams.set(`${key}`, value);
+  });
+  return await axiosAuth.get(`/contract/?${searchParams.toString()}`);
+};
 
 // ------------------------------- amenities -------------------------------
 
@@ -288,3 +304,9 @@ export const redirectToVnPay = async (
     redirect_return,
     order_id: contractId,
   });
+
+export const getOverviewStatistics = async () =>
+  await axiosAuth.get(`/statistic/overview`);
+
+export const getChartStatistics = async () =>
+  await axiosAuth.get(`/statistic/chart`);

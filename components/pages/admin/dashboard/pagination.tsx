@@ -14,17 +14,15 @@ const Pagination = ({ count }: any) => {
 
   const hasPrev = page ? ITEM_PER_PAGE * (+page - 1) > 0 : false;
 
-  console.log("hasPrev123 : ", page);
-
-  console.log("hasPrev : ", hasPrev);
-
   const hasNext = page
     ? ITEM_PER_PAGE * (+page - 1) + ITEM_PER_PAGE < count
     : false;
 
   const handleChangePage = (type: any) => {
     if (!page) return;
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(
+      searchParams as unknown as Record<string, string>
+    );
 
     type === "prev"
       ? params.set("page", `${+page - 1}`)

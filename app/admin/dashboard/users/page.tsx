@@ -1,21 +1,58 @@
+"use client";
+
 import styles from "@/components/pages/admin/dashboard/users/users.module.css";
 import Pagination from "@/components/pages/admin/dashboard/pagination";
 import Search from "@/components/pages/admin/dashboard/search/search";
-import { deleteUser } from "@/utils/actions";
 import { IUser } from "@/utils/interface";
 import { getUsersServer } from "@/utils/proxyServer";
 import Image from "next/image";
 import Link from "next/link";
-import { handleConvertDate } from "@/utils/helpers/common";
+import { handleConvertDate, showToast } from "@/utils/helpers/common";
 import { URL } from "@/utils/api";
+import { useEffect, useState } from "react";
+import { deleteUser, getUsers } from "@/utils/proxy";
 
-const UsersPage = async ({ searchParams }: any) => {
+const UsersPage = ({ searchParams }: any) => {
   const q = searchParams?.q || "";
   const page = searchParams?.page || 1;
-  const data = await getUsersServer(page, q);
 
-  const users: IUser[] = data.data;
-  const totalRecord = data.total_record;
+  const [users, setUsers] = useState<IUser[]>([]);
+  const [totalUsers, setTotalUsers] = useState<number>(0);
+  const [isFeching, setIsFetching] = useState<boolean>(true);
+  const [isDeleting, setIsDeleting] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setIsFetching(true);
+
+      try {
+        const { data } = await getUsers({
+          q,
+          page,
+        });
+        setUsers(data.data.users);
+        setTotalUsers(data.data.totalUsers);
+      } catch (error) {
+        showToast("Fetch users fail");
+      } finally {
+        setIsFetching(false);
+      }
+    };
+
+    fetchUsers();
+  }, [q, page]);
+
+  const handleDeleteUser = async (userId: string) => {
+    setIsDeleting(true);
+    try {
+      await deleteUser(userId);
+      setIsFetching(true);
+    } catch (error) {
+      showToast("Delete user fail", "error");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -33,13 +70,12 @@ const UsersPage = async ({ searchParams }: any) => {
             <td>Phone number</td>
             <td>Created At</td>
             <td>System role</td>
-            <td>Role</td>
             <td>Action</td>
           </tr>
         </thead>
         <tbody>
           {users.map((user) => (
-            <tr key={user.id}>
+            <tr key={user._id}>
               <td>
                 <div className={styles.user}>
                   <div className="relative w-[40px] h-[40px]">
@@ -54,38 +90,40 @@ const UsersPage = async ({ searchParams }: any) => {
                       className={`${styles.userImage} object-cover`}
                     />
                   </div>
-                  {user.username}
+                  {user.name}
                 </div>
               </td>
               <td>{user.email}</td>
-              <td>{user.phonenumber}</td>
-              <td>{handleConvertDate(new Date(user?.created_at))}</td>
-              <td>{user.system_role}</td>
-              <td>{user.isVerify ? "Admin" : "Client"}</td>
+              <td>{user.phoneNumber}</td>
+              <td>
+                {user?.createdAt &&
+                  handleConvertDate(new Date(user?.createdAt))}
+              </td>
+              <td>{user.role}</td>
               <td>
                 <div className={styles.buttons}>
                   <Link
-                    href={`/admin/dashboard/users/${user.id}`}
+                    href={`/admin/dashboard/users/${user._id}`}
                     prefetch={false}
                   >
                     <button className={`${styles.button} ${styles.view}`}>
                       View
                     </button>
                   </Link>
-                  <form action={deleteUser}>
-                    <input type="hidden" name="email" value={user.email} />
-                    <input type="hidden" name="user_id" value={user.id} />
-                    <button className={`${styles.button} ${styles.delete}`}>
-                      Delete
-                    </button>
-                  </form>
+                  <button
+                    className={`${styles.button} ${styles.delete}`}
+                    disabled={isFeching}
+                    onClick={() => handleDeleteUser(user._id)}
+                  >
+                    Delete
+                  </button>
                 </div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <Pagination count={totalRecord} />
+      <Pagination count={totalUsers} />
     </div>
   );
 };

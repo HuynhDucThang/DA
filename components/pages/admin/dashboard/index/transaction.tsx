@@ -1,13 +1,27 @@
+"use client";
+
 import Image from "next/image";
 import styles from "./transaction.module.css";
-import { getContractsLatest } from "@/utils/proxyServer";
-import { IContractLatest } from "@/utils/interface";
-import { URL } from "@/utils/api";
-import { handleConvertDate } from "@/utils/helpers/common";
+import { handleConvertDate, showToast } from "@/utils/helpers/common";
+import { IResponseApartmentContract } from "@/utils/interface.v2";
+import { useEffect, useState } from "react";
+import { getContracts } from "@/utils/proxy";
 
-const Transactions = async () => {
-  const { data } = await getContractsLatest();
-  const contracts = data.data as IContractLatest[];
+const Transactions = () => {
+  const [contracts, setContracts] = useState<IResponseApartmentContract[]>([]);
+
+  useEffect(() => {
+    const fetchContracts = async () => {
+      try {
+        const { data } = await getContracts({});
+        setContracts(data.data);
+      } catch (error) {
+        showToast("Lấy danh sách hợp dồng không thành công", "error");
+      }
+    };
+
+    fetchContracts();
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -29,10 +43,7 @@ const Transactions = async () => {
               <td>
                 <div className={styles.user}>
                   <Image
-                    src={
-                      `${URL}/${contract?.apartment?.images?.[0]?.image_url}` ||
-                      "/avatar.png"
-                    }
+                    src={contract?.apartment?.images?.[0]}
                     alt="ảnh"
                     width={40}
                     height={40}
@@ -43,18 +54,18 @@ const Transactions = async () => {
               </td>
               <td>
                 <span className={`${styles.status} ${styles.pending}`}>
-                  {contract?.user?.username}
+                  {contract?.payer?.email}
                 </span>
               </td>
-              <td>${contract?.total_amount}</td>
+              <td>${contract?.information.totalPrice}</td>
               <td>${contract?.content}</td>
               <td>
                 14h,{" "}
-                {handleConvertDate(new Date(contract.start_date), "dd/MM/yyyy")}
+                {handleConvertDate(new Date(contract.startDate), "dd/MM/yyyy")}
               </td>
               <td>
                 12h,{" "}
-                {handleConvertDate(new Date(contract.end_date), "dd/MM/yyyy")}
+                {handleConvertDate(new Date(contract.endDate), "dd/MM/yyyy")}
               </td>
             </tr>
           ))}
