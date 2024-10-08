@@ -2,25 +2,23 @@
 
 import styles from "./singleUser.module.css";
 import { useState, ChangeEvent, useRef } from "react";
-import { updateAvatarUserAction } from "@/utils/actions";
-import { URL, URL as URL_API } from "@/utils/api";
 import { IUser } from "@/utils/interface";
 import Image from "next/image";
 import Modal from "@/components/common/modal/Modal";
 import useModal from "@/utils/hook/useModal";
 import { BtnCommon } from "@/components/common";
-import { useRouter } from "next/navigation";
+import { showToast } from "@/utils/helpers/common";
+import { uploadAvatar } from "@/utils/proxy";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setUserMe } from "@/redux/slices/userSlice";
 
-interface IProps {
-  user: IUser;
-}
-
-export default function UpdateAvatar({ user }: IProps) {
+export default function UpdateAvatar() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { isOpen, closePopup, openPopup } = useModal();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
-  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { currentUser } = useAppSelector((state) => state.user);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
@@ -35,15 +33,17 @@ export default function UpdateAvatar({ user }: IProps) {
   };
 
   const handleUploadAvatar = async () => {
+    if (!currentUser._id) return;
     const formData = new FormData();
     selectedFile && formData.append("avatar", selectedFile);
-    setIsLoading(true);
-    const res = await updateAvatarUserAction(user.id, formData);
-    
-    router.refresh();
-    setIsLoading(false);
-
-    console.log("res : ", res);
+    try {
+      setIsLoading(true);
+      const { data } = await uploadAvatar(currentUser._id, formData);
+      dispatch(setUserMe({ ...currentUser, avatar: data.payload }));
+      setIsLoading(false);
+    } catch (error) {
+      showToast("Cannot update", "error");
+    }
   };
 
   return (
@@ -51,9 +51,10 @@ export default function UpdateAvatar({ user }: IProps) {
       <div className={styles.infoContainer}>
         <label htmlFor="upload_img" className={`${styles.imgContainer} block`}>
           <Image
-            src={user.avatar ? `${URL}/${user.avatar}` : "/avatar_none_user.svg"}
+            src={currentUser?.avatar ?? "/avatar_none_user.svg"}
             alt="avatar"
             fill
+            className="object-cover"
           />
         </label>
 

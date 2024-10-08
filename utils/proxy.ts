@@ -40,19 +40,13 @@ export const getUser = async () => await axiosAuth.get("/users/me");
 export const getUserById = async (userId: string) =>
   await axiosAuth.get(`/users/${userId}`);
 
-export const userSignUp = async (
-  email: string,
-  password: string,
-  username: string,
-  phonenumber: string
-) =>
-  await axiosNonAuth.post("/users/sign-up", {
-    username,
-    phonenumber,
-    email,
-    password,
-    system_role: "RENTER",
-  });
+export const userSignUp = async (body: {
+  name: string;
+  password: string;
+  phoneNumber: string;
+  role: string;
+  address?: string;
+}) => await axiosNonAuth.post("/users/sign-up", body);
 
 export const userRefreshToken = async (refresh_token: string) =>
   await axiosAuth.post(
@@ -66,7 +60,7 @@ export const userRefreshToken = async (refresh_token: string) =>
   );
 
 export const updateUser = async (userId: string, body: any) =>
-  await axiosAuth.patch(`/users/update_user/${userId}`, body);
+  await axiosAuth.patch(`/users/update/${userId}`, body);
 
 export const updatePassword = async (email: string, password: any) =>
   await axiosAuth.put(`/users/change-password/`, {
@@ -75,10 +69,7 @@ export const updatePassword = async (email: string, password: any) =>
   });
 
 export const uploadAvatar = async (userId: string, formData: FormData) =>
-  await axiosAuthCookieMultiData.patch(
-    `/users/update_avatar/${userId}`,
-    formData
-  );
+  await axiosAuthCookieMultiData.patch(`/users/upload/${userId}`, formData);
 
 export const getUsers = async (searchParams: { q: string; page: number }) => {
   const params = new URLSearchParams();

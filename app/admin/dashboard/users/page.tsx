@@ -4,7 +4,6 @@ import styles from "@/components/pages/admin/dashboard/users/users.module.css";
 import Pagination from "@/components/pages/admin/dashboard/pagination";
 import Search from "@/components/pages/admin/dashboard/search/search";
 import { IUser } from "@/utils/interface";
-import { getUsersServer } from "@/utils/proxyServer";
 import Image from "next/image";
 import Link from "next/link";
 import { handleConvertDate, showToast } from "@/utils/helpers/common";
@@ -19,26 +18,26 @@ const UsersPage = ({ searchParams }: any) => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [totalUsers, setTotalUsers] = useState<number>(0);
   const [isFeching, setIsFetching] = useState<boolean>(true);
-  const [isDeleting, setIsDeleting] = useState<boolean>(true);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+
+  const fetchUsers = async () => {
+    setIsFetching(true);
+
+    try {
+      const { data } = await getUsers({
+        q,
+        page,
+      });
+      setUsers(data.data.users);
+      setTotalUsers(data.data.totalUsers);
+    } catch (error) {
+      showToast("Fetch users fail");
+    } finally {
+      setIsFetching(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      setIsFetching(true);
-
-      try {
-        const { data } = await getUsers({
-          q,
-          page,
-        });
-        setUsers(data.data.users);
-        setTotalUsers(data.data.totalUsers);
-      } catch (error) {
-        showToast("Fetch users fail");
-      } finally {
-        setIsFetching(false);
-      }
-    };
-
     fetchUsers();
   }, [q, page]);
 
@@ -46,7 +45,7 @@ const UsersPage = ({ searchParams }: any) => {
     setIsDeleting(true);
     try {
       await deleteUser(userId);
-      setIsFetching(true);
+      await fetchUsers();
     } catch (error) {
       showToast("Delete user fail", "error");
     } finally {
@@ -80,11 +79,7 @@ const UsersPage = ({ searchParams }: any) => {
                 <div className={styles.user}>
                   <div className="relative w-[40px] h-[40px]">
                     <Image
-                      src={
-                        user.avatar
-                          ? `${URL}/${user.avatar}`
-                          : "/avatar_none_user.svg"
-                      }
+                      src={user.avatar ?? "/avatar_none_user.svg"}
                       alt="avatar"
                       fill
                       className={`${styles.userImage} object-cover`}

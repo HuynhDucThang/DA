@@ -1,43 +1,98 @@
 "use client";
 
+import { useState } from "react";
 import styles from "@/components/pages/admin/dashboard/users/addUser.module.css";
-import { addUser } from "@/utils/actions";
-import { useFormState } from "react-dom";
+import { userSignUp } from "@/utils/proxy"; 
+import { showToast } from "@/utils/helpers/common";
 
 const AddUserPage = () => {
-  const [state, formAction] = useFormState(addUser, undefined);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [address, setAddress] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [role, setRole] = useState("");
+
+  const handleCreateUser = async (event: React.FormEvent) => {
+    event.preventDefault(); 
+
+    // Create user payload
+    const newUser = {
+      name,
+      email,
+      password,
+      address,
+      phoneNumber,
+      role,
+    };
+
+    try {
+      await userSignUp(newUser);
+
+      setName("");
+      setEmail("");
+      setPassword("");
+      setAddress("");
+      setPhoneNumber("");
+      setRole("");
+      
+      showToast("User created successfully!");
+    } catch (error) {
+      console.error("Error creating user:", error);
+      showToast("Error creating user.", "error");
+    }
+  };
 
   return (
     <div className={styles.container}>
-      <form action={formAction} className={styles.form}>
-        <input type="text" placeholder="username" name="username" required />
-        <input type="email" placeholder="email" name="email" required />
+      <form onSubmit={handleCreateUser} className={styles.form}>
         <input
-          type="password"
-          placeholder="password"
-          name="password"
+          type="text"
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           required
         />
-        <input type="text" placeholder="address" name="address" required />
-        <input type="phonenumber" placeholder="phone" name="phonenumber" />
-        <select name="system_role" id="system_role">
-          <option value={""}>Choose permission</option>
-          <option value={"RENTER"}>Renter</option>
-          <option value={"MANAGER"}>Manager</option>
-          <option value={"ADMIN"}>ADMIN</option>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <input
+          type="text"
+          placeholder="Phone Number"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Address"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          required
+        />
+        <select
+          name="system_role"
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          required
+        >
+          <option value="">Choose permission</option>
+          <option value="USER">User</option>
+          <option value="ADMIN">Admin</option>
         </select>
 
-        {/* <textarea
-          name="address"
-          id="address"
-          rows={4}
-          placeholder="Address"
-        ></textarea> */}
         <button type="submit">Submit</button>
       </form>
-      {state ? (
-        <div className="text-c-logo text-lg font-medium">{state}</div>
-      ) : null}
     </div>
   );
 };

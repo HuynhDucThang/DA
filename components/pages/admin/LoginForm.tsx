@@ -2,16 +2,17 @@
 
 import { useRouter } from "next/navigation";
 import styles from "./loginForm.module.css";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { userLoginPending } from "@/redux/slices/authSlice";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 const LoginForm = () => {
   const router = useRouter();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isFetching, setIsFetching] = useState<boolean>(false);
+  const { access_token } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
@@ -19,13 +20,16 @@ const LoginForm = () => {
     setIsFetching(true);
     try {
       dispatch(userLoginPending({ email, password }));
-      router.push("/admin/dashboard");
     } catch (error) {
       toast.error("Đăng nhập thất bại");
     } finally {
       setIsFetching(false);
     }
   };
+
+  useEffect(() => {
+    if (access_token) router.push("/admin/dashboard");
+  }, [access_token]);
 
   return (
     <form onSubmit={handleLogin} className={styles.form}>

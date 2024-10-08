@@ -1,13 +1,12 @@
 import { IUser } from "@/utils/interface";
 import { createSlice } from "@reduxjs/toolkit";
 
-const initUser: Partial<IUser> | null = {
+export const initUser: Partial<IUser> | null = {
   _id: "",
   email: "",
   role: "",
   name: "",
   avatar: "",
-  password: "",
   phoneNumber: "",
   address: "",
 };
@@ -29,6 +28,7 @@ const userSlice = createSlice({
     getCurrentUserFulfill: (state, action) => {
       state.isLoading = false;
       state.currentUser = {
+        ...state.currentUser,
         ...action.payload,
       };
     },
@@ -41,7 +41,7 @@ const userSlice = createSlice({
       state.currentUser = initUser;
     },
     setUserMe: (state, action) => {
-      state.currentUser = action.payload;
+      state.currentUser = { ...state.currentUser, ...action.payload };
     },
     setUserAdmin: (state, action) => {
       state.adminUser = action.payload;

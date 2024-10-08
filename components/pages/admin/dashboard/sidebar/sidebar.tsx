@@ -1,7 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import styles from "./sidebar.module.css";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 import {
   MdDashboard,
@@ -16,9 +17,13 @@ import {
   MdLogout,
 } from "react-icons/md";
 import MenuLink from "./menuLink";
-import { IUser } from "@/utils/interface";
-import { getCurrentUserServer } from "@/utils/proxyServer";
-import { showToast } from "@/utils/helpers/common";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useEffect } from "react";
+import {
+  currentUserLogout,
+  getCurrentUserPending,
+} from "@/redux/slices/userSlice";
+import { userLogout } from "@/redux/slices/authSlice";
 // import { auth, signOut } from "@/app/auth";
 
 const menuItems = [
@@ -84,15 +89,21 @@ const menuItems = [
   },
 ];
 
-const Sidebar = async () => {
-  const data = await getCurrentUserServer();
+const Sidebar = () => {
+  const { access_token } = useAppSelector((state) => state.auth);
+  const { currentUser: user } = useAppSelector((state) => state.user);
+  const router = useRouter();
 
-  if (!data) {
-    showToast("Bạn đã hết phiên đăng nhập", "error")
-    redirect("/admin/login");
-  }
-  const user = data.data as IUser;
-  
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (!access_token) {
+      router.push("/admin/login");
+      return;
+    }
+    dispatch(getCurrentUserPending());
+  }, [access_token]);
+
   return (
     <div className={styles.container}>
       <div className={styles.user}>
@@ -118,19 +129,18 @@ const Sidebar = async () => {
           </li>
         ))}
       </ul>
-      <form
-        action={async () => {
-          "use server";
-          cookies().delete("access_token_admin");
-          cookies().delete("refresh_token_admin");
-          redirect("/admin/login");
+
+      <button
+        className={styles.logout}
+        onClick={() => {
+          dispatch(currentUserLogout());
+          dispatch(userLogout());
+          router.push("/admin/login");
         }}
       >
-        <button className={styles.logout}>
-          <MdLogout />
-          Logout
-        </button>
-      </form>
+        <MdLogout />
+        Logout
+      </button>
     </div>
   );
 };

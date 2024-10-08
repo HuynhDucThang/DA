@@ -1,50 +1,110 @@
+"use client";
+
 import styles from "@/components/pages/admin/dashboard/users/singleUser.module.css";
 import UpdateAvatar from "@/components/pages/admin/dashboard/users/updateAvatar";
-import { updateAvatarUserAction, updateUser } from "@/utils/actions";
+import { initUser } from "@/redux/slices/userSlice";
+import { showToast } from "@/utils/helpers/common";
 import { IUser } from "@/utils/interface";
-import { getUserByIdServer } from "@/utils/proxyServer";
+import { getUserById, updateUser } from "@/utils/proxy";
+import { FormEvent, useEffect, useState } from "react";
 
-const SingleUserPage = async ({ params }: any) => {
+const SingleUserPage = ({ params }: any) => {
   const { userId } = params;
-  const { data } = await getUserByIdServer(userId);
-  const user: IUser = data.data;
+  const [userDetail, setUserDetail] = useState<IUser | null>(null);
+  const [formValues, setFormValues] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const { data } = await getUserById(userId);
+        setUserDetail({ ...initUser, ...data.payload });
+        setFormValues({ ...initUser, ...data.payload });
+      } catch (error) {
+        showToast("Error when fetching user", "error");
+      }
+    };
+    fetchUser();
+  }, [userId]);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    if (formValues) {
+      setFormValues({
+        ...formValues,
+        [name]: value,
+      });
+    }
+  };
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!formValues) return;
+
+    const { _id, role,...body } = formValues;
+    try {
+      await updateUser(userId, body);
+      showToast("User updated successfully", "success");
+    } catch (error) {
+      showToast("Error when updating user", "error");
+    }
+  };
 
   return (
     <div className={styles.container}>
-      <UpdateAvatar user={user} />
+      <UpdateAvatar />
       <div className={styles.formContainer}>
-        <form action={updateUser} className={styles.form}>
-          <input type="hidden" name="id" value={user.id} />
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <input type="hidden" name="id" value={userDetail?._id} />
+
           <label>Username</label>
-          <input type="text" name="username" placeholder={user.username} />
+          <input
+            type="text"
+            name="name"
+            value={formValues?.name || ""}
+            onChange={handleInputChange}
+            placeholder="Enter username"
+          />
+
           <label>Email</label>
           <input
             type="email"
             name="email"
-            readOnly={true}
-            placeholder={user.email}
+            value={formValues?.email || ""}
+            readOnly
+            placeholder="Enter email"
           />
+
           <label>Address</label>
           <input
-            type="address"
+            type="text"
             name="address"
-            readOnly={true}
-            placeholder={user.address}
+            value={formValues?.address || ""}
+            onChange={handleInputChange}
+            placeholder="Enter address"
           />
-          {/* <label>Password</label>
-          <input type="password" name="password" /> */}
+
           <label>Phone</label>
-          <input type="text" name="phone" placeholder={user.phonenumber} />
-          {/* <label>Address</label>
-          <input type="text" name="address" placeholder={user.phonenumber} /> */}
+          <input
+            type="text"
+            name="phoneNumber"
+            value={formValues?.phoneNumber || ""}
+            onChange={handleInputChange}
+            placeholder="Enter phone number"
+          />
+
           <label>System role</label>
-          <select name="system_role" id="system_role">
-            <option value={"RENTER"}>Renter</option>
-            <option value={"MANAGER"}>Manager</option>
-            <option value={"ADMIN"}>ADMIN</option>
+          <select
+            name="role"
+            value={formValues?.role || ""}
+            onChange={handleInputChange}
+          >
+            <option value="USER">User</option>
+            <option value="ADMIN">Admin</option>
           </select>
 
-          <button>Update</button>
+          <button type="submit">Update</button>
         </form>
       </div>
     </div>
