@@ -100,3 +100,26 @@ export interface IChartStatistics {
   totalContract: number;
   totalUser: number;
 }
+
+export type APARTMENT_TYPE = "STUDIO" | "HOUSE" | "CONDO";
+
+export interface IRequestCreateApartment {
+  name: string;
+  desc: string;
+  tags: string[];
+  amentities: string[];
+  pricePerNight: string;
+  address: number;
+  type: APARTMENT_TYPE;
+}
+
+export interface IRequestUpdateApartment {
+  name?: string;
+  desc?: string;
+  tags?: string[];
+  amentities?: string[];
+  pricePerNight?: string;
+  address?: number;
+  type?: APARTMENT_TYPE;
+  isApproved?: boolean;
+}

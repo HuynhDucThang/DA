@@ -61,7 +61,9 @@ const setAuthToken = (token: string) => {
 export const saveAuthToken = (name: string, token: string) => {
   if (name === "access_token") {
     const currentTime = new Date();
-    const expirationTime = new Date(currentTime.getTime() + 30 * 60 * 1000);
+    const expirationTime = new Date(
+      currentTime.getTime() + 24 * 60 * 60 * 1000
+    );
 
     setCookie(name, token, { expires: expirationTime });
     setAuthToken(token);

@@ -1,24 +1,70 @@
+"use client"
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import styles from "@/components/pages/admin/dashboard/apartments/apartments.module.css";
 
+import styles from "@/components/pages/admin/dashboard/apartments/apartments.module.css";
 import Pagination from "@/components/pages/admin/dashboard/pagination";
 import Search from "@/components/pages/admin/dashboard/search/search";
 
-import { getApartmentsServer } from "@/utils/proxyServer";
-import { deleteApartment, updateApartmentAction } from "@/utils/actions";
-import { IApartmentRead } from "@/utils/interface";
-import { handleConvertDate } from "@/utils/helpers/common";
-import { URL } from "@/utils/api";
+import { handleConvertDate, showToast } from "@/utils/helpers/common";
+import { IResponseApartment } from "@/utils/interface.v2";
+import { deleteApartment, getApartments, updateApartment } from "@/utils/proxy";
 
-export const dynamic = "force-dynamic";
 
-const ApartmentsPage = async ({ searchParams }: any) => {
+const ApartmentsPage = ({ searchParams }: any) => {
   const q = searchParams?.q || "";
   const page = searchParams?.page || 1;
-  const data = await getApartmentsServer(q, page);
-  const apartments: IApartmentRead[] = data.data;
-  const totalRecord = data.total_record;
+
+  const [apartments, setApartments] = useState<IResponseApartment[]>([]);
+  const [totalRecord, setTotalRecord] = useState<number>(0);
+  const [isFeching, setIsFetching] = useState<boolean>(true);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+
+  const fetchApartments = async () => {
+    setIsFetching(true);
+
+    try {
+      const { data } = await getApartments(searchParams);
+      setApartments(data.payload);
+      setTotalRecord(data.payload.length);
+    } catch (error) {
+      showToast("Fetch apartments fail", "error");
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchApartments();
+  }, [q, page]);
+
+  const handleDeleteApartment = async (apartmentId: string) => {
+    setIsDeleting(true);
+    try {
+      await deleteApartment(apartmentId);
+      await fetchApartments();
+      showToast("Delete success");
+    } catch (error) {
+      showToast("Delete fail", "error");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleApprovedApartment = async (apartmentId: string) => {
+    setIsDeleting(true);
+    try {
+      await updateApartment(apartmentId, { isApproved: true });
+      await fetchApartments();
+      showToast("Update approved success");
+    } catch (error) {
+      showToast("Update approved fail", "error");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <div className={`${styles.container} overflow-y-auto`}>
@@ -32,7 +78,7 @@ const ApartmentsPage = async ({ searchParams }: any) => {
         <thead>
           <tr>
             <td>Title</td>
-            <td>approved</td>
+            <td>Approved</td>
             <td>Price</td>
             <td>Create At</td>
             <td>Type</td>
@@ -42,15 +88,12 @@ const ApartmentsPage = async ({ searchParams }: any) => {
         </thead>
         <tbody>
           {apartments.map((apartment) => (
-            <tr key={apartment.id}>
+            <tr key={apartment._id}>
               <td>
                 <div className={styles.product}>
                   <div className="relative w-[40px] h-[40px]">
                     <Image
-                      src={
-                        `${URL}/${apartment?.images?.[0]?.image_url}` ||
-                        "/avatar.png"
-                      }
+                      src={apartment.images?.[0] || "/avatar.png"}
                       alt="banner"
                       fill
                       className={styles.productImage}
@@ -60,21 +103,21 @@ const ApartmentsPage = async ({ searchParams }: any) => {
                   {apartment.name}
                 </div>
               </td>
-              <td>{apartment.is_approved ? "TRUE" : "FALSE"}</td>
-              <td>${apartment.price_per_day}</td>
-              <td>{handleConvertDate(new Date(apartment.created_at))}</td>
-              <td>{apartment.apartment_type}</td>
+              <td>{apartment.isApproved ? "TRUE" : "FALSE"}</td>
+              <td>{apartment.pricePerNight} Vnđ</td>
               <td>
-                {apartment.num_bathrooms +
-                  apartment.num_bedrooms +
-                  apartment.num_living_rooms}{" "}
-                rooms
+                {apartment.updatedAt &&
+                  handleConvertDate(new Date(apartment.updatedAt))}
+              </td>
+              <td>{apartment.type}</td>
+              <td>
+                {`${apartment.rooms.bathRoom} phòng tắm, ${apartment.rooms.livingRoom} phòng khách, ${apartment.rooms.bedRoom} phòng ngủ`}
               </td>
               <td>
                 <div className={styles.buttons}>
-                  {apartment.is_approved ? (
+                  {apartment.isApproved ? (
                     <Link
-                      href={`/admin/dashboard/apartments/${apartment.id}`}
+                      href={`/admin/dashboard/apartments/${apartment._id}`}
                       prefetch={false}
                     >
                       <button className={`${styles.button} ${styles.view}`}>
@@ -82,28 +125,19 @@ const ApartmentsPage = async ({ searchParams }: any) => {
                       </button>
                     </Link>
                   ) : (
-                    <form action={updateApartmentAction}>
-                      <input type="hidden" name="id" value={apartment.id} />
-                      <input
-                        type="hidden"
-                        name="is_approved"
-                        value={`${true}`}
-                      />
-                      <button className={`${styles.button} ${styles.view}`}>
-                        Approved
-                      </button>
-                    </form>
-                  )}
-                  <form action={deleteApartment}>
-                    <input
-                      type="hidden"
-                      name="apartmentId"
-                      value={apartment.id}
-                    />
-                    <button className={`${styles.button} ${styles.delete}`}>
-                      Delete
+                    <button
+                      className={`${styles.button} ${styles.view}`}
+                      onClick={() => handleApprovedApartment(apartment._id)}
+                    >
+                      Approved
                     </button>
-                  </form>
+                  )}
+                  <button
+                    className={`${styles.button} ${styles.delete}`}
+                    onClick={() => handleDeleteApartment(apartment._id)}
+                  >
+                    Delete
+                  </button>
                 </div>
               </td>
             </tr>

@@ -64,7 +64,7 @@ export default function Register() {
           handleOnChange={handleOnChange}
         />
         <InputField
-          name="phonenumber"
+          name="phoneNumber"
           title="Số điện thoại"
           error=""
           type="text"

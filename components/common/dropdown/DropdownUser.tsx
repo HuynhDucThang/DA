@@ -24,7 +24,7 @@ export default function DropdownUser() {
           Chuyển đi
         </Link>
         <Link
-          href={`/users/${currentUser.id}/white-list`}
+          href={`/users/${currentUser._id}/white-list`}
           prefetch={false}
           className={`block ${stylesItem}`}
         >
@@ -34,13 +34,13 @@ export default function DropdownUser() {
       {/*  */}
       <div className="border-t">
         <Link
-          href={`/users/${currentUser.id}/add-apartment`}
+          href={`/users/${currentUser._id}/add-apartment`}
           className={`block ${stylesItem}`}
         >
           Tạo mới chỗ ở qua Airbnb
         </Link>
         <Link
-          href={`/users/${currentUser.id}`}
+          href={`/users/${currentUser._id}`}
           prefetch={false}
           className={`block ${stylesItem}`}
         >

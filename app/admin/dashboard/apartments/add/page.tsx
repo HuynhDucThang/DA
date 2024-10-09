@@ -118,15 +118,7 @@ const SingleApartmentPage = () => {
     const amenities_ids = handleCovertToArrIds(selectedAmenities);
 
     try {
-      const { data } = await createApartmentAdmin(
-        { ...apartmentCreate },
-        {
-          tag_ids,
-          amenities: amenities_ids,
-        }
-      );
-      await updateImagesApartmentAction(data?.id, formData);
-
+     await createApartmentAdmin(formData);
       showToast("Thành công");
       // router.push("");
     } catch (error) {

@@ -19,6 +19,7 @@ import { redirect } from "next/navigation";
 import {
   IRequestApartmentComment,
   IRequestCreateContract,
+  IRequestUpdateApartment,
 } from "./interface.v2";
 
 // ----------------------------- users ---------------------------------
@@ -42,7 +43,7 @@ export const getUserById = async (userId: string) =>
 
 export const userSignUp = async (body: {
   name: string;
-  email : string;
+  email: string;
   password: string;
   phoneNumber: string;
   role?: string;
@@ -130,37 +131,18 @@ export const createApartment = async (
   return await axiosAuth.post(`/apartments?${params.toString()}`, formData);
 };
 
-export const createApartmentAdmin = async (
-  apartment: IApartmentCreate, // Assuming IApartmentCreate is an interface or type
-  formData: any
-) => {
-  const params = new URLSearchParams();
-  params.set("name", `${apartment.name}`);
-  params.set("desc", `${apartment.desc}`);
-  params.set("room", `${apartment.name}`);
-  params.set("price_per_day", `${apartment.price_per_day}`);
-  params.set("num_bedrooms", `${apartment.num_bedrooms}`);
-  params.set("num_living_rooms", `${apartment.num_living_rooms}`);
-  params.set("num_bathrooms", `${apartment.num_bathrooms}`);
-  params.set("total_people", `${apartment.total_people}`);
-  params.set("address", apartment.address);
-  params.set("city", apartment.city);
-  params.set("apartment_type", apartment.apartment_type);
-  params.set("is_approved", `${true}`);
-
-  const access_token = getCookie("access_token_admin");
-
-  return await axiosAuth.post(`/apartments?${params.toString()}`, formData, {
+export const createApartmentAdmin = async (formData: FormData) => {
+  return await axiosAuth.post(`/apartment`, formData, {
     headers: {
-      Authorization: `Bearer ${access_token}`,
+      "Content-Type": "multipart/form-data",
     },
   });
 };
 
 export const updateApartment = async (
   apartmentId: string,
-  apartment: IApartmentCreate
-) => await axiosServer.patch(`/apartments/${apartmentId}`, apartment);
+  apartment: IRequestUpdateApartment
+) => await axiosAuth.patch(`/apartment/${apartmentId}`, apartment);
 
 export const updateImagesApartment = async (
   apartmentId: string,
