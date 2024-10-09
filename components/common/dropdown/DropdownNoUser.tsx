@@ -1,19 +1,30 @@
-"use client"
+"use client";
 
 import useModal from "@/utils/hook/useModal";
-import Modal from "../modal/Modal";
 import { Login, Register } from "..";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  removeModalType,
+  setModalType,
+  TYPE_MODAL,
+} from "@/redux/slices/modalSlice";
+import Modal from "../modal/Modal";
 
 interface IProps {}
 
-type MODAL_USER = "login" | "signUp";
-
 export default function DropdownNoUser() {
-  const { typePopup, isOpen, closePopup, openPopup } = useModal<MODAL_USER>();
+  const { isOpen, typeModal } = useAppSelector((state) => state.modal);
+  const dispatch = useAppDispatch();
 
-  const renderPopupUser: Record<MODAL_USER, React.ReactElement> = {
-    login: <Login />,
-    signUp: <Register />,
+  const renderPopupUser: Record<TYPE_MODAL, React.ReactElement | undefined> = {
+    LOGIN: <Login />,
+    SIGN_UP: <Register />,
+    HOUSE_ROLE: undefined,
+    SAFETY_AND_ACCOMMONDATION: undefined,
+    CANCEL_POLICY: undefined,
+    UPDATE_AVATAR: undefined,
+    SEARCH: undefined,
+    CONFIRM: undefined,
   };
 
   return (
@@ -22,7 +33,7 @@ export default function DropdownNoUser() {
         <div
           className="text-primary text-base p-3 font-medium hover:bg-slate-300"
           onClick={() => {
-            openPopup("login");
+            dispatch(setModalType("LOGIN"));
           }}
         >
           Đăng nhập
@@ -30,7 +41,7 @@ export default function DropdownNoUser() {
         <div
           className="text-primary text-base p-3 font-medium hover:bg-slate-300"
           onClick={() => {
-            openPopup("signUp");
+            dispatch(setModalType("SIGN_UP"));
           }}
         >
           Đăng ký
@@ -47,14 +58,16 @@ export default function DropdownNoUser() {
 
       <Modal
         isOpen={isOpen}
-        handleCloseModal={closePopup}
+        handleCloseModal={() => dispatch(removeModalType())}
         commonStyles="max-w-[700px]"
         title="Đăng nhập hoặc đăng ký."
       >
         <h2 className="text-2xl text-primary font-semibold">
           Chào mừng bạn đến với Airbnb
         </h2>
-        {typePopup && renderPopupUser[typePopup]}
+        {typeModal && renderPopupUser[typeModal]
+          ? renderPopupUser[typeModal]
+          : null}
       </Modal>
     </>
   );

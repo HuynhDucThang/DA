@@ -4,7 +4,7 @@ import { BtnCommon, InputField } from "..";
 import { useState } from "react";
 import { userSignUp } from "@/utils/proxy";
 import { useAppDispatch } from "@/redux/hooks";
-import { removeModalType, setModalType } from "@/redux/slices/modalSlice";
+import { setModalType } from "@/redux/slices/modalSlice";
 import { showToast } from "@/utils/helpers/common";
 
 export default function Register() {
@@ -12,7 +12,7 @@ export default function Register() {
     email: "",
     username: "",
     password: "",
-    phonenumber: "",
+    phoneNumber: "",
     confirm_password: "",
   });
 
@@ -20,18 +20,24 @@ export default function Register() {
 
   const handleSubmit = async () => {
     try {
-      const { confirm_password, email, password, username, phonenumber } = user;
+      const { confirm_password, email, password, username, phoneNumber } = user;
       if (password !== confirm_password) {
         showToast("Xác nhận lại mật khẩu không chính xác", "error");
         return;
       }
-      await userSignUp(email, password, username, phonenumber);
-      showToast("Đăng ký thành công", "success");
-
-      dispatch(removeModalType());
+      await userSignUp({
+        name: username,
+        email,
+        password: password,
+        phoneNumber,
+      });
+      showToast("Đăng ký thành công");
       dispatch(setModalType("LOGIN"));
     } catch (error: any) {
-      showToast(`Đăng ký không thành công , ${error?.response?.data?.detail?.message}`, "error");
+      showToast(
+        `Đăng ký không thành công , ${error?.response?.data?.detail?.message}`,
+        "error"
+      );
     }
   };
 

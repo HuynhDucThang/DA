@@ -42,9 +42,10 @@ export const getUserById = async (userId: string) =>
 
 export const userSignUp = async (body: {
   name: string;
+  email : string;
   password: string;
   phoneNumber: string;
-  role: string;
+  role?: string;
   address?: string;
 }) => await axiosNonAuth.post("/users/sign-up", body);
 
