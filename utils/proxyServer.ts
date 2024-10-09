@@ -75,9 +75,9 @@ export const userSignUp = async (
   });
 
 export const getApartmentDetailServer = async (apartmentId: string) => {
-  const access_token = cookies().get("access_token_admin")?.value;
+  const access_token = cookies().get("access_token")?.value;
 
-  return await axiosServer.get(`/apartments/${apartmentId}/apartment`, {
+  return await axiosServer.get(`/apartment/${apartmentId}`, {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },

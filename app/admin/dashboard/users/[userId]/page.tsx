@@ -10,14 +10,12 @@ import { FormEvent, useEffect, useState } from "react";
 
 const SingleUserPage = ({ params }: any) => {
   const { userId } = params;
-  const [userDetail, setUserDetail] = useState<IUser | null>(null);
   const [formValues, setFormValues] = useState<IUser | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const { data } = await getUserById(userId);
-        setUserDetail({ ...initUser, ...data.payload });
         setFormValues({ ...initUser, ...data.payload });
       } catch (error) {
         showToast("Error when fetching user", "error");
@@ -56,7 +54,6 @@ const SingleUserPage = ({ params }: any) => {
       <UpdateAvatar />
       <div className={styles.formContainer}>
         <form onSubmit={handleSubmit} className={styles.form}>
-          <input type="hidden" name="id" value={userDetail?._id} />
 
           <label>Username</label>
           <input

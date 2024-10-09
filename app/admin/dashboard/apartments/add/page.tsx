@@ -14,9 +14,11 @@ import {
   getTagsFilter,
 } from "@/utils/proxy";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const SingleApartmentPage = () => {
+  const router = useRouter();
   const [apartmentCreate, setApartmentCreate] = useState<IApartmentCreate>({
     name: "",
     desc: "",
@@ -41,7 +43,7 @@ const SingleApartmentPage = () => {
     const dataOptions: IOption[] = [];
     data.forEach((option) => {
       dataOptions.push({
-        key: option.id,
+        key: option._id,
         value: option.name,
       });
     });
@@ -117,10 +119,27 @@ const SingleApartmentPage = () => {
     const tag_ids = handleCovertToArrIds(selectedTags);
     const amenities_ids = handleCovertToArrIds(selectedAmenities);
 
+    amenities_ids.forEach((amenity) => {
+      formData.append("amentities", amenity);
+    });
+
+    tag_ids.forEach((tag) => {
+      formData.append("tags", tag);
+    });
+
+    formData.append("name", apartmentCreate.name);
+    formData.append("description", apartmentCreate.desc);
+    formData.append("pricePerNight", `${apartmentCreate.price_per_day}`);
+    formData.append("address", apartmentCreate.address);
+    formData.append("type", apartmentCreate.apartment_type);
+    formData.append("rooms.livingRoom", `${apartmentCreate.num_living_rooms}`);
+    formData.append("rooms.bedRoom", `${apartmentCreate.num_bedrooms}`);
+    formData.append("rooms.bathRoom", `${apartmentCreate.num_bathrooms}`);
+
     try {
-     await createApartmentAdmin(formData);
+      await createApartmentAdmin(formData);
       showToast("Thành công");
-      // router.push("");
+      router.push("/admin/dashboard/apartments");
     } catch (error) {
       console.log(error);
       showToast("Lỗi", "error");
@@ -195,6 +214,7 @@ const SingleApartmentPage = () => {
               <input
                 type="number"
                 name="num_bedrooms"
+                min={1}
                 placeholder={"Entered num_bedrooms"}
                 value={apartmentCreate.num_bedrooms}
                 onChange={handleOnchange}
@@ -209,6 +229,7 @@ const SingleApartmentPage = () => {
                 type="number"
                 name="num_bathrooms"
                 placeholder={"Entered num_bathrooms"}
+                min={1}
                 value={apartmentCreate.num_bathrooms}
                 onChange={handleOnchange}
               />
@@ -219,6 +240,7 @@ const SingleApartmentPage = () => {
               <input
                 type="number"
                 name="num_living_rooms"
+                min={1}
                 placeholder={"Entered num_living_rooms"}
                 value={apartmentCreate.num_living_rooms}
                 onChange={handleOnchange}
@@ -232,6 +254,7 @@ const SingleApartmentPage = () => {
             type="number"
             name="total_people"
             placeholder={"Entered total_people"}
+            min={1}
             value={apartmentCreate.total_people}
             onChange={handleOnchange}
           />
@@ -310,6 +333,7 @@ const SingleApartmentPage = () => {
             rows={2}
             placeholder={"Entered address"}
             value={apartmentCreate.address}
+            minLength={1}
             onChange={handleOnchange}
             className="resize-none"
           ></textarea>
@@ -319,6 +343,7 @@ const SingleApartmentPage = () => {
             name="desc"
             id="desc"
             rows={10}
+            minLength={1}
             placeholder={"Entered description"}
             value={apartmentCreate.desc}
             onChange={handleOnchange}
