@@ -1,26 +1,43 @@
+"use client"
+
 import styles from "@/components/pages/admin/dashboard/users/users.module.css";
 import Pagination from "@/components/pages/admin/dashboard/pagination";
 import Search from "@/components/pages/admin/dashboard/search/search";
-import { IContractLatest } from "@/utils/interface";
-import { getContractsServer } from "@/utils/proxyServer";
-import Image from "next/image";
 import Link from "next/link";
-import { handleConvertDate } from "@/utils/helpers/common";
-import { URL } from "@/utils/api";
-import { deleteContractAction } from "@/utils/actions";
+import { handleConvertDate, showToast } from "@/utils/helpers/common";
+import { useEffect, useState } from "react";
+import { getContracts } from "@/utils/proxy";
+import { IResponseApartmentContract } from "@/utils/interface.v2";
 
-const UsersPage = async ({ searchParams }: any) => {
-  const q = searchParams?.q || "";
+const UsersPage = ({ searchParams }: any) => {
   const page = searchParams?.page || 1;
-  const { data } = await getContractsServer(q, page);
 
-  const contracts: IContractLatest[] = data.data;
-  const totalRecord = data.total_record;
+
+  const [contracts, setContracts] = useState<IResponseApartmentContract[]>([]);
+  const [totalRecord, setTotalRecord] = useState<number>(0);
+  const [isFeching, setIsFetching] = useState<boolean>(true);
+
+  const fetchUsers = async () => {
+    setIsFetching(true);
+
+    try {
+      const { data } = await getContracts({...searchParams, page});
+      setContracts(data.data);
+      setTotalRecord(data.data.length);
+    } catch (error) {
+      showToast("Fetch contracts fail", "error");
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, [searchParams]);
 
   const colorStatus: Record<string, string> = {
-    success: "done",
-    fail: "cancelled",
-    pending: "pending",
+    COMPLETED: "done",
+    PENDING: "pending",
   };
 
   return (
@@ -41,7 +58,6 @@ const UsersPage = async ({ searchParams }: any) => {
             <td>trạng thái</td>
             <td>Ngày bắt đầu</td>
             <td>Ngày kết thúc</td>
-            <td>actions</td>
           </tr>
         </thead>
         <tbody>
@@ -49,50 +65,26 @@ const UsersPage = async ({ searchParams }: any) => {
             <tr>
               <td>
                 <div className={styles.user}>
-                  <Image
-                    src={
-                      `${URL}/${contract?.apartment?.images?.[0]?.image_url}` ||
-                      "/avatar.png"
-                    }
-                    alt="ảnh"
-                    width={40}
-                    height={40}
-                    className={styles.userImage}
-                  />
                   {contract.apartment.name}
                 </div>
               </td>
               <td>
                 <span className={`${styles.status} ${styles.pending}`}>
-                  {contract.user.email}
+                  {contract.payer.email}
                 </span>
               </td>
               <td>{contract.apartment.owner?.email}</td>
-              <td>${contract.total_amount}</td>
+              <td>{contract.information.totalPrice} Vnđ</td>
               <td className={`status ${colorStatus[contract.status]}`}>
                 {contract.status}
               </td>
               <td>
                 14h,{" "}
-                {handleConvertDate(new Date(contract.start_date), "dd/MM/yyyy")}
+                {handleConvertDate(new Date(contract.startDate), "dd/MM/yyyy")}
               </td>
               <td>
                 12h,{" "}
-                {handleConvertDate(new Date(contract.end_date), "dd/MM/yyyy")}
-              </td>
-              <td>
-                <div className={styles.buttons}>
-                  <form action={deleteContractAction}>
-                    <input
-                      type="hidden"
-                      name="contract_id"
-                      value={contract.id}
-                    />
-                    <button className={`${styles.button} ${styles.delete}`}>
-                      Delete
-                    </button>
-                  </form>
-                </div>
+                {handleConvertDate(new Date(contract.endDate), "dd/MM/yyyy")}
               </td>
             </tr>
           ))}

@@ -216,7 +216,7 @@ export const updateContract = async (contractId: string, contract: any) =>
 export const deleteContract = async (contractId: string) =>
   await axiosAuth.delete(`/contracts/${contractId}`);
 
-export const getContracts = async (params: { apartmentId?: string }) => {
+export const getContracts = async (params : any) => {
   const searchParams = new URLSearchParams();
   Object.keys(params).forEach((key) => {
     const value = params[key as keyof typeof params];

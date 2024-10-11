@@ -14,7 +14,6 @@ import { deleteApartment, getApartments, updateApartment } from "@/utils/proxy";
 
 
 const ApartmentsPage = ({ searchParams }: any) => {
-  const q = searchParams?.q || "";
   const page = searchParams?.page || 1;
 
   const [apartments, setApartments] = useState<IResponseApartment[]>([]);
@@ -26,7 +25,7 @@ const ApartmentsPage = ({ searchParams }: any) => {
     setIsFetching(true);
 
     try {
-      const { data } = await getApartments(searchParams);
+      const { data } = await getApartments({...searchParams, page });
       setApartments(data.payload);
       setTotalRecord(data.payload.length);
     } catch (error) {
@@ -38,7 +37,7 @@ const ApartmentsPage = ({ searchParams }: any) => {
 
   useEffect(() => {
     fetchApartments();
-  }, [q, page]);
+  }, [searchParams]);
 
   const handleDeleteApartment = async (apartmentId: string) => {
     setIsDeleting(true);

@@ -13,8 +13,8 @@ export default function BtnCommon({
     <div
       className={`${
         typeBtn === "fill"
-          ? "bg-[#dc0e64] hover:opacity-80"
-          : "border border-[#dc0e64] hover:bg-[#dc0e64]"
+          ? "bg-[var(--color-logo)] hover:opacity-80"
+          : "border border-[var(--color-logo)] hover:bg-[var(--color-logo)]"
       } flex_center rounded-lg py-4 mt-4 cursor-pointer transition-all group-btn`}
       onClick={(e)=> {
         e.preventDefault()
@@ -25,7 +25,7 @@ export default function BtnCommon({
         className={`text-xl font-semibold transition-all ${
           typeBtn === "fill"
             ? "text-white"
-            : "text-[#dc0e64] group-hover:text-white"
+            : "text-[var(--color-logo)] group-hover:text-white"
         } `}
       >
         {title}

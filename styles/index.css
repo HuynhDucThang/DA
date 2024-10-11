@@ -110,13 +110,11 @@ body {
 }
 
 .pending {
-  background-color: #f7cb7375;
+  color: #4b1b1b75;
+  font-weight: 600;
 }
 
 .done {
-  background-color: #afd6ee75;
-}
-
-.cancelled {
-  background-color: #f7737375;
+  color: green;
+  font-weight: 600;
 }
