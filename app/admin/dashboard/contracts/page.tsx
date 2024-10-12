@@ -42,12 +42,9 @@ const UsersPage = ({ searchParams }: any) => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.top}>
+      {/* <div className={styles.top}>
         <Search placeholder="Search for contract..." />
-        <Link href="/admin/dashboard/users/add">
-          <button className={styles.addButton}>Add New</button>
-        </Link>
-      </div>
+      </div> */}
       <table className={styles.table} style={{ marginTop: "1rem" }}>
         <thead>
           <tr>

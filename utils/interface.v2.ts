@@ -90,9 +90,9 @@ export interface IRequestCreateContract {
 }
 
 export interface IOverViewStatistics {
-  totalApartment: number;
-  totalContract: number;
-  totalUser: number;
+  title: string;
+  value: number;
+  change: number;
 }
 
 export interface IChartStatistics {

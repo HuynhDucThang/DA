@@ -7,22 +7,11 @@ import { IResponseApartmentContract } from "@/utils/interface.v2";
 import { useEffect, useState } from "react";
 import { getContracts } from "@/utils/proxy";
 
-const Transactions = () => {
-  const [contracts, setContracts] = useState<IResponseApartmentContract[]>([]);
+interface IProps {
+  contracts : IResponseApartmentContract[]
+}
 
-  useEffect(() => {
-    const fetchContracts = async () => {
-      try {
-        const { data } = await getContracts({});
-        setContracts(data.data);
-      } catch (error) {
-        showToast("Lấy danh sách hợp dồng không thành công", "error");
-      }
-    };
-
-    fetchContracts();
-  }, []);
-
+const Transactions = ({ contracts }: IProps) => {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Latest Transactions</h2>
@@ -32,7 +21,7 @@ const Transactions = () => {
             <td>Căn hộ</td>
             <td>Người thuê</td>
             <td>Tổng tiền</td>
-            <td>Nội dung</td>
+            <td>Sô người</td>
             <td>Ngày bắt đầu</td>
             <td>Ngày kết thúc</td>
           </tr>
@@ -57,8 +46,8 @@ const Transactions = () => {
                   {contract?.payer?.email}
                 </span>
               </td>
-              <td>${contract?.information.totalPrice}</td>
-              <td>${contract?.content}</td>
+              <td>{contract?.information?.totalPrice} Vnđ</td>
+              <td>{contract?.information.totalMember}</td>
               <td>
                 14h,{" "}
                 {handleConvertDate(new Date(contract.startDate), "dd/MM/yyyy")}

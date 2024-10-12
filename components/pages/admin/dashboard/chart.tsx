@@ -19,7 +19,7 @@ interface IProps {
 const Chart = ({ chartData }: IProps) => {
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Weekly Recap</h2>
+      <h2 className={styles.title}>Summary of the last six month</h2>
       <ResponsiveContainer width="100%" height="90%">
         <LineChart
           width={500}
@@ -38,13 +38,13 @@ const Chart = ({ chartData }: IProps) => {
           <Legend />
           <Line
             type="monotone"
-            dataKey="User_Count"
+            dataKey="userCount"
             stroke="#8884d8"
             strokeDasharray="5 5"
           />
           <Line
             type="monotone"
-            dataKey="Contract_Count"
+            dataKey="contractCount"
             stroke="#82ca9d"
             strokeDasharray="3 4 5 2"
           />
