@@ -38,7 +38,6 @@ const SingleApartmentPage = ({ params }: any) => {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    console.log(formValues);
     if (!formValues) return;
 
     const { _id, ...body } = formValues;
@@ -181,12 +180,12 @@ const SingleApartmentPage = ({ params }: any) => {
           {/* row 3 */}
           <div className="flex w-full gap-4">
             <div className="flex flex-col w-1/2">
-              <label>total_people</label>
+              <label>Total people</label>
               <input
                 type="number"
-                name="total_people"
+                name="totalPeople"
                 onChange={handleInputChange}
-                placeholder={`${formValues?.numOfMinRentNight}`}
+                placeholder={`${formValues?.totalPeople ?? 0}`}
               />
             </div>
             <div className="flex flex-col w-1/2">

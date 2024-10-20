@@ -32,7 +32,7 @@ export interface IResponseApartment {
   address: string;
   rating: IResponseRatingApartment;
   pricePerNight: string;
-  numOfMinRentNight: number;
+  totalPeople: number;
   rooms: { livingRoom: number; bedRoom: number; bathRoom: number };
   tags: (IResponseApartmentTag | string)[];
   _id: string;

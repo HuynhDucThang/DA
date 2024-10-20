@@ -123,12 +123,14 @@ export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
   const totalPeople = useMemo(() => {
     let total = 0;
     for (const key in numberEnteredHouse) {
+      if(key === 'pet') continue;
       total += numberEnteredHouse[key as TYPE_ENTERD_HOUSE];
     }
 
     return total;
   }, [numberEnteredHouse]);
-
+ 
+  
   const handleBooking = async () => {
     if (!currentUser._id) {
       showToast(`"Hãy đăng nhập trước nhé`, "error");
@@ -138,9 +140,13 @@ export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
 
     if (!start_date || !end_date) {
       showToast(`Hãy chọn ngày đặt lịch`, "error");
-
       return;
     }
+    if(totalPeople > apartmentDetail?.totalPeople) {
+      showToast(`Số lượng người phải nhỏ hơn ${apartmentDetail.totalPeople}`, "error");
+      return;
+    }
+
     setIsLoading(true);
     try {
       const { data } = await createContract(apartmentDetail._id, {
@@ -151,15 +157,13 @@ export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
         endDate: end_date,
         startDate: start_date,
       });
-      console.log("data: ", data.data);
 
-      // setNumberEnteredHouse({
-      //   adult: 2,
-      //   young: 0,
-      //   baby: 0,
-      //   pet: 0,
-      // });
-      // dispatch(setDate(data));
+      setNumberEnteredHouse({
+        adult: 2,
+        young: 0,
+        baby: 0,
+        pet: 0,
+      });
       showToast(`Thành công`);
       window.open(data.data.url, "_blank");
     } catch (error) {
