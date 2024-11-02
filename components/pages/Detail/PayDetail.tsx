@@ -50,16 +50,17 @@ interface IProps {
   totalComments: number;
 }
 
+const INIT_NUM_PEOPLE = {
+  adult: 0,
+  young: 0,
+  baby: 0,
+  pet: 0,
+};
+
 export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [numberEnteredHouse, setNumberEnteredHouse] = useState<
-    Record<TYPE_ENTERD_HOUSE, number>
-  >({
-    adult: 2,
-    young: 0,
-    baby: 0,
-    pet: 0,
-  });
+  const [numberEnteredHouse, setNumberEnteredHouse] =
+    useState<Record<TYPE_ENTERD_HOUSE, number>>(INIT_NUM_PEOPLE);
 
   const { isOpen, typePopup, closePopup, openPopup } = useModal<
     "start-day" | "end-day" | "number-people"
@@ -123,14 +124,13 @@ export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
   const totalPeople = useMemo(() => {
     let total = 0;
     for (const key in numberEnteredHouse) {
-      if(key === 'pet') continue;
+      if (key === "pet") continue;
       total += numberEnteredHouse[key as TYPE_ENTERD_HOUSE];
     }
 
     return total;
   }, [numberEnteredHouse]);
- 
-  
+
   const handleBooking = async () => {
     if (!currentUser._id) {
       showToast(`"Hãy đăng nhập trước nhé`, "error");
@@ -142,8 +142,11 @@ export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
       showToast(`Hãy chọn ngày đặt lịch`, "error");
       return;
     }
-    if(totalPeople > apartmentDetail?.totalPeople) {
-      showToast(`Số lượng người phải nhỏ hơn ${apartmentDetail.totalPeople}`, "error");
+    if (totalPeople > apartmentDetail?.totalPeople) {
+      showToast(
+        `Số lượng người phải nhỏ hơn ${apartmentDetail.totalPeople}`,
+        "error"
+      );
       return;
     }
 
@@ -158,12 +161,7 @@ export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
         startDate: start_date,
       });
 
-      setNumberEnteredHouse({
-        adult: 2,
-        young: 0,
-        baby: 0,
-        pet: 0,
-      });
+      setNumberEnteredHouse(INIT_NUM_PEOPLE);
       showToast(`Thành công`);
       window.open(data.data.url, "_blank");
     } catch (error) {
@@ -173,12 +171,57 @@ export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
     }
   };
 
+  const calculateTotalPeople = (
+    key: keyof typeof numberEnteredHouse,
+    newValue: number
+  ) => {
+    return Object.keys(numberEnteredHouse).reduce((total, keyObject) => {
+      return (
+        total +
+        (keyObject === key
+          ? newValue
+          : numberEnteredHouse[keyObject as keyof typeof numberEnteredHouse])
+      );
+    }, 0);
+  };
+
   const handleAddPeople = (key: keyof typeof numberEnteredHouse) => {
-    setNumberEnteredHouse((pre) => ({ ...pre, [key]: pre[key] + 1 }));
+    const newCount = numberEnteredHouse[key] + 1;
+    const totalPeople = apartmentDetail.totalPeople ?? 3;
+
+    if (calculateTotalPeople(key, newCount) > totalPeople) {
+      showToast(`Đã vượt quá số lượng quy định là ${totalPeople}`);
+      return;
+    }
+
+    setNumberEnteredHouse((pre) => ({ ...pre, [key]: newCount }));
   };
 
   const handleSubtractPeople = (key: keyof typeof numberEnteredHouse) => {
-    setNumberEnteredHouse((pre) => ({ ...pre, [key]: pre[key] - 1 }));
+    const newCount = Math.max(0, numberEnteredHouse[key] - 1); // Prevent negative count
+    const totalPeople = apartmentDetail.totalPeople ?? 3;
+
+    if (calculateTotalPeople(key, newCount) > totalPeople) {
+      showToast(`Đã vượt quá số lượng quy định là ${totalPeople}`);
+      return;
+    }
+
+    setNumberEnteredHouse((pre) => ({ ...pre, [key]: newCount }));
+  };
+
+  const handleChangeNumOfPeople = (
+    key: keyof typeof numberEnteredHouse,
+    value: number | null
+  ) => {
+    if (value === null) return;
+    const totalPeople = apartmentDetail.totalPeople ?? 3;
+
+    if (calculateTotalPeople(key, value) > totalPeople) {
+      showToast(`Đã vượt quá số lượng quy định là ${totalPeople}`);
+      return;
+    }
+
+    setNumberEnteredHouse((pre) => ({ ...pre, [key]: value }));
   };
 
   return (
@@ -318,9 +361,9 @@ export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
                         </h2>
                         <p className="text_card_heading">{data.desc}</p>
                       </div>
-                      <div className="flex gap-3">
+                      <div className="flex gap-3 items-center">
                         <div
-                          className={`text-center p-3 rounded-full border border-c-border cursor-pointer ${
+                          className={`text-center w-12 h-12 rounded-full border border-c-border cursor-pointer text-3xl flex_center ${
                             numberEnteredHouse[
                               data.key as TYPE_ENTERD_HOUSE
                             ] === 0 && "pointer-events-none opacity-40"
@@ -331,11 +374,26 @@ export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
                         >
                           -
                         </div>
-                        <div className="text-center p-3 rounded-full border border-c-border">
-                          {numberEnteredHouse[data.key as TYPE_ENTERD_HOUSE]}
-                        </div>
+                        <input
+                          type="number"
+                          min={0}
+                          value={
+                            numberEnteredHouse[data.key as TYPE_ENTERD_HOUSE] ??
+                            0
+                          }
+                          onChange={(event) =>
+                            handleChangeNumOfPeople(
+                              data.key as TYPE_ENTERD_HOUSE,
+                              !isNaN(+event.target.value)
+                                ? +event.target.value
+                                : null
+                            )
+                          }
+                          className="w-12 h-12 rounded-full outline-none text-center border border-c-border"
+                        />
+
                         <div
-                          className="text-center p-3 rounded-full border border-c-border cursor-pointer"
+                          className="text-center w-12 h-12 rounded-full border border-c-border cursor-pointer text-3xl flex_center"
                           onClick={() =>
                             handleAddPeople(data.key as TYPE_ENTERD_HOUSE)
                           }

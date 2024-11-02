@@ -8,7 +8,6 @@ import { IComment } from "@/utils/interface";
 import { FormEvent, useState } from "react";
 import { ratings as ratingsDefined } from "@/utils/constant";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { createApartmentCommentServer } from "@/utils/actions";
 import { setModalType } from "@/redux/slices/modalSlice";
 import { Loading } from "@/components/common";
 import Stars from "./comment/stars";

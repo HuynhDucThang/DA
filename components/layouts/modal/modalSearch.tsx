@@ -1,21 +1,18 @@
-import { BtnCommon, Login } from "@/components/common";
-import LoadingSearch from "@/components/common/loadingSearch";
 import Modal from "@/components/common/modal/Modal";
-import RangeSlider from "@/components/common/slider";
-import SliderC from "@/components/common/slider/slider";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { removeModalType } from "@/redux/slices/modalSlice";
 import { CITY } from "@/utils/enum";
 import {
   clearSearchParams,
+  showToast,
   updateMutilpleSearchParams,
 } from "@/utils/helpers/common";
-import { IAmenityRead } from "@/utils/interface";
 import { IResponseApartmentAmenity } from "@/utils/interface.v2";
-import { getAmenities, getApartments, getApartmentsLocal } from "@/utils/proxy";
+import { getAmenities, getApartments } from "@/utils/proxy";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Select, { SingleValue } from "react-select";
 
 const DATA_APARTMENT_TYPE = [
   {
@@ -35,10 +32,20 @@ const DATA_APARTMENT_TYPE = [
   },
 ];
 
+const options = [
+  { value: "0-500000", label: "0 - 500k" },
+  { value: "500000-1000000", label: "500k - 1.000k" },
+  { value: "1000000-1500000", label: "1.000k - 1.500k" },
+  { value: "1500000-2000000", label: "1.500k - 2.000k" },
+  { value: "2000000-2500000", label: "2.000k - 2.500k" },
+  { value: "2500000-3000000", label: "2.500k - 3.000k" },
+];
+
 export default function ModalSearch() {
   const { typeModal } = useAppSelector((state) => state.modal);
   const [totalApartment, setTotalApartment] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [searchParams, setSearchParams] = useState({
     city: "",
     lowest_price: 100000,
@@ -132,7 +139,10 @@ export default function ModalSearch() {
         delete searchParams[key as keyof typeof searchParams];
       }
 
-      if (!value || (typeof value === "string" && value === "")) {
+      if (
+        (!value && value !== 0) ||
+        (typeof value === "string" && value === "")
+      ) {
         delete searchParams[key as keyof typeof searchParams];
       }
     });
@@ -154,7 +164,42 @@ export default function ModalSearch() {
       commonStyles="max-w-[760px]"
       title="Tìm kiếm căn hộ"
     >
-      <div className="h-[80vh] overflow-y-auto -mr-4 px-2">
+      <div className="max-h-[80vh] overflow-y-auto -mr-4 px-2">
+        <Container
+          title="Khoảng giá"
+          desc="Giá theo đêm chưa bao gồm phí và thuế"
+        >
+          <Select
+            className="z-10 h-12"
+            onChange={(data: SingleValue<{ value: string; label: string }>) => {
+              if (!data?.value) return;
+
+              try {
+                const value: any = data.value;
+                const prices = value.split("-");
+
+                if (
+                  prices.length < 2 ||
+                  isNaN(+prices[0]) ||
+                  isNaN(+prices[1])
+                ) {
+                  throw new Error("Giá trị tiền không chính xác");
+                }
+
+                setSearchParams((pre) => ({
+                  ...pre,
+                  lowest_price: +prices[0],
+                  hightest_price: +prices[1],
+                }));
+              } catch (error: any) {
+                showToast(error.message, "error");
+              }
+            }}
+            isSearchable={true}
+            placeholder="Khoảng giá"
+            options={options}
+          />
+        </Container>
         <Container title="Thành phố" desc="Tên thành phố mà bạn muốn đến.">
           <label
             htmlFor="city"
@@ -226,25 +271,6 @@ export default function ModalSearch() {
               </label>
             ))}
           </div>
-        </Container>
-
-        {/*  */}
-        <Container
-          title="Khoảng giá"
-          desc="Giá theo đêm chưa bao gồm phí và thuế"
-        >
-          <SliderC
-            min={100000}
-            max={5000000}
-            values={[searchParams.lowest_price, searchParams.hightest_price]}
-            handleChange={(newValue: number[]) =>
-              setSearchParams((pre) => ({
-                ...pre,
-                lowest_price: newValue[0],
-                hightest_price: newValue[1],
-              }))
-            }
-          />
         </Container>
 
         <div className="sticky bottom-0 z-20 pt-4 bg-white shadow-lg -ml-4 pl-4">

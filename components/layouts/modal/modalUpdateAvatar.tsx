@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { uploadAvatar } from "@/utils/proxy";
 import Modal from "@/components/common/modal/Modal";
 import { BtnCommon } from "@/components/common";
-import { setUserMe } from "@/redux/slices/userSlice";
 import { showToast } from "@/utils/helpers/common";
 
 export default function ModalUpdateAvatar() {
@@ -34,8 +33,8 @@ export default function ModalUpdateAvatar() {
       setIsLoading(true);
       const formData = new FormData();
       formData.append("avatar", avatar);
-
-      await uploadAvatar(currentUser.id, formData);
+      if (!currentUser._id) return;
+      await uploadAvatar(currentUser._id, formData);
       showToast("Thành công", "success");
 
       //   router.refresh();

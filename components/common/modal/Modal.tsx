@@ -7,12 +7,14 @@ interface IProps {
   children: React.ReactNode;
   commonStyles?: string;
   title?: string;
+  logo?: React.ReactNode;
   handleCloseModal: () => void;
 }
 
 export default function Modal({
   title,
   isOpen,
+  logo,
   children,
   commonStyles,
   handleCloseModal,
@@ -23,7 +25,10 @@ export default function Modal({
         !isOpen && "invisible opacity-0 hidden"
       }`}
     >
-      <div className="absolute w-full h-full bg-[rgba(23,_23,_23,_0.5)] z-10" onClick={handleCloseModal}></div>
+      <div
+        className="absolute w-full h-full bg-[rgba(23,_23,_23,_0.5)] z-10"
+        onClick={handleCloseModal}
+      ></div>
       <div
         className={`w-full rounded-xl shadow-[rgba(0,_0,_0,_0.24)_0px_3px_6px] z-20 bg-white ${commonStyles}`}
       >
@@ -41,6 +46,7 @@ export default function Modal({
           </div>
         ) : null}
         <div className="p-4">{children}</div>
+        {logo}
       </div>
     </div>
   );

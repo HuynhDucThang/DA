@@ -206,6 +206,7 @@ const SingleApartmentPage = () => {
                 placeholder={"Entered Name"}
                 value={apartmentCreate.price_per_day}
                 onChange={handleOnchange}
+                max={3000000}
               />
             </div>
             {/* num_bedrooms */}

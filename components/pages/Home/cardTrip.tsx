@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { MouseEvent, useState } from "react";
 
 interface IProps {
-  contract: IContractsTrip;
+  contract: any;
   deteteTrip: (contractId: string) => void;
 }
 
@@ -21,7 +21,7 @@ export default function CardTrip({ contract, deteteTrip }: IProps) {
   const dispatch = useAppDispatch();
 
   const checkApartmentInWhiteList = whiteList.findIndex(
-    (list) => list.id === contract.apartment.id
+    (list) => list._id === contract.apartment.id
   );
 
   const handleAddOrRemoveWhiteListItem = (e: MouseEvent<HTMLDivElement>) => {

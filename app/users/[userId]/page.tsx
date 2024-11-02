@@ -63,7 +63,7 @@ export default function ProfileUser() {
   };
 
   const handleSubmit = async () => {
-    if (!currentUser?.id) {
+    if (!currentUser?._id) {
       showToast("Bạn chưa đăng nhập", "error");
       dispatch(setModalType("LOGIN"));
       return;
@@ -82,7 +82,7 @@ export default function ProfileUser() {
       });
       const { data } = await updateUser(userId, userUpdate);
       setUser(data.data);
-      data?.data?.id === currentUser?.id && dispatch(setUserMe(data.data));
+      data?.data?.id === currentUser?._id && dispatch(setUserMe(data.data));
       setFieldEdit(null);
       setUserUpdate(initUserUpdate);
       showToast("Thành công");
@@ -95,9 +95,13 @@ export default function ProfileUser() {
   };
 
   const handleUpdatePassword = async () => {
-    if (!currentUser?.id) {
+    if (!currentUser?._id) {
       showToast("Bạn chưa đăng nhập", "error");
       dispatch(setModalType("LOGIN"));
+      return;
+    }
+
+    if (!currentUser.email) {
       return;
     }
 
@@ -129,37 +133,7 @@ export default function ProfileUser() {
     });
   };
 
-  const handleContact = async () => {
-    if (!currentUser.id) {
-      showToast("Bạn hãy đăng nhập để xử dụng tính năng này ", "error");
-      return;
-    }
-
-    if (!user) return;
-
-    setIsLoading(true);
-    try {
-      const { data } = await getRoomUsers(currentUser.id, user!.id);
-      let roomId = data?.data?.id ?? "";
-      if (!data.data) {
-        const { data: dataRoom } = await createRoomChat({
-          key: `${currentUser.id}-${user.id}`,
-          name: `${currentUser.username}-${user.username}`,
-          users_id: [currentUser.id, user.id],
-        });
-
-        roomId = dataRoom.data.id;
-      }
-
-      router.push(`/chat?room=${roomId}&uid=${currentUser.id}&ruid=${user.id}`);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const allowEdit = currentUser.id === userId;
+  const allowEdit = currentUser._id === userId;
 
   return (
     <>
@@ -186,7 +160,7 @@ export default function ProfileUser() {
                   />
                 </div>
                 <h2 className="text-primary text-4xl mt-4 font-semibold">
-                  {user?.username}
+                  {user?.name}
                 </h2>
                 {/* <span className="text-lg font-medium">Khách</span> */}
               </div>
@@ -210,7 +184,7 @@ export default function ProfileUser() {
             {/* bottom */}
             <div className="mt-10 p-8 border shadow-md rounded-3xl">
               <h2 className="heading__detail_apartment">
-                Thông tin đã được xác nhận của {user?.username}
+                Thông tin đã được xác nhận của {user?.name}
               </h2>
               <div className="mt-4">
                 <div className="flex gap-4">
@@ -242,14 +216,11 @@ export default function ProfileUser() {
           <div className="w-[70%]">
             <div className="flex justify-between items-center">
               <h2 className="text-primary text-4xl mt-4 font-bold">
-                Thông tin về {user?.username}
+                Thông tin về {user?.name}
               </h2>
 
-              {currentUser.id !== user?.id ? (
-                <div
-                  className="text-white py-4 px-6 bg-[#222222] hover:bg-black hover:shadow-lg transition-all duration-500 rounded-xl w-fit text-xl font-medium cursor-pointer"
-                  onClick={handleContact}
-                >
+              {currentUser._id !== user?._id ? (
+                <div className="text-white py-4 px-6 bg-[#222222] hover:bg-black hover:shadow-lg transition-all duration-500 rounded-xl w-fit text-xl font-medium cursor-pointer">
                   Nhắn tin
                 </div>
               ) : null}
@@ -262,7 +233,7 @@ export default function ProfileUser() {
                 desc={
                   fieldEdit === "username"
                     ? "Đây là tên trên giấy tờ thông hành của bạn, có thể là giấy phép hoặc hộ chiếu."
-                    : user?.username ?? "Tên người dùng"
+                    : user?.name ?? "Tên người dùng"
                 }
                 btnName={fieldEdit === "username" ? "Xoá" : "Chỉnh sửa"}
                 fieldName="username"
@@ -295,7 +266,7 @@ export default function ProfileUser() {
                 desc={
                   fieldEdit === "phonenumber"
                     ? "Thêm số điện thoại để khách đã xác nhận và Airbnb có thể liên hệ với bạn. Bạn có thể thêm các số điện thoại khác và chọn mục đích sử dụng tương ứng."
-                    : user?.phonenumber ?? "Số điện thoại người dùng"
+                    : user?.phoneNumber ?? "Số điện thoại người dùng"
                 }
                 btnName={fieldEdit === "phonenumber" ? "Huỷ" : "Chỉnh sửa"}
                 fieldName="phonenumber"

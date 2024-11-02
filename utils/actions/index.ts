@@ -13,7 +13,6 @@ import {
   userSignUp,
 } from "../proxyServer";
 import { createApartmentComment, updateApartment } from "../proxy";
-import { IApartCommentCreate,  } from "../interface";
 import { axiosServer } from "../api";
 
 export const loginAdmin = async (prevState: any, formData: FormData) => {
@@ -211,22 +210,6 @@ export const updateAvatarUserAction = async (
 
     revalidatePath(`/admin/dashboard/users`);
     redirect(`/admin/dashboard/users`);
-  } catch (error: any) {
-    return { errMsg: error.message };
-  }
-};
-
-export const createApartmentCommentServer = async (
-  apartmentComment: IApartCommentCreate
-) => {
-  try {
-    /*
-        const user = await getUserServer()
-        throw new Error("Unauthorization")
-      */
-    await createApartmentComment(apartmentComment);
-    revalidateTag("apartment-comment");
-    
   } catch (error: any) {
     return { errMsg: error.message };
   }

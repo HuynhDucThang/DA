@@ -1,9 +1,8 @@
 import { MdSupervisedUserCircle } from "react-icons/md";
 import styles from "./card.module.css";
-import { IStatisticalsCommon } from "@/app/admin/dashboard/page";
 
 interface IProps {
-  item: IStatisticalsCommon;
+  item: any;
 }
 
 const Card = ({ item }: IProps) => {

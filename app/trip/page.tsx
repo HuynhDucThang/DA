@@ -21,14 +21,14 @@ export default function Trip() {
 
   useEffect(() => {
     const getTrip = async () => {
-      if (!currentUser.id) {
+      if (!currentUser._id) {
         showToast("Hãy đăng nhập để sử dụng chức năng này", "error");
         router.push("/");
         return;
       }
       setIsLoading(true);
       try {
-        const { data } = await getContractsTrip(currentUser.id);
+        const { data } = await getContractsTrip(currentUser._id);
 
         setContractsTrip(data.data);
       } catch (error) {

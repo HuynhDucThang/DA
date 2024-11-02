@@ -116,7 +116,7 @@ export default function AddApartment() {
   };
 
   const handleCreateApartment = async () => {
-    if (!currentUser.id) {
+    if (!currentUser._id) {
       showToast("Haỹ đăng nhập để sử dụng chức năng này", "error");
 
       return;
