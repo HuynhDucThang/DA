@@ -6,6 +6,7 @@ import { showToast } from "@/utils/helpers/common";
 import { IApartmentCreate } from "@/utils/interface";
 import {
   createApartment,
+  createApartmentAdmin,
   getAmenities,
   getTagsFilter,
   updateImagesApartment,
@@ -41,13 +42,11 @@ export default function AddApartment() {
   const [amenities, setAmenities] = useState<IOption[]>([]);
   const router = useRouter();
 
-  const { currentUser } = useAppSelector((state) => state.user);
-
   const convertOptions = (data: any[]) => {
     const dataOptions: IOption[] = [];
     data.forEach((option) => {
       dataOptions.push({
-        key: option.id,
+        key: option._id,
         value: option.name,
       });
     });
@@ -116,13 +115,8 @@ export default function AddApartment() {
   };
 
   const handleCreateApartment = async () => {
-    if (!currentUser._id) {
-      showToast("Haỹ đăng nhập để sử dụng chức năng này", "error");
-
-      return;
-    }
     if (images.length < 5) {
-      showToast("Phải có nhiều hơn 5 ảnh", "error");
+      showToast("Phải có nhiều hơn 5 ảnh", "warn");
       return;
     }
 
@@ -135,21 +129,30 @@ export default function AddApartment() {
     const tag_ids = handleCovertToArrIds(selectedTags);
     const amenities_ids = handleCovertToArrIds(selectedAmenities);
 
-    try {
-      const { data } = await createApartment(
-        { ...apartmentCreate },
-        {
-          tag_ids,
-          amenities: amenities_ids,
-        }
-      );
-      await updateImagesApartmentUser(data?.id, formData);
+    amenities_ids.forEach((amenity) => {
+      formData.append("amentities", amenity);
+    });
 
+    tag_ids.forEach((tag) => {
+      formData.append("tags", tag);
+    });
+
+    formData.append("name", apartmentCreate.name);
+    formData.append("description", apartmentCreate.desc);
+    formData.append("pricePerNight", `${apartmentCreate.price_per_day}`);
+    formData.append("address", apartmentCreate.address);
+    formData.append("type", apartmentCreate.apartment_type);
+    formData.append("rooms.livingRoom", `${apartmentCreate.num_living_rooms}`);
+    formData.append("rooms.bedRoom", `${apartmentCreate.num_bedrooms}`);
+    formData.append("rooms.bathRoom", `${apartmentCreate.num_bathrooms}`);
+
+    try {
+      await createApartmentAdmin(formData);
       showToast("Thành công");
-      router.push("/");
-    } catch (error: any) {
+      router.push("/admin/dashboard/apartments");
+    } catch (error) {
       console.log(error);
-      showToast(`${error?.response?.data?.detail}`, "error");
+      showToast("Lỗi", "error");
     }
   };
 
@@ -165,33 +168,6 @@ export default function AddApartment() {
     <div className="">
       <div className="container mt-10 mx-auto">
         <div className="grid grid-cols-1 max-w-[800px] w-full h-[82vh] overflow-y-auto mx-auto shadow-2xl rounded-2xl place-items-center gap-4">
-          {/* <div>
-            <h1 className="text-brand font-bold text-7xl">Airbnb it</h1>
-            <h1 className="text-black font-semibold text-3xl mb-3">
-              You could earn
-            </h1>
-            <div className="flex space-x-4 items-center">
-              <h3 className="text-3xl">16,986</h3>
-              <strong className="text-3xl">per night</strong>
-            </div>
-
-            <div className="hidden md:grid grid-cols-2 gap-2 mt-5">
-              <Image
-                src="/images/home_img.jpeg"
-                width={200}
-                height={200}
-                alt="home"
-                className="rounded-2xl object-cover"
-              />
-              <Image
-                src="/images/home_img1.jpeg"
-                width={205}
-                height={205}
-                alt="home"
-                className="rounded-2xl object-cover"
-              />
-            </div>
-          </div> */}
           <h2 className="text-3xl text-txt-primary font-semibold sticky top-0 z-10 bg-white p-6 w-full text-center shadow-lg">
             {["Nhập thông tin căn hộ", "Tải ảnh cho căn hộ"][step]}
           </h2>
@@ -276,9 +252,11 @@ export default function AddApartment() {
                   <SelectC
                     title="amenities"
                     selected={selectedAmenities}
-                    handleOnSelected={(options) =>
-                      setSelectedAmenities(options)
-                    }
+                    handleOnSelected={(options) => {
+                      console.log(options);
+
+                      setSelectedAmenities(options);
+                    }}
                     options={amenities}
                   />
                 </div>

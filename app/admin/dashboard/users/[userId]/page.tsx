@@ -16,6 +16,7 @@ const SingleUserPage = ({ params }: any) => {
     const fetchUser = async () => {
       try {
         const { data } = await getUserById(userId);
+
         setFormValues({ ...initUser, ...data.payload });
       } catch (error) {
         showToast("Error when fetching user", "error");
@@ -40,7 +41,7 @@ const SingleUserPage = ({ params }: any) => {
     event.preventDefault();
     if (!formValues) return;
 
-    const { _id, role,...body } = formValues;
+    const { _id, role, ...body } = formValues;
     try {
       await updateUser(userId, body);
       showToast("User updated successfully", "success");
@@ -54,7 +55,6 @@ const SingleUserPage = ({ params }: any) => {
       <UpdateAvatar />
       <div className={styles.formContainer}>
         <form onSubmit={handleSubmit} className={styles.form}>
-
           <label>Username</label>
           <input
             type="text"

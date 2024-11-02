@@ -24,7 +24,6 @@ const initUserUpdate = {
   username: "",
   address: "",
   password: "",
-  re_password: "",
 };
 
 export default function ProfileUser() {
@@ -32,10 +31,11 @@ export default function ProfileUser() {
   const [fieldEdit, setFieldEdit] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [userUpdate, setUserUpdate] = useState(initUserUpdate);
+  const [userUpdate, setUserUpdate] = useState<
+    Partial<IUser & { re_password: string }>
+  >({});
 
   const dispatch = useAppDispatch();
-  const { typeModal } = useAppSelector((state) => state.modal);
   const { currentUser } = useAppSelector((state) => state.user);
 
   const [indexSilder, setIndexSilder] = useState<number>(0);
@@ -48,8 +48,7 @@ export default function ProfileUser() {
     const getUser = async () => {
       try {
         const { data } = await getUserById(userId);
-        setUser(data.data);
-        console.log("data.data : ", data.data);
+        setUser(data.payload);
       } catch (error) {
         console.log("errror ");
         router.push("/");
@@ -81,10 +80,10 @@ export default function ProfileUser() {
         }
       });
       const { data } = await updateUser(userId, userUpdate);
-      setUser(data.data);
+
+      setUser(data.payload);
       data?.data?.id === currentUser?._id && dispatch(setUserMe(data.data));
       setFieldEdit(null);
-      setUserUpdate(initUserUpdate);
       showToast("Thành công");
     } catch (error) {
       showToast("Lỗi");
@@ -110,7 +109,6 @@ export default function ProfileUser() {
     try {
       await updatePassword(currentUser.email, userUpdate.password);
       setFieldEdit(null);
-      setUserUpdate(initUserUpdate);
       showToast("Thành công");
     } catch (error) {
       showToast("Lỗi");
@@ -249,9 +247,9 @@ export default function ProfileUser() {
               {fieldEdit === "username" ? (
                 <InputProfile
                   handleOnChange={handleInputChange}
-                  name="username"
+                  name="name"
                   title="Họ và tên"
-                  value={userUpdate.username}
+                  value={userUpdate.name ?? ""}
                 />
               ) : null}{" "}
               {fieldEdit === "username" ? (
@@ -282,9 +280,9 @@ export default function ProfileUser() {
               {fieldEdit === "phonenumber" ? (
                 <InputProfile
                   handleOnChange={handleInputChange}
-                  name="phonenumber"
+                  name="phoneNumber"
                   title="Số điện thoại"
-                  value={userUpdate.phonenumber}
+                  value={userUpdate.phoneNumber ?? ""}
                 />
               ) : null}
               {fieldEdit === "phonenumber" ? (
@@ -317,7 +315,7 @@ export default function ProfileUser() {
                   handleOnChange={handleInputChange}
                   name="address"
                   title="Địa chỉ"
-                  value={userUpdate.address}
+                  value={userUpdate.address ?? ""}
                 />
               ) : null}
               {fieldEdit === "address" ? (
@@ -349,13 +347,13 @@ export default function ProfileUser() {
                     handleOnChange={handleInputChange}
                     name="password"
                     title="Mật khẩu"
-                    value={userUpdate?.password}
+                    value={userUpdate?.password ?? ""}
                   />
                   <InputProfile
                     handleOnChange={handleInputChange}
                     name="re_password"
                     title="Nhập lại mật khẩu"
-                    value={userUpdate?.re_password}
+                    value={userUpdate?.re_password ?? ""}
                   />
                 </div>
               ) : null}
