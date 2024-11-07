@@ -26,7 +26,10 @@ export default function Home({ searchParams }: IProps) {
   useEffect(() => {
     const fetchApartments = async () => {
       try {
-        const { data } = await getApartments({...searchParams, isApproved : true});
+        const { data } = await getApartments({
+          ...searchParams,
+          isApproved: true,
+        });
         if (data?.payload) setApartments(data?.payload);
       } catch (error) {
         console.error("fetchApartments error : ", error);

@@ -13,6 +13,7 @@ import { RootState } from "@/redux/store";
 import {
   clearAllSearchParams,
   convertStringToFloat,
+  formatVND,
   handleConvertDate,
   showToast,
 } from "@/utils/helpers/common";
@@ -233,7 +234,7 @@ export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 <h4 className="text-2xl font-semibold text-primary">
-                  {apartmentDetail.pricePerNight}{" "}
+                  {formatVND(apartmentDetail.pricePerNight)}{" "}
                   <span className="text-base">đ</span>
                 </h4>
                 <span className="text-second text-xl">/đêm</span>
@@ -425,33 +426,36 @@ export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
                   </div>
                   <div className="flex justify-between mt-2">
                     <p className="text-primary text-lg underline">
-                      {apartmentDetail.pricePerNight} đ x {totalDay} đêm
+                      {formatVND(apartmentDetail.pricePerNight)} x {totalDay}{" "}
+                      đêm
                     </p>
                     <p className="text-primary text-lg">
-                      {totalDay *
-                        (convertStringToFloat(apartmentDetail.pricePerNight) ??
-                          0)}{" "}
-                      {" đ"}
+                      {formatVND(
+                        totalDay *
+                          (convertStringToFloat(
+                            apartmentDetail.pricePerNight
+                          ) ?? 0)
+                      )}{" "}
                     </p>
                   </div>
                   <div className="flex justify-between mt-2">
                     <p className="text-primary text-lg underline">
                       Phí vệ sinh
                     </p>
-                    <p className="text-primary text-lg">200,000 đ</p>
+                    <p className="text-primary text-lg">{formatVND(200000)}</p>
                   </div>
                   <div className="flex justify-between mt-2">
                     <p className="text-primary text-lg underline">
                       Phí dịch vụ Airbnb
                     </p>
-                    <p className="text-primary text-lg">300,000 đ</p>
+                    <p className="text-primary text-lg">{formatVND(300000)}</p>
                   </div>
                 </div>
 
                 <div className="flex justify-between mt-2 pt-3 border-t-2 border-c-border">
                   <p className="text-primary text-xl">Tổng trước thuế</p>
                   <p className="text-primary text-xl">
-                    {totalAmount} {" đ"}
+                    {formatVND(totalAmount)}
                   </p>
                 </div>
               </>

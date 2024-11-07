@@ -9,11 +9,11 @@ import { Loading } from "@/components/common";
 import Confirm from "@/components/layouts/modal/comfirm";
 import useModal from "@/utils/hook/useModal";
 import { handleConvertDate, showToast } from "@/utils/helpers/common";
-import { IContractsTrip } from "@/utils/interface";
 import { useRouter } from "next/navigation";
+import { IResponseApartmentContract } from "@/utils/interface.v2";
 
 interface IProps {
-  data: IContractsTrip[];
+  data: IResponseApartmentContract[];
   changePage: number;
   totalPage: number;
   onDelete: (id: string) => void;
@@ -30,7 +30,8 @@ export default function Table({
   const { isOpen, closePopup, openPopup } = useModal();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [typeAction, setTypeAction] = useState<"delete" | "redirect">();
-  const [projectDashboard, setProjectDashboard] = useState<IContractsTrip>();
+  const [projectDashboard, setProjectDashboard] =
+    useState<IResponseApartmentContract>();
   const { currentUser } = useAppSelector((state) => state.user);
   const router = useRouter();
 
@@ -48,9 +49,9 @@ export default function Table({
   const handleClickAction = async () => {
     if (!projectDashboard) return;
     if (typeAction === "delete") {
-      onDelete(projectDashboard.id);
+      onDelete(projectDashboard._id);
     } else if (typeAction === "redirect") {
-      router.push(`/apartment/${projectDashboard.apartment_id}`);
+      router.push(`/apartment/${projectDashboard.apartment._id}`);
     }
     closePopup();
   };
@@ -77,7 +78,7 @@ export default function Table({
                       Ảnh căn hộ
                     </th>
                     <th className="text-center border-none font-bold text-[18px] text-[#474d58] pb-3">
-                      Tên dự án
+                      Tên căn hộ
                     </th>
                     <th className="text-center border-none font-bold text-[18px] text-[#474d58] pb-3">
                       Email người thuê
@@ -109,33 +110,33 @@ export default function Table({
                         <div className="text-[14px] text-[#9b9aba] flex rounded-full overflow-hidden ">
                           <Image
                             src={
-                              project.apartment.images[1].image_url
-                                ? `${URL}/${project.apartment.images[1].image_url}`
+                              project.apartment.images[1]
+                                ? `${project.apartment.images[1]}`
                                 : "/icons/dashboard/user-new.png"
                             }
-                            width={30}
-                            height={30}
+                            width={60}
+                            height={60}
                             alt=""
                           />
                           <Image
                             src={
-                              project.apartment.images[2].image_url
-                                ? `${URL}/${project.apartment.images[2].image_url}`
+                              project.apartment.images[2]
+                                ? `${project.apartment.images[2]}`
                                 : "/icons/dashboard/user-new.png"
                             }
-                            width={30}
-                            height={30}
+                            width={60}
+                            height={60}
                             alt=""
                             className="-ml-2"
                           />
                           <Image
                             src={
-                              project.apartment.images[3].image_url
-                                ? `${URL}/${project.apartment.images[3].image_url}`
+                              project.apartment.images[3]
+                                ? `${project.apartment.images[3]}`
                                 : "/icons/dashboard/user-new.png"
                             }
-                            width={30}
-                            height={30}
+                            width={60}
+                            height={60}
                             alt=""
                             className="-ml-2"
                           />
@@ -151,14 +152,14 @@ export default function Table({
 
                       <td className="font-medium text-center border-none">
                         <p className="text-[14px] text-[#67349d]">
-                          ${project.total_amount}
+                          ${project?.information?.totalPrice}
                         </p>
                       </td>
                       <td className="font-medium text-center border-none w-[150px]">
                         <p className="text-[14px] text-[#67349d]">
                           14h:00,
                           {handleConvertDate(
-                            new Date(project?.start_date),
+                            new Date(project?.startDate),
                             "dd/MM/yyyy"
                           )}{" "}
                         </p>
@@ -168,26 +169,13 @@ export default function Table({
                         <p className="text-[14px] text-[#67349d]">
                           12h:00,{" "}
                           {handleConvertDate(
-                            new Date(project?.end_date),
+                            new Date(project?.endDate),
                             "dd/MM/yyyy"
                           )}{" "}
                         </p>
                       </td>
                       <td className="border-none">
                         <div className="flex items-center gap-3 justify-center">
-                          <div
-                            className="group p-1 rounded-full"
-                            onClick={() => handleOpenPopup("delete", project)}
-                          >
-                            <Image
-                              className="cursor-pointer group-hover:-translate-y-2 transition-transform"
-                              src={"/delete.svg"}
-                              width={24}
-                              height={24}
-                              alt="Lock icon"
-                            />
-                          </div>
-
                           <div
                             className="group p-1 rounded-full"
                             onClick={() => handleOpenPopup("redirect", project)}

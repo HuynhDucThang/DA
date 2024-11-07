@@ -1,20 +1,20 @@
 "use client";
 
 import { Loading } from "@/components/common";
-import { CardTrip } from "@/components/pages/Home";
-import CardApartment from "@/components/pages/Home/CardApartment";
 import Table from "@/components/pages/trip/table";
 import { useAppSelector } from "@/redux/hooks";
 import { showToast } from "@/utils/helpers/common";
-import { IContractsTrip } from "@/utils/interface";
-import { deleteContract, getContractsTrip } from "@/utils/proxy";
+import { IResponseApartmentContract } from "@/utils/interface.v2";
+import { deleteContract, getContracts, getContractsTrip } from "@/utils/proxy";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Trip() {
   const { currentUser } = useAppSelector((state) => state.user);
-  const [contractsTrip, setContractsTrip] = useState<IContractsTrip[]>([]);
+  const [contractsTrip, setContractsTrip] = useState<
+    IResponseApartmentContract[]
+  >([]);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [changePage, setChangePage] = useState<number>(1);
@@ -28,7 +28,9 @@ export default function Trip() {
       }
       setIsLoading(true);
       try {
-        const { data } = await getContractsTrip(currentUser._id);
+        const { data } = await getContracts({
+          userId: currentUser._id,
+        });
 
         setContractsTrip(data.data);
       } catch (error) {
@@ -43,7 +45,7 @@ export default function Trip() {
 
   const deleteStateContracts = (contractId: string) => {
     const newContract = contractsTrip.filter(
-      (contract) => contract.id !== contractId
+      (contract) => contract._id !== contractId
     );
     setContractsTrip(newContract);
   };
@@ -75,7 +77,7 @@ export default function Trip() {
             <Table
               data={contractsTrip}
               changePage={changePage}
-              totalPage={Math.ceil(contractsTrip.length / 6)}
+              totalPage={1}
               setChangePage={setChangePage}
               onDelete={deteteTrip}
             />

@@ -65,6 +65,7 @@ export interface IRequestApartmentComment
   extends Pick<IResponseApartmentComment, "content" | "rating"> {}
 
 export interface IResponseApartmentContract {
+  _id: string;
   apartment: IResponseApartment;
   payer: IUser;
   startDate: Date;

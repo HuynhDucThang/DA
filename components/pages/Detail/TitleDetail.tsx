@@ -53,7 +53,9 @@ export default function TitleDetail({ apartmentDetail }: IProps) {
             Toàn bộ căn hộ cho thuê {apartmentDetail.name}
           </h3>
           <div className="flex gap-2">
-            <p className="text_apartment_detail font-normal">4 khách</p>
+            <p className="text_apartment_detail font-normal">
+              {apartmentDetail?.totalPeople} khách
+            </p>
             <Image src="/dot.svg" alt="dot icon" width={10} height={10} />
             <p className="text_apartment_detail font-normal">
               {apartmentDetail.rooms.bedRoom} phòng ngủ

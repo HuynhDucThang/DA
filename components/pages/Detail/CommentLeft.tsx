@@ -4,7 +4,6 @@ import Image from "next/image";
 import CardComment from "./CardComment";
 import Modal from "@/components/common/modal/Modal";
 import useModal from "@/utils/hook/useModal";
-import { IComment } from "@/utils/interface";
 import { FormEvent, useState } from "react";
 import { ratings as ratingsDefined } from "@/utils/constant";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -12,7 +11,6 @@ import { setModalType } from "@/redux/slices/modalSlice";
 import { Loading } from "@/components/common";
 import Stars from "./comment/stars";
 import { showToast } from "@/utils/helpers/common";
-import { useRouter } from "next/navigation";
 import {
   IResponseApartmentComment,
   IResponseRatingApartment,

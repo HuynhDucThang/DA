@@ -13,7 +13,7 @@ import {
 
 interface IProps {
   apartment: IResponseApartment;
-  totalComments : number
+  totalComments: number;
 }
 
 export default function Details({ apartment, totalComments }: IProps) {

@@ -16,10 +16,6 @@ export default function DropdownUser() {
   return (
     <>
       <div>
-        <Link href={"/chat"} className={`block ${stylesItem}`}>
-          Tin nhắn
-        </Link>
-        <div className={`${stylesItem}`}>Thông báo</div>
         <Link href={`/trip`} className={`block ${stylesItem}`}>
           Chuyển đi
         </Link>

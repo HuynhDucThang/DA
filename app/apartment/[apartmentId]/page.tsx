@@ -66,9 +66,15 @@ export default function ApartmentDetail({ params }: IProps) {
           total_rating={apartment?.rating?.totalScope ?? 0}
         />
         {/* body */}
-        {apartment ? <Details apartment={apartment} totalComments={comments.length} /> : null}
+        {apartment ? (
+          <Details apartment={apartment} totalComments={comments.length} />
+        ) : null}
 
-        <Comment ratings={apartment?.rating} apartmentId={params.apartmentId} commentApartment={comments} />
+        <Comment
+          ratings={apartment?.rating}
+          apartmentId={params.apartmentId}
+          commentApartment={comments}
+        />
 
         {/* Map */}
         <Map />

@@ -4,7 +4,11 @@ import { BtnCommon } from "@/components/common";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addToWhiteList, deleteWhiteListItem } from "@/redux/slices/userStore";
 import { APARTMENT_TYPE } from "@/utils/data";
-import { handleConvertDate, showToast } from "@/utils/helpers/common";
+import {
+  formatVND,
+  handleConvertDate,
+  showToast,
+} from "@/utils/helpers/common";
 import { IResponseApartment } from "@/utils/interface.v2";
 import Image from "next/image";
 import Link from "next/link";
@@ -93,7 +97,7 @@ export default function CardApartment({ apartment }: IProps) {
           <div className="flex justify-between items-center gap-2">
             <div className="flex items-center gap-1">
               <span className="text_card_heading">
-                {apartment.pricePerNight ?? 0}
+                {formatVND(apartment.pricePerNight) ?? 0}
               </span>
               Vnđ /<span>đêm</span>
             </div>

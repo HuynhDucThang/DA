@@ -128,3 +128,16 @@ export const convertStringToFloat = (value: string): number | null => {
   // Return null if the conversion failed
   return null;
 };
+
+export function formatVND(amount: string | number): string {
+  const numericAmount =
+    typeof amount === "string" ? parseFloat(amount) : amount;
+  if (isNaN(numericAmount)) {
+    return "Invalid";
+  }
+
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(numericAmount);
+}
