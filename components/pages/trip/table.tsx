@@ -108,38 +108,46 @@ export default function Table({
                       </td>
                       <td className="flex justify-center w-full text-center border-none py-2">
                         <div className="text-[14px] text-[#9b9aba] flex rounded-full overflow-hidden ">
-                          <Image
-                            src={
-                              project.apartment.images[1]
-                                ? `${project.apartment.images[1]}`
-                                : "/icons/dashboard/user-new.png"
-                            }
-                            width={60}
-                            height={60}
-                            alt=""
-                          />
-                          <Image
-                            src={
-                              project.apartment.images[2]
-                                ? `${project.apartment.images[2]}`
-                                : "/icons/dashboard/user-new.png"
-                            }
-                            width={60}
-                            height={60}
-                            alt=""
-                            className="-ml-2"
-                          />
-                          <Image
-                            src={
-                              project.apartment.images[3]
-                                ? `${project.apartment.images[3]}`
-                                : "/icons/dashboard/user-new.png"
-                            }
-                            width={60}
-                            height={60}
-                            alt=""
-                            className="-ml-2"
-                          />
+                          {project?.apartment?.images[1] ? (
+                            <Image
+                              src={
+                                project.apartment.images[1]
+                                  ? `${project.apartment.images[1]}`
+                                  : "/icons/dashboard/user-new.png"
+                              }
+                              width={60}
+                              height={60}
+                              alt=""
+                            />
+                          ) : null}
+
+                          {project?.apartment?.images[2] ? (
+                            <Image
+                              src={
+                                project.apartment.images[2]
+                                  ? `${project.apartment.images[2]}`
+                                  : "/icons/dashboard/user-new.png"
+                              }
+                              width={60}
+                              height={60}
+                              alt=""
+                              className="-ml-2"
+                            />
+                          ) : null}
+
+                          {project?.apartment?.images[3] ? (
+                            <Image
+                              src={
+                                project.apartment.images[3]
+                                  ? `${project.apartment.images[3]}`
+                                  : "/icons/dashboard/user-new.png"
+                              }
+                              width={60}
+                              height={60}
+                              alt=""
+                              className="-ml-2"
+                            />
+                          ) : null}
                         </div>
                       </td>
                       <td className="font-medium text-center border-none max-w-[150px] whitespace-normal text-[#67349d] text-[14px]">
