@@ -62,7 +62,7 @@ export interface IResponseApartmentComment {
 }
 
 export interface IRequestApartmentComment
-  extends Pick<IResponseApartmentComment, "content" | "rating"> {}
+  extends Pick<IResponseApartmentComment, "content" | "rating"> { }
 
 export interface IResponseApartmentContract {
   _id: string;
@@ -76,7 +76,7 @@ export interface IResponseApartmentContract {
   };
   status: string;
   content: string;
-  created_at: Date;
+  createdAt: Date;
 }
 
 export interface IRequestCreateContract {

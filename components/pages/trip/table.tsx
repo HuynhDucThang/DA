@@ -8,7 +8,7 @@ import WrapProjectsTable from "./wrapTable";
 import { Loading } from "@/components/common";
 import Confirm from "@/components/layouts/modal/comfirm";
 import useModal from "@/utils/hook/useModal";
-import { handleConvertDate, showToast } from "@/utils/helpers/common";
+import { formatVND, handleConvertDate, showToast } from "@/utils/helpers/common";
 import { useRouter } from "next/navigation";
 import { IResponseApartmentContract } from "@/utils/interface.v2";
 
@@ -66,8 +66,8 @@ export default function Table({
           changePage={changePage}
           setChangePage={setChangePage}
         >
-          <div className="tasksctroll">
-            <div className="overflow-hidden mt-4 pb-6 px-2 w-[clamp(1200px,100%,100%)] abcxyz ">
+          <div className="overflow-auto">
+            <div className=" mt-4 pb-6 px-2 w-[clamp(1200px,100%,100%)]">
               <table className="w-full ">
                 <thead className="">
                   <tr>
@@ -85,6 +85,9 @@ export default function Table({
                     </th>
                     <th className="text-center border-none font-bold text-[18px] text-[#474d58] pb-3">
                       Tổng số tiền
+                    </th>
+                    <th className="text-center border-none font-bold text-[18px] text-[#474d58] pb-3">
+                      Ngày thanh toán
                     </th>
                     <th className="text-center border-none font-bold text-[18px] text-[#474d58] pb-3">
                       Ngày bắt đầu
@@ -160,9 +163,20 @@ export default function Table({
 
                       <td className="font-medium text-center border-none">
                         <p className="text-[14px] text-[#67349d]">
-                          ${project?.information?.totalPrice}
+                          {formatVND(project?.information?.totalPrice)}
                         </p>
                       </td>
+
+                      <td className="font-medium text-center border-none w-[150px]">
+                        <p className="text-[14px] text-[#67349d]">
+                          {handleConvertDate(
+                            new Date(project?.createdAt ?? ""),
+                            "HH:mm, dd/MM/yyyy"
+                          )}{" "}
+                        </p>
+                      </td>
+
+
                       <td className="font-medium text-center border-none w-[150px]">
                         <p className="text-[14px] text-[#67349d]">
                           14h:00,
