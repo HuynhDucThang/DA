@@ -12,6 +12,8 @@ import { useEffect, useState } from "react";
 
 export default function Trip() {
   const { currentUser } = useAppSelector((state) => state.user);
+  const [total, setTotal] = useState<number>(0);
+
   const [contractsTrip, setContractsTrip] = useState<
     IResponseApartmentContract[]
   >([]);
@@ -29,10 +31,12 @@ export default function Trip() {
       setIsLoading(true);
       try {
         const { data } = await getContracts({
+          page: changePage,
           userId: currentUser._id,
         });
 
         setContractsTrip(data.data);
+        setTotal(data.total);
       } catch (error) {
         showToast("Xảy ra lỗi trong quá trình xử lý");
         router.push("/");
@@ -41,7 +45,7 @@ export default function Trip() {
       }
     };
     getTrip();
-  }, []);
+  }, [changePage]);
 
   const deleteStateContracts = (contractId: string) => {
     const newContract = contractsTrip.filter(
@@ -77,7 +81,7 @@ export default function Trip() {
             <Table
               data={contractsTrip}
               changePage={changePage}
-              totalPage={1}
+              totalPage={Math.ceil(total / 6)}
               setChangePage={setChangePage}
               onDelete={deteteTrip}
             />

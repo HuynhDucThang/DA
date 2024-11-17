@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import styles from "@/components/pages/admin/dashboard/users/users.module.css";
 import Pagination from "@/components/pages/admin/dashboard/pagination";
@@ -12,7 +12,6 @@ import { IResponseApartmentContract } from "@/utils/interface.v2";
 const UsersPage = ({ searchParams }: any) => {
   const page = searchParams?.page || 1;
 
-
   const [contracts, setContracts] = useState<IResponseApartmentContract[]>([]);
   const [totalRecord, setTotalRecord] = useState<number>(0);
   const [isFeching, setIsFetching] = useState<boolean>(true);
@@ -21,9 +20,9 @@ const UsersPage = ({ searchParams }: any) => {
     setIsFetching(true);
 
     try {
-      const { data } = await getContracts({...searchParams, page});
+      const { data } = await getContracts({ ...searchParams, page });
       setContracts(data.data);
-      setTotalRecord(data.data.length);
+      setTotalRecord(data.total);
     } catch (error) {
       showToast("Fetch contracts fail", "error");
     } finally {
@@ -61,9 +60,7 @@ const UsersPage = ({ searchParams }: any) => {
           {contracts.map((contract) => (
             <tr>
               <td>
-                <div className={styles.user}>
-                  {contract.apartment.name}
-                </div>
+                <div className={styles.user}>{contract.apartment.name}</div>
               </td>
               <td>
                 <span className={`${styles.status} ${styles.pending}`}>

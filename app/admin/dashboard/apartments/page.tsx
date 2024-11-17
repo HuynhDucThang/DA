@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -12,7 +12,6 @@ import { handleConvertDate, showToast } from "@/utils/helpers/common";
 import { IResponseApartment } from "@/utils/interface.v2";
 import { deleteApartment, getApartments, updateApartment } from "@/utils/proxy";
 
-
 const ApartmentsPage = ({ searchParams }: any) => {
   const page = searchParams?.page || 1;
 
@@ -25,9 +24,9 @@ const ApartmentsPage = ({ searchParams }: any) => {
     setIsFetching(true);
 
     try {
-      const { data } = await getApartments({...searchParams, page });
+      const { data } = await getApartments({ ...searchParams, page });
       setApartments(data.payload);
-      setTotalRecord(data.payload.length);
+      setTotalRecord(data.total);
     } catch (error) {
       showToast("Fetch apartments fail", "error");
     } finally {
