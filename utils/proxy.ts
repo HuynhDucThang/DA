@@ -211,10 +211,10 @@ export const createContract = async (
 ) => await axiosAuth.post(`/contract/${apartmentId}`, contract);
 
 export const updateContract = async (contractId: string, contract: any) =>
-  await axiosAuth.patch(`/contracts/${contractId}`, contract);
+  await axiosAuth.patch(`/contract/${contractId}`, contract);
 
 export const deleteContract = async (contractId: string) =>
-  await axiosAuth.delete(`/contracts/${contractId}`);
+  await axiosAuth.delete(`/contract/${contractId}`);
 
 export const getContracts = async (params : any) => {
   const searchParams = new URLSearchParams();

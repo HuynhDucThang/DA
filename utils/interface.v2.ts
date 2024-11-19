@@ -75,6 +75,7 @@ export interface IResponseApartmentContract {
     totalPrice: number;
   };
   status: string;
+  isCheckOut: boolean;
   content: string;
   createdAt: Date;
 }

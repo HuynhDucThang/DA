@@ -1,14 +1,18 @@
 "use client";
 
+import styles from "@/components/pages/admin/dashboard/users/users.module.css";
 import { useState } from "react";
 import Image from "next/image";
-import { URL } from "@/utils/api";
 import { useAppSelector } from "@/redux/hooks";
 import WrapProjectsTable from "./wrapTable";
 import { Loading } from "@/components/common";
 import Confirm from "@/components/layouts/modal/comfirm";
 import useModal from "@/utils/hook/useModal";
-import { formatVND, handleConvertDate, showToast } from "@/utils/helpers/common";
+import {
+  formatVND,
+  handleConvertDate,
+  showToast,
+} from "@/utils/helpers/common";
 import { useRouter } from "next/navigation";
 import { IResponseApartmentContract } from "@/utils/interface.v2";
 
@@ -38,7 +42,10 @@ export default function Table({
   const handleOpenPopup = (action: "delete" | "redirect", project: any) => {
     const isTripCompleted = new Date() > new Date(project.start_date);
     if (isTripCompleted) {
-      showToast("Chuyến đi của bạn đã bắt đầu không thể xoá", "error");
+      showToast(
+        "Bản hợp đồng của bạn đã bắt đầu không thể xoá vì đã qua ngày bắt đầu",
+        "error"
+      );
       return;
     }
     setTypeAction(action);
@@ -176,7 +183,6 @@ export default function Table({
                         </p>
                       </td>
 
-
                       <td className="font-medium text-center border-none w-[150px]">
                         <p className="text-[14px] text-[#67349d]">
                           14h:00,
@@ -198,6 +204,18 @@ export default function Table({
                       </td>
                       <td className="border-none">
                         <div className="flex items-center gap-3 justify-center">
+                          <div
+                            className="group p-1 rounded-full"
+                            onClick={() => handleOpenPopup("delete", project)}
+                          >
+                            <Image
+                              className="cursor-pointer group-hover:-translate-y-2 transition-transform"
+                              src={"/delete.svg"}
+                              width={24}
+                              height={24}
+                              alt="Lock icon"
+                            />
+                          </div>
                           <div
                             className="group p-1 rounded-full"
                             onClick={() => handleOpenPopup("redirect", project)}
@@ -227,7 +245,7 @@ export default function Table({
           isOpen={isOpen}
           message={
             typeAction === "delete"
-              ? "Bạn có muốn xoá chuyển đi này này."
+              ? "Bạn có muốn xoá bản hợp đồng này."
               : "Bạn có muốn di chuyển đến căn hộ này."
           }
           onCancel={closePopup}

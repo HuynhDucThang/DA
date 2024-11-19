@@ -2,21 +2,19 @@
 
 import styles from "@/components/pages/admin/dashboard/users/users.module.css";
 import Pagination from "@/components/pages/admin/dashboard/pagination";
-import Search from "@/components/pages/admin/dashboard/search/search";
-import Link from "next/link";
 import { handleConvertDate, showToast } from "@/utils/helpers/common";
 import { useEffect, useState } from "react";
-import { getContracts } from "@/utils/proxy";
+import { getContracts, updateContract } from "@/utils/proxy";
 import { IResponseApartmentContract } from "@/utils/interface.v2";
 
-const UsersPage = ({ searchParams }: any) => {
+const ContractsPage = ({ searchParams }: any) => {
   const page = searchParams?.page || 1;
 
   const [contracts, setContracts] = useState<IResponseApartmentContract[]>([]);
   const [totalRecord, setTotalRecord] = useState<number>(0);
   const [isFeching, setIsFetching] = useState<boolean>(true);
 
-  const fetchUsers = async () => {
+  const fetchContract = async () => {
     setIsFetching(true);
 
     try {
@@ -31,12 +29,25 @@ const UsersPage = ({ searchParams }: any) => {
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchContract();
   }, [searchParams]);
 
   const colorStatus: Record<string, string> = {
     COMPLETED: "done",
     PENDING: "pending",
+  };
+
+  const handleCheckout = async (contractId: string) => {
+    setIsFetching(true);
+    try {
+      await updateContract(contractId, { isCheckOut: true });
+      await fetchContract();
+      showToast("User checkout success");
+    } catch (error) {
+      showToast("User checkout fail", "error");
+    } finally {
+      setIsFetching(false);
+    }
   };
 
   return (
@@ -49,11 +60,12 @@ const UsersPage = ({ searchParams }: any) => {
           <tr>
             <td>Căn hộ</td>
             <td>Người thuê</td>
-            <td>Người sở hữu</td>
             <td>Tổng tiền</td>
             <td>trạng thái</td>
+            <td>Ngày thanh toán</td>
             <td>Ngày bắt đầu</td>
             <td>Ngày kết thúc</td>
+            <td>Checkout</td>
           </tr>
         </thead>
         <tbody>
@@ -67,10 +79,15 @@ const UsersPage = ({ searchParams }: any) => {
                   {contract.payer.email}
                 </span>
               </td>
-              <td>{contract.apartment.owner?.email}</td>
               <td>{contract.information.totalPrice} Vnđ</td>
               <td className={`status ${colorStatus[contract.status]}`}>
                 {contract.status}
+              </td>
+              <td>
+                {handleConvertDate(
+                  new Date(contract.createdAt),
+                  "HH:mm, dd/MM/yyyy"
+                )}
               </td>
               <td>
                 14h,{" "}
@@ -79,6 +96,22 @@ const UsersPage = ({ searchParams }: any) => {
               <td>
                 12h,{" "}
                 {handleConvertDate(new Date(contract.endDate), "dd/MM/yyyy")}
+              </td>
+              <td>
+                <div className={styles.buttons}>
+                  {!contract.isCheckOut ? (
+                    <button
+                      className={`${styles.button} ${styles.view}`}
+                      onClick={() => handleCheckout(contract._id)}
+                    >
+                      Checkout
+                    </button>
+                  ) : (
+                    <button className={`${styles.button} ${styles.view}`}>
+                      Đã checkout
+                    </button>
+                  )}
+                </div>
               </td>
             </tr>
           ))}
@@ -89,4 +122,4 @@ const UsersPage = ({ searchParams }: any) => {
   );
 };
 
-export default UsersPage;
+export default ContractsPage;

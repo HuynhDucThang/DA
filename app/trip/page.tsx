@@ -11,7 +11,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Trip() {
-  const { currentUser } = useAppSelector((state) => state.user);
+  const { currentUser, isLoading: isLoadingRedux } = useAppSelector(
+    (state) => state.user
+  );
   const [total, setTotal] = useState<number>(0);
 
   const [contractsTrip, setContractsTrip] = useState<
@@ -23,7 +25,7 @@ export default function Trip() {
 
   useEffect(() => {
     const getTrip = async () => {
-      if (!currentUser._id) {
+      if (!currentUser._id && !isLoadingRedux) {
         showToast("Hãy đăng nhập để sử dụng chức năng này", "error");
         router.push("/");
         return;
@@ -45,7 +47,7 @@ export default function Trip() {
       }
     };
     getTrip();
-  }, [changePage]);
+  }, [changePage, isLoadingRedux]);
 
   const deleteStateContracts = (contractId: string) => {
     const newContract = contractsTrip.filter(
