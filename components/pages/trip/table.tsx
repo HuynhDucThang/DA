@@ -102,6 +102,9 @@ export default function Table({
                     <th className="text-center border-none font-bold text-[18px] text-[#474d58] pb-3">
                       Ngày kết thúc
                     </th>
+                    <th className="text-center border-none font-bold text-[18px] text-[#474d58] pb-3">
+                      CheckIn
+                    </th>
                     <th className="text-center border-none pb-3">Actions</th>
                   </tr>
                 </thead>
@@ -202,6 +205,18 @@ export default function Table({
                           )}{" "}
                         </p>
                       </td>
+
+                      <td className="font-medium text-center border-none w-[150px]">
+                        <p className="text-[14px] text-[#67349d]">
+                          {project.isCheckIn && project.checkInAt
+                            ? handleConvertDate(
+                                new Date(project?.checkInAt),
+                                "HH:mm, dd/MM/yyyy"
+                              )
+                            : "Chưa checkIn"}
+                        </p>
+                      </td>
+
                       <td className="border-none">
                         <div className="flex items-center gap-3 justify-center">
                           <div

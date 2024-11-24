@@ -5,7 +5,7 @@ import Table from "@/components/pages/trip/table";
 import { useAppSelector } from "@/redux/hooks";
 import { showToast } from "@/utils/helpers/common";
 import { IResponseApartmentContract } from "@/utils/interface.v2";
-import { deleteContract, getContracts, getContractsTrip } from "@/utils/proxy";
+import { deleteContract, getContracts } from "@/utils/proxy";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

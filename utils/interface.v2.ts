@@ -62,7 +62,7 @@ export interface IResponseApartmentComment {
 }
 
 export interface IRequestApartmentComment
-  extends Pick<IResponseApartmentComment, "content" | "rating"> { }
+  extends Pick<IResponseApartmentComment, "content" | "rating"> {}
 
 export interface IResponseApartmentContract {
   _id: string;
@@ -75,7 +75,8 @@ export interface IResponseApartmentContract {
     totalPrice: number;
   };
   status: string;
-  isCheckOut: boolean;
+  isCheckIn: boolean;
+  checkInAt?: Date;
   content: string;
   createdAt: Date;
 }
@@ -88,6 +89,8 @@ export interface IRequestCreateContract {
   information: {
     totalMember: number;
     totalPrice: number;
+    pricePerNight: number;
+    totalDays: number;
   };
 }
 

@@ -37,10 +37,10 @@ const ContractsPage = ({ searchParams }: any) => {
     PENDING: "pending",
   };
 
-  const handleCheckout = async (contractId: string) => {
+  const handleCheckIn = async (contractId: string) => {
     setIsFetching(true);
     try {
-      await updateContract(contractId, { isCheckOut: true });
+      await updateContract(contractId, { isCheckIn: true });
       await fetchContract();
       showToast("User checkout success");
     } catch (error) {
@@ -65,7 +65,7 @@ const ContractsPage = ({ searchParams }: any) => {
             <td>Ngày thanh toán</td>
             <td>Ngày bắt đầu</td>
             <td>Ngày kết thúc</td>
-            <td>Checkout</td>
+            <td>Checkin</td>
           </tr>
         </thead>
         <tbody>
@@ -99,17 +99,21 @@ const ContractsPage = ({ searchParams }: any) => {
               </td>
               <td>
                 <div className={styles.buttons}>
-                  {!contract.isCheckOut ? (
+                  {!contract.isCheckIn ? (
                     <button
                       className={`${styles.button} ${styles.view}`}
-                      onClick={() => handleCheckout(contract._id)}
+                      onClick={() => handleCheckIn(contract._id)}
                     >
-                      Checkout
+                      CheckIn
                     </button>
                   ) : (
-                    <button className={`${styles.button} ${styles.view}`}>
-                      Đã checkout
-                    </button>
+                    <p>
+                      {contract.checkInAt &&
+                        handleConvertDate(
+                          new Date(contract.checkInAt),
+                          "HH:mm, dd/MM/yyyy"
+                        )}
+                    </p>
                   )}
                 </div>
               </td>

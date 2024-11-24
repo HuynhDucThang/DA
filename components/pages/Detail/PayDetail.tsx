@@ -115,7 +115,10 @@ export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
 
   const totalDay =
     end_date && start_date
-      ? new Date(end_date).getDate() - new Date(start_date).getDate()
+      ? Math.ceil(
+          (new Date(end_date).getTime() - new Date(start_date).getTime()) /
+            (1000 * 60 * 60 * 24)
+        )
       : 0;
 
   const pricePerNight = convertStringToFloat(apartmentDetail.pricePerNight);
@@ -157,6 +160,8 @@ export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
         information: {
           totalMember: totalPeople,
           totalPrice: totalAmount,
+          pricePerNight: pricePerNight ?? 0,
+          totalDays: totalDay,
         },
         endDate: end_date,
         startDate: start_date,

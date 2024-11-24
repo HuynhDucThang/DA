@@ -11,22 +11,28 @@ import {
   IResponseApartmentComment,
 } from "@/utils/interface.v2";
 import { Loading } from "@/components/common";
+import { showToast } from "@/utils/helpers/common";
 
 interface IProps {
   searchParams: {
     skip: string;
     limit: string;
+    payment: string;
   };
   params: {
     apartmentId: string;
   };
 }
 
-export default function ApartmentDetail({ params }: IProps) {
+export default function ApartmentDetail({ params, searchParams }: IProps) {
   const [comments, setComments] = useState<IResponseApartmentComment[]>([]);
   const [apartment, setApartment] = useState<IResponseApartment | null>(null);
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const apartmentId = params.apartmentId;
+
+  useEffect(() => {
+    if (searchParams.payment === "true") showToast("Thanh toán thành công");
+  }, [searchParams.payment]);
 
   useEffect(() => {
     const fetchData = async () => {
