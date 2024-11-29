@@ -12,8 +12,8 @@ export default function ModalSignUp() {
     <Modal
       isOpen={typeModal === "SIGN_UP" ? true : false}
       handleCloseModal={() => dispatch(removeModalType())}
-      commonStyles="max-w-[700px] relative"
-      title="Đăng nhập hoặc đăng ký."
+      commonStyles="max-w-[500px] relative"
+      title="Đăng ký"
       logo={
         <div className="absolute bottom-full left-1/2 -translate-x-1/2 translate-y-[40%] w-[100px] h-[100px]">
           <div className="absolute w-[56px] h-[56px] rotate-45 bg-white left-0 top-[10%] translate-x-[22px]"></div>

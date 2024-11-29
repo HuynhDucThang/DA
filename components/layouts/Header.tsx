@@ -44,7 +44,7 @@ export default function Header() {
           <div className="flex">
             <div className="flex items-center">
               <p className="text-primary hover:bg-[#f7f7f7] rounded-2xl transition-colors p-3">
-                Cho thuê chỗ ở qua Airbnb
+                Cho thuê căn hộ Đà Nẵng
               </p>
               <div className="w-12 h-12 rounded-full hover:bg-[#f7f7f7] transition-colors flex justify-center items-center">
                 <Image

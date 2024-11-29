@@ -17,7 +17,7 @@ export default function DropdownUser() {
     <>
       <div>
         <Link href={`/trip`} className={`block ${stylesItem}`}>
-          Chuyển đi
+          Lịch sử đặt phòng
         </Link>
         <Link
           href={`/users/${currentUser._id}/white-list`}
@@ -33,7 +33,7 @@ export default function DropdownUser() {
           href={`/users/${currentUser._id}/add-apartment`}
           className={`block ${stylesItem}`}
         >
-          Tạo mới chỗ ở qua Airbnb
+          Tạo căn hộ mới
         </Link>
         <Link
           href={`/users/${currentUser._id}`}

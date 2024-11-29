@@ -305,7 +305,7 @@ export default function AddApartment() {
                     onChange={handleOnchange}
                   >
                     <option value="" disabled hidden>
-                      Chọn thành phố
+                      Chọn quận
                     </option>
                     {Object.keys(CITY).map((key) => (
                       <option key={key} value={key}>

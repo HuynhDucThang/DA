@@ -16,7 +16,7 @@ export default function InforNeeded() {
           <h4 className="sub_heading__detail_apartment">Nội quy nhà</h4>
           <p className="text-xl">Nhận phòng sau 15:00</p>
           <p className="text-xl">Trả phòng trước 11:00</p>
-          <p className="text-xl">Tối đa 6 khách</p>
+          <p className="text-xl">Tối đa 3 khách</p>
           <ViewMore handleClick={() => dispatch(setModalType("HOUSE_ROLE"))} />
         </div>
 

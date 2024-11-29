@@ -164,7 +164,7 @@ export default function Table({
                         </div>
                       </td>
                       <td className="font-medium text-center border-none max-w-[150px] whitespace-normal text-[#67349d] text-[14px]">
-                        {project.apartment.name}
+                        {project?.apartment?.name}
                       </td>
 
                       <td className="font-medium text-center border-none max-w-[300px] whitespace-normal text-[#67349d] text-[14px]">

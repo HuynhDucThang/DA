@@ -59,7 +59,7 @@ export default function DropdownNoUser() {
       <Modal
         isOpen={isOpen}
         handleCloseModal={() => dispatch(removeModalType())}
-        commonStyles="max-w-[700px]"
+        commonStyles="max-w-[500px]"
         title="Đăng nhập hoặc đăng ký."
       >
         <h2 className="text-2xl text-primary font-semibold">

@@ -45,14 +45,16 @@ export default function ModalSearch() {
   const { typeModal } = useAppSelector((state) => state.modal);
   const [totalApartment, setTotalApartment] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  
   const [searchParams, setSearchParams] = useState({
     city: "",
     lowest_price: 100000,
     hightest_price: 5000000,
     apartment_type: "",
     amenities: [] as string[],
+    
   });
+  
   const [amenities, setAmenities] = useState<IResponseApartmentAmenity[]>([]);
 
   const dispatch = useAppDispatch();
@@ -200,7 +202,7 @@ export default function ModalSearch() {
             options={options}
           />
         </Container>
-        <Container title="Thành phố" desc="Tên thành phố mà bạn muốn đến.">
+        <Container title="Quận" desc="Tên quận mà bạn muốn đến.">
           <label
             htmlFor="city"
             className="border border-c-grey rounded-lg flex items-center justify-between"
@@ -212,7 +214,7 @@ export default function ModalSearch() {
               className="outline-none w-full p-4 overflow-hidden rounded-xl"
             >
               <option value="" className="text-lg block p-4" disabled hidden>
-                Chọn thành phố
+                Chọn quận
               </option>
               {Object.keys(CITY).map((key) => (
                 <option key={key} value={key} className="text-lg block p-2">

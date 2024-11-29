@@ -1,11 +1,11 @@
 export enum CITY {
-  "HCM" = "Hồ Chí Minh",
-  "ĐN" = "Đà Nẵng",
-  "NT" = "Nha Trang",
-  "HA" = "Hội An",
-  "HUE" = "Huế",
-  "DL" = "Đà Lạt",
-  "SAPA" = "SAPA",
+  "LC" = "Liên Chiểu",
+  "HC" = "Hải Châu",
+  "NHS" = "Ngũ Hành Sơn",
+  "ST" = "Sơn Trà",
+  "CL" = "Cẩm Lệ",
+  "TK" = "Thanh Khê",
+  "HV" = "Hoà Vang",
 }
 
 export enum APARTMENT_TYPE {

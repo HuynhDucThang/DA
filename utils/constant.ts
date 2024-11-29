@@ -27,7 +27,7 @@ export const DATA_HOUSE_ROLE = [
     subItems: [
       {
         icon: "/amenities/more_people.svg",
-        subKey: "Tối đa 10 khách",
+        subKey: "Tối đa 3 khách",
       },
       {
         icon: "/amenities/no_smoke.svg",

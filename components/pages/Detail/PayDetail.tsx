@@ -411,7 +411,7 @@ export default function PayDetail({ apartmentDetail, totalComments }: IProps) {
                   ))}
 
                   <p className="text-second text-base font-medium leading-5 mt-5">
-                    Chỗ ở này cho phép tối đa 5 khách, không tính em bé. Nếu bạn
+                    Chỗ ở này cho phép tối đa 3 khách, không tính em bé. Nếu bạn
                     mang theo nhiều hơn 2 thú cưng, vui lòng báo cho Chủ nhà
                     biết.
                   </p>

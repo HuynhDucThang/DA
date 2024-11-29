@@ -42,9 +42,9 @@ const ContractsPage = ({ searchParams }: any) => {
     try {
       await updateContract(contractId, { isCheckIn: true });
       await fetchContract();
-      showToast("User checkout success");
+      showToast("User checkin success");
     } catch (error) {
-      showToast("User checkout fail", "error");
+      showToast("User checkin fail", "error");
     } finally {
       setIsFetching(false);
     }

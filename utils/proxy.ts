@@ -168,7 +168,7 @@ export const updateImagesApartmentUser = async (
 };
 
 export const deleteApartment = async (apartmentId: string) =>
-  await axiosAuth.delete(`/apartments/${apartmentId}`);
+  await axiosAuth.delete(`/apartment/${apartmentId}`);
 
 export async function getApartmentsLocal(searchParams: any) {
   const params = new URLSearchParams();
